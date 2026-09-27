@@ -25,6 +25,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;900&family=Permanent+Marker&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../styles.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 -90 885 885'><rect x='0' y='-90' width='885' height='885' fill='%230b0b0b'/><path fill='%23f5f5f5' fill-rule='evenodd' d='M40 420 L405 45 L545 45 L545 345 L710 345 L710 215 L845 215 L845 580 L710 580 L710 455 L545 455 L545 580 L405 580 L405 455 L165 455 L165 580 L40 580 Z M290 345 L405 227 L405 345 Z'/></svg>">
+  <script src="../site.js" defer></script>
   <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -118,10 +119,6 @@
     </div>
   </section>
 
-  <div class="ticker" aria-hidden="true">
-    <div class="ticker-track"><ul><li class="t-red">Builders</li><li class="t-cement">Demos</li><li class="t-acid">Product</li><li>AI</li><li class="t-white">Deep tech</li><li>Community</li><li>Invite-only</li><li class="t-cement">Free</li><li class="t-acid">Málaga</li></ul><ul><li class="t-red">Builders</li><li class="t-cement">Demos</li><li class="t-acid">Product</li><li>AI</li><li class="t-white">Deep tech</li><li>Community</li><li>Invite-only</li><li class="t-cement">Free</li><li class="t-acid">Málaga</li></ul></div>
-  </div>
-
   <section class="session reveal" id="session">
     <div class="wrap session-grid">
       <div class="session-meta">
@@ -173,14 +170,15 @@
     <div class="wrap">
       <h2>Who it is for</h2>
       <blockquote class="pull">For anyone who is <strong>building something</strong>, whatever their job title.</blockquote>
+      <p class="aud-hint">Hover over or tap each profile to see who we mean.</p>
       <ul class="audience">
-        <li>Founders</li>
-        <li>Software engineers</li>
-        <li>Research and AI</li>
-        <li>Product</li>
-        <li>Design</li>
-        <li>Early startup employees</li>
-        <li>Students already building</li>
+        <li><button type="button" class="aud" aria-describedby="aud-0">Founders</button><span class="aud-desc" role="tooltip" id="aud-0">You have started or are starting a company, whether it is your first or your fifth.</span></li>
+        <li><button type="button" class="aud" aria-describedby="aud-1">Software engineers</button><span class="aud-desc" role="tooltip" id="aud-1">You write the code that makes the product work: backend, frontend, infrastructure or data.</span></li>
+        <li><button type="button" class="aud" aria-describedby="aud-2">Research and AI</button><span class="aud-desc" role="tooltip" id="aud-2">You do research, train models or bring AI into a real product.</span></li>
+        <li><button type="button" class="aud" aria-describedby="aud-3">Product</button><span class="aud-desc" role="tooltip" id="aud-3">You decide what gets built and why, and you talk to the people who use it.</span></li>
+        <li><button type="button" class="aud" aria-describedby="aud-4">Design</button><span class="aud-desc" role="tooltip" id="aud-4">You shape how what gets built looks and works.</span></li>
+        <li><button type="button" class="aud" aria-describedby="aud-5">Early startup employees</button><span class="aud-desc" role="tooltip" id="aud-5">You joined a startup early and treat its problems as your own.</span></li>
+        <li><button type="button" class="aud" aria-describedby="aud-6">Students already building</button><span class="aud-desc" role="tooltip" id="aud-6">You are still studying, but you already have your own projects up and running.</span></li>
       </ul>
       <p>It does not matter whether you are just starting or have built several companies. The only thing we look at is what you are doing and what you can bring to the conversation.</p>
     </div>
@@ -346,10 +344,9 @@
     <a class="footer-mark" href="index.html" aria-label="Atarazana House, home"><svg viewBox="40 45 805 535" aria-hidden="true"><path fill-rule="evenodd" d="M40 420 L405 45 L545 45 L545 345 L710 345 L710 215 L845 215 L845 580 L710 580 L710 455 L545 455 L545 580 L405 580 L405 455 L165 455 L165 580 L40 580 Z M290 345 L405 227 L405 345 Z"/></svg></a>
     <p class="footer-brand">Atarazana House. Meetups for the people building technology in Málaga.</p>
     <nav class="footer-links" aria-label="Links">
-      <!-- TODO: revisar las URLs de X y LinkedIn -->
+      <!-- TODO: revisar la URL de X -->
       <a href="https://luma.com/user/atarazana" target="_blank" rel="noopener">Luma</a>
       <a href="https://x.com/atarazana" target="_blank" rel="noopener">X</a>
-      <a href="https://www.linkedin.com/company/atarazana" target="_blank" rel="noopener">LinkedIn</a>
       <a href="mailto:atarazanafh@gmail.com">atarazanafh@gmail.com</a>
       <a href="index.html">Home</a>
       <a href="manifesto.html">Manifesto</a>
