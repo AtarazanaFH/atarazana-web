@@ -348,7 +348,7 @@ h1, h2 {
 .slot-actions { display:flex; align-items:center; gap:24px; flex-wrap:wrap; margin-top:28px; }
 
 /* ---------- Declaración: bloque rojo ---------- */
-.statement { background:var(--red); color:var(--black); border-bottom:1px solid var(--structure); }
+.statement { background:var(--red); color:var(--black); border-bottom:1px solid var(--structure); overflow:hidden; }
 .statement .wrap {
   position:relative; padding-top:72px; padding-bottom:72px;
   border-inline-color:rgba(11, 11, 11, 0.15);
@@ -363,10 +363,17 @@ h1, h2 {
   font:500 12px/1.4 var(--font-mono); letter-spacing:0.08em; max-width:none;
   margin-top:32px; display:flex; gap:24px; flex-wrap:wrap;
 }
-.statement .wrap::after {
-  content:"↗"; position:absolute; right:var(--gutter); top:56px;
-  font:400 clamp(80px, 12vw, 180px)/1 var(--font-body);
+
+/* ---------- Flechas que señalan "Solicita invitación" (las orienta site.js) ---------- */
+.pointer {
+  position:absolute; display:block; pointer-events:none;
+  transform:rotate(var(--angle, -45deg));
+  transition:transform 0.5s var(--ease), color 0.2s var(--ease);
 }
+.pointer svg { display:block; width:100%; height:100%; }
+.statement .pointer { right:var(--gutter); top:56px; width:clamp(80px, 11vw, 160px); height:clamp(80px, 11vw, 160px); color:var(--black); }
+.format-grid .pointer { top:26px; right:26px; width:26px; height:26px; color:var(--structure); }
+.format-grid > *:hover .pointer { color:var(--red); }
 
 /* ---------- Secciones ---------- */
 main { counter-reset:chapter; }
@@ -429,11 +436,6 @@ main { counter-reset:chapter; }
   display:block; margin-bottom:28px;
   font:500 12px/1 var(--font-mono); color:var(--red);
 }
-.format-grid > *::after {
-  content:"↗"; position:absolute; top:28px; right:28px;
-  font-size:22px; color:var(--structure); transition:color 0.2s var(--ease), transform 0.2s var(--ease);
-}
-.format-grid > *:hover::after { color:var(--red); transform:translate(3px, -3px); }
 .format-grid .fmt--wide { grid-column:1 / -1; }
 .format-grid h3 {
   font:400 clamp(30px, 3.4vw, 44px)/0.95 var(--font-display); text-transform:uppercase;
@@ -647,9 +649,7 @@ main { counter-reset:chapter; }
   .hero-stats li:nth-child(2) { border-right:none; }
   .hero-stats li:nth-child(3) { padding-left:0; }
   .hero-stats li:nth-child(n+3) { border-top:1px solid var(--structure); }
-  .statement .wrap::after { display:none; }
-}
-
+  
 /* ---------- Móvil ---------- */
 @media (max-width:600px) {
   :root { --gutter:16px; }
