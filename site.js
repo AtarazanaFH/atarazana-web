@@ -1,6 +1,6 @@
 /* Atarazana House · interacciones pequeñas y mecánicas */
 
-/* Cursor propio: una cruz de registro que se convierte en visor sobre lo que se puede pulsar.
+/* Cursor propio: un punto blanco que crece sobre lo que se puede pulsar y hace una onda al hacer clic.
    Solo con ratón; en pantallas táctiles se queda el comportamiento nativo. */
 (() => {
   if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
@@ -21,7 +21,17 @@
   }, { passive: true });
 
   document.documentElement.addEventListener('pointerleave', () => cursor.classList.remove('is-visible'));
-  window.addEventListener('pointerdown', () => cursor.classList.add('is-down'));
+  window.addEventListener('pointerdown', (e) => {
+    cursor.classList.add('is-down');
+    const ripple = document.createElement('span');
+    ripple.className = 'cursor-ripple';
+    ripple.setAttribute('aria-hidden', 'true');
+    ripple.style.left = `${e.clientX}px`;
+    ripple.style.top = `${e.clientY}px`;
+    document.body.appendChild(ripple);
+    ripple.addEventListener('animationend', () => ripple.remove());
+    setTimeout(() => ripple.remove(), 800); // por si la animación está desactivada
+  });
   window.addEventListener('pointerup', () => cursor.classList.remove('is-down'));
 })();
 
