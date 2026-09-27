@@ -202,6 +202,18 @@ h1, h2 {
   transition:transform 0.45s var(--ease);
 }
 .hero-pass:hover .pass { transform:rotate(0deg) translateY(-6px); }
+/* con físicas (site.js) la tarjeta se mueve por código: se puede agarrar y lanzar */
+.hero-pass.has-physics { perspective:1100px; }
+.hero-pass.has-physics .pass { transition:none; cursor:grab; touch-action:pan-y; user-select:none; -webkit-user-select:none; will-change:transform; }
+.hero-pass.has-physics .pass.is-dragging { cursor:grabbing; }
+.pass-hint {
+  position:absolute; left:16px; bottom:14px; z-index:2;
+  font:400 11px/1 var(--font-mono); text-transform:uppercase; letter-spacing:0.08em; color:var(--cement);
+  opacity:0; transition:opacity 0.4s var(--ease);
+}
+.hero-pass.has-physics .pass-hint { opacity:1; }
+.hero-pass.was-touched .pass-hint { opacity:0; }
+.pass-hint::before { content:"↔"; color:var(--red); margin-right:8px; }
 /* cinta */
 .pass::before {
   content:""; position:absolute; bottom:calc(100% - 20px); left:50%; z-index:-1;
