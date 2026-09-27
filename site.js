@@ -108,12 +108,12 @@
   card.style.animation = 'none';
 
   const REST = -0.05;      // rad: reposa un pelín torcida, como una cinta con un giro
-  const DAMPING = 0.9;     // rozamiento del aire
+  const DAMPING = 2.4;     // rozamiento del aire: se estabiliza en pocos vaivenes
   const MAX = 0.9;         // rad: tope para que no se salga demasiado del marco
   let g = 30;              // g / L, se recalcula con el largo real de la cinta
 
-  let theta = -0.55, omega = 0;   // entra balanceándose
-  let y = -60, vy = 0;            // y cae un poco, con rebote de la cinta
+  let theta = -0.28, omega = 0;   // entra balanceándose
+  let y = -30, vy = 0;            // y cae un poco, con rebote de la cinta
   let pivot = { x: 0, y: 0 };
   let dragging = null;
   let running = false, visible = true, last = 0, t = 0;
@@ -129,7 +129,7 @@
   };
 
   const render = () => {
-    const twist = Math.max(-28, Math.min(28, omega * 7));   // la tarjeta gira un poco sobre la cinta
+    const twist = Math.max(-10, Math.min(10, omega * 3));   // la tarjeta gira un poco sobre la cinta
     card.style.transform =
       `translateY(${y.toFixed(2)}px) rotate(${theta.toFixed(4)}rad) rotateY(${twist.toFixed(2)}deg)`;
   };
@@ -140,7 +140,7 @@
     last = now; t += dt;
 
     if (!dragging) {
-      const breeze = Math.sin(t * 0.8) * 0.35 + Math.sin(t * 2.3 + 1) * 0.15;
+      const breeze = Math.sin(t * 0.8) * 0.12 + Math.sin(t * 2.3 + 1) * 0.05;   // casi imperceptible
       const alpha = -g * Math.sin(theta - REST) - DAMPING * omega + breeze;
       omega += alpha * dt;
       theta += omega * dt;
@@ -191,7 +191,7 @@
     if (!dragging) return;
     dragging = null;
     card.classList.remove('is-dragging');
-    omega = Math.max(-9, Math.min(9, omega));
+    omega = Math.max(-6, Math.min(6, omega));
   };
   card.addEventListener('pointerup', release);
   card.addEventListener('pointercancel', release);
@@ -205,7 +205,7 @@
       const inside = e.clientX > r.left && e.clientX < r.right && e.clientY > r.top && e.clientY < r.bottom;
       if (inside) {
         const vx = (e.clientX - lastX) / Math.max(now - lastT, 8) * 1000;   // px/s
-        omega -= vx * 0.0009;
+        omega -= vx * 0.0005;
         figure.classList.add('was-touched');
       }
     }
@@ -219,8 +219,8 @@
     const d = scrollY - lastScroll;
     lastScroll = scrollY;
     if (!visible) return;
-    vy = Math.max(-500, Math.min(500, vy + d * 2.5));
-    omega += Math.max(-1.5, Math.min(1.5, d * 0.01)) * (theta >= REST ? 1 : -1);
+    vy = Math.max(-250, Math.min(250, vy + d * 1.2));
+    omega += Math.max(-0.5, Math.min(0.5, d * 0.004)) * (theta >= REST ? 1 : -1);
     measure();
   }, { passive: true });
 
