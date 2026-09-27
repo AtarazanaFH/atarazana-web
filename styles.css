@@ -384,6 +384,11 @@ h1, h2 {
 }
 .pointer svg { display:block; width:100%; height:100%; }
 .statement .pointer { right:var(--gutter); top:56px; width:clamp(80px, 11vw, 160px); height:clamp(80px, 11vw, 160px); color:var(--black); }
+/* más flechas en el hueco del bloque rojo: todas convergen en el botón del menú */
+.statement .pointer--2 { top:30%; right:22%; }
+.statement .pointer--3 { top:60%; right:6%; }
+.statement .pointer--4 { top:9%;  right:31%; width:clamp(56px, 7vw, 100px); height:clamp(56px, 7vw, 100px); }
+.statement .pointer--5 { top:80%; right:14%; width:clamp(56px, 7vw, 100px); height:clamp(56px, 7vw, 100px); }
 .format-grid .pointer { top:26px; right:26px; width:26px; height:26px; color:var(--structure); }
 .format-grid > *:hover .pointer { color:var(--red); }
 
@@ -652,6 +657,8 @@ main { counter-reset:chapter; }
 }
 
 @media (max-width:760px) {
+  .statement .pointer { width:56px; height:56px; top:24px; }
+  .statement .pointer--2, .statement .pointer--3, .statement .pointer--4, .statement .pointer--5 { display:none; }
   .meta-inner span:first-child, .meta-inner span:last-child { display:none; }
   .meta-inner { justify-content:center; }
   .format-grid, .principles, .faq, .toc-list, .cols-2, .rules-grid { grid-template-columns:1fr; }
