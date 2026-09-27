@@ -50,32 +50,25 @@
   });
 })();
 
-/* Flechas: apuntan siempre al botón de "Solicita invitación" visible más cercano
-   (o al más cercano de la página si no hay ninguno en pantalla) y se reorientan al hacer scroll. */
+/* Flechas: apuntan siempre al botón rojo "Solicita invitación" del menú
+   y se reorientan al hacer scroll o cambiar el tamaño de la ventana. */
 (() => {
   const pointers = [...document.querySelectorAll('.pointer')];
-  if (!pointers.length) return;
-  const ctas = [...document.querySelectorAll('a[href*="luma.com"].cta, .nav-cta')];
+  const target = document.querySelector('.nav-cta');
+  if (!pointers.length || !target) return;
 
   const center = (r) => ({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
-  const onScreen = (r) => r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth;
 
   const update = () => {
-    const all = ctas.map((el) => el.getBoundingClientRect()).filter((r) => r.width);
-    const visible = all.filter(onScreen);
+    const tr = target.getBoundingClientRect();
+    const t = center(tr);
+    // la zona visible empieza bajo la cabecera: una flecha tapada por ella no se toca,
+    // así no da la vuelta al pasar por encima del botón
+    const top = target.closest('header')?.getBoundingClientRect().bottom ?? 0;
     pointers.forEach((el) => {
-      const r = el.getBoundingClientRect();
-      if (!onScreen(r)) return;
-      const c = center(r);
-      let best = null, bestDist = Infinity;
-      // si no hay ningún botón en pantalla, señala al más cercano en la página (arriba o abajo)
-      for (const t of visible.length ? visible : all) {
-        const tc = center(t);
-        const d = Math.hypot(tc.x - c.x, tc.y - c.y);
-        if (d < bestDist) { bestDist = d; best = tc; }
-      }
-      if (!best) return;
-      let angle = Math.atan2(best.y - c.y, best.x - c.x) * 180 / Math.PI;
+      const c = center(el.getBoundingClientRect());
+      if (c.y < top || c.y > innerHeight) return;
+      let angle = Math.atan2(t.y - c.y, t.x - c.x) * 180 / Math.PI;
       // gira por el camino corto en vez de dar la vuelta entera al cruzar ±180°
       const prev = el._angle ?? -45;
       angle += Math.round((prev - angle) / 360) * 360;
