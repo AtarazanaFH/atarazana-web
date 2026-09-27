@@ -53,19 +53,19 @@
 /* Flechas: apuntan siempre al botón rojo "Solicita invitación" del menú
    y se reorientan al hacer scroll o cambiar el tamaño de la ventana. */
 (() => {
-  const pointers = [...document.querySelectorAll('.pointer')];
   const target = document.querySelector('.nav-cta');
-  if (!pointers.length || !target) return;
+  if (!target) return;
+  const ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" '
+    + 'stroke-linecap="butt" stroke-linejoin="miter"><path d="M14 5l7 7-7 7M2 12h18"/></svg>';
 
   const center = (r) => ({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
 
-  const update = () => {
-    const tr = target.getBoundingClientRect();
-    const t = center(tr);
+  const aim = () => {
+    const t = center(target.getBoundingClientRect());
     // la zona visible empieza bajo la cabecera: una flecha tapada por ella no se toca,
     // así no da la vuelta al pasar por encima del botón
     const top = target.closest('header')?.getBoundingClientRect().bottom ?? 0;
-    pointers.forEach((el) => {
+    document.querySelectorAll('.pointer').forEach((el) => {
       const c = center(el.getBoundingClientRect());
       if (c.y < top || c.y > innerHeight) return;
       let angle = Math.atan2(t.y - c.y, t.x - c.x) * 180 / Math.PI;
@@ -77,16 +77,59 @@
     });
   };
 
+  /* Campo de flechas del bloque rojo: una retícula regular que rellena los huecos
+     que deja el texto, como un mapa de gradiente que se inclina hacia el botón. */
+  const field = document.querySelector('.field');
+  const buildField = () => {
+    if (!field) return;
+    const wrap = field.parentElement;
+    const box = wrap.getBoundingClientRect();
+    const gap = Math.max(64, Math.min(120, box.width / 11));  // distancia entre flechas
+    const size = Math.round(gap * 0.42);
+    const margin = size * 0.35;
+
+    // zonas ocupadas por el texto, línea a línea
+    const blocked = [];
+    wrap.querySelectorAll('p').forEach((p) => {
+      const range = document.createRange();
+      range.selectNodeContents(p);
+      for (const r of range.getClientRects()) blocked.push(r);
+    });
+    const hits = (x, y) => blocked.some((r) =>
+      x + size / 2 + margin > r.left && x - size / 2 - margin < r.right &&
+      y + size / 2 + margin > r.top && y - size / 2 - margin < r.bottom);
+
+    field.textContent = '';
+    const cols = Math.floor(box.width / gap), rows = Math.floor(box.height / gap);
+    const offX = (box.width - (cols - 1) * gap) / 2, offY = (box.height - (rows - 1) * gap) / 2;
+    for (let j = 0; j < rows; j++) {
+      for (let i = 0; i < cols; i++) {
+        const x = offX + i * gap, y = offY + j * gap;
+        if (hits(box.left + x, box.top + y)) continue;
+        const el = document.createElement('span');
+        el.className = 'pointer';
+        el.innerHTML = ARROW;
+        el.style.cssText = `left:${x - size / 2}px;top:${y - size / 2}px;width:${size}px;height:${size}px`;
+        field.appendChild(el);
+      }
+    }
+    wrap.parentElement.classList.toggle('has-field', field.children.length > 0);
+    aim();
+  };
+
   let queued = false;
   const schedule = () => {
     if (queued) return;
     queued = true;
-    requestAnimationFrame(() => { queued = false; update(); });
+    requestAnimationFrame(() => { queued = false; aim(); });
   };
+  let resizeTimer;
   addEventListener('scroll', schedule, { passive: true });
-  addEventListener('resize', schedule);
-  addEventListener('load', update);
-  update();
+  addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(buildField, 150); });
+  // el hueco depende de la tipografía: se recalcula cuando carga
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(buildField);
+  addEventListener('load', buildField);
+  buildField();
 })();
 
 /* Pase de la portada: péndulo colgado de su cinta.
