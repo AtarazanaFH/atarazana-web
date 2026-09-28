@@ -666,7 +666,8 @@ main { counter-reset:chapter; }
   .hero-stats li:nth-child(2) { border-right:none; }
   .hero-stats li:nth-child(3) { padding-left:0; }
   .hero-stats li:nth-child(n+3) { border-top:1px solid var(--structure); }
-  
+}
+
 /* ---------- Móvil ---------- */
 @media (max-width:600px) {
   :root { --gutter:16px; }
@@ -691,3 +692,65 @@ main { counter-reset:chapter; }
   .audience li { position:static; }
   .aud-desc { left:0; right:0; width:auto; max-width:none; }
 }
+
+/* Botón de música de fondo.
+   Apagado es una señal roja que invita a pulsar, con una onda que sale de él cada poco;
+   encendido pasa a negro con borde rojo y las barras siguen la música. */
+.sound-toggle {
+  position:fixed; left:16px; bottom:16px; z-index:50;
+  display:flex; align-items:center; gap:10px;
+  padding:12px 16px;
+  background:var(--red); color:var(--black);
+  border:1px solid var(--red);
+  font:700 12px/1 var(--font-mono); text-transform:uppercase; letter-spacing:0.08em;
+  cursor:pointer;
+  transition:background-color .2s var(--ease), color .2s var(--ease), transform .2s var(--ease);
+}
+.sound-toggle::after {
+  content:""; position:absolute; inset:-1px; pointer-events:none;
+  border:1px solid var(--red);
+  animation:sound-call 2.4s var(--ease) infinite;
+}
+.sound-toggle:hover { background:var(--white); border-color:var(--white); transform:translateY(-2px); }
+.sound-toggle.is-on { background:var(--black); color:var(--white); border-color:var(--red); padding:8px 12px; font-size:11px; font-weight:500; }
+.sound-toggle.is-on::after { animation:none; opacity:0; }
+.sound-toggle.is-on:hover { background:var(--anthracite); border-color:var(--red); transform:none; }
+.sound-bars { display:flex; align-items:flex-end; gap:2px; height:12px; }
+.sound-bars i { width:3px; height:5px; background:currentColor; }
+.sound-bars i:nth-child(2) { height:9px; }
+.sound-bars i:nth-child(3) { height:12px; }
+.sound-toggle.is-on .sound-bars { height:10px; }
+.sound-toggle.is-on .sound-bars i { width:2px; background:var(--red); animation:sound-bar .9s var(--ease) infinite alternate; }
+.sound-toggle.is-on .sound-bars i:nth-child(2) { animation-delay:-.3s; }
+.sound-toggle.is-on .sound-bars i:nth-child(3) { animation-delay:-.6s; }
+@keyframes sound-bar { from { height:3px; } to { height:10px; } }
+@keyframes sound-call {
+  0%   { transform:scale(1, 1); opacity:.9; }
+  60%  { transform:scale(1.25, 1.8); opacity:0; }
+  100% { transform:scale(1.25, 1.8); opacity:0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sound-toggle::after { animation:none; opacity:0; }
+  .sound-toggle.is-on .sound-bars i { animation:none; height:8px; }
+}
+
+/* Con la música: onda inferior, flechas que laten con los graves y anillos en cada golpe */
+.beat-wave {
+  position:fixed; left:0; right:0; bottom:0; z-index:40;
+  width:100%; height:64px; pointer-events:none;
+  opacity:0; transition:opacity .6s var(--ease);
+}
+.beat-wave.is-on { opacity:1; }
+.field .pointer { scale:calc(1 + var(--bass, 0) * 0.35); }
+.beat-ring {
+  position:absolute; left:50%; top:50%; z-index:0;
+  width:160px; height:160px; margin:-80px 0 0 -80px;
+  border:1px solid var(--red); pointer-events:none;
+  animation:beat-ring 1.2s var(--ease) forwards;
+}
+@keyframes beat-ring {
+  from { transform:scale(.5); opacity:calc(.3 + var(--k, 1) * .6); }
+  to   { transform:scale(4.5); opacity:0; }
+}
+.hero-pass { border-color:color-mix(in srgb, var(--red) calc(var(--bass, 0) * 100%), var(--structure)); }
+.sound-toggle.is-live .sound-bars i { animation:none; transition:height .06s linear; }

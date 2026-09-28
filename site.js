@@ -260,9 +260,202 @@
     measure();
   }, { passive: true });
 
+  // con música, cada golpe de bombo la estira hacia abajo y la empuja a un lado y a otro
+  let side = 1;
+  addEventListener('music:beat', (e) => {
+    if (!visible || dragging) return;
+    side = -side;
+    vy += 70 * e.detail;
+    omega += side * 0.35 * e.detail;
+  });
+
   addEventListener('resize', measure);
   addEventListener('load', measure);
   measure();
   render();
   start();
+})();
+
+/* Música de fondo: audio/fondo.mp3 en bucle. Empieza apagada; se enciende con el botón de abajo a la izquierda.
+   Al pasar de una página a otra de la web sigue sonando por donde iba. Al recargar, o al salir y volver
+   a entrar desde fuera, empieza de cero y apagada. */
+(() => {
+  const src = new URL('audio/fondo.mp3', document.currentScript.src).href;
+  const store = (fn) => { try { return fn(); } catch { return null; } };
+
+  const audio = new Audio(src);
+  audio.loop = true;
+  audio.volume = 0.35;
+  audio.preload = 'auto';
+  // ¿venimos de otra página de la web? Recargar o llegar desde fuera cuenta como entrar de nuevo
+  const nav = performance.getEntriesByType?.('navigation')[0];
+  const fromInside = nav?.type !== 'reload'
+    && store(() => new URL(document.referrer).origin === location.origin);
+  if (!fromInside) store(() => { sessionStorage.removeItem('bg-time'); sessionStorage.removeItem('bg-on'); });
+
+  const saved = parseFloat(store(() => sessionStorage.getItem('bg-time')));
+  if (saved > 0) audio.addEventListener('loadedmetadata', () => { audio.currentTime = saved % audio.duration; }, { once: true });
+
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'sound-toggle';
+  document.body.appendChild(btn);
+
+  const en = document.documentElement.lang === 'en';
+  const label = en ? { on: 'Music on', off: 'Play music', mute: 'Mute music' }
+                   : { on: 'Música on', off: 'Pon la música', mute: 'Silenciar música' };
+  let wanted = store(() => sessionStorage.getItem('bg-on')) === '1';   // la persona la encendió en esta visita
+  let muted = !wanted;
+  const render = () => {
+    const on = !muted && !audio.paused;
+    btn.classList.toggle('is-on', on);
+    btn.setAttribute('aria-pressed', String(on));
+    btn.setAttribute('aria-label', on ? label.mute : label.off);
+    btn.innerHTML = `<span class="sound-bars" aria-hidden="true"><i></i><i></i><i></i></span>${on ? label.on : label.off}`;
+  };
+
+  /* Analizador: lee graves, medios y la forma de onda para que la web se mueva con la música.
+     Se crea en un gesto, porque un AudioContext creado sin él nace suspendido y deja el audio mudo. */
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let analyser = null;
+  const connect = () => {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (still || !Ctx) return;
+    if (!analyser) {
+      const ctx = new Ctx();
+      analyser = ctx.createAnalyser();
+      analyser.fftSize = 1024;
+      analyser.smoothingTimeConstant = 0.55;
+      analyser.maxDecibels = -10;   // con el valor por defecto (-30) los graves del tema saturan y no se distinguen golpes
+      ctx.createMediaElementSource(audio).connect(analyser);
+      analyser.connect(ctx.destination);
+    }
+    analyser.context.resume();
+  };
+
+  const play = () => { if (!muted) audio.play().then(render, render); };
+  // Varios tipos de gesto porque cada navegador acepta unos distintos para desbloquear el audio.
+  const gestures = ['pointerdown', 'pointerup', 'click', 'touchend', 'keydown'];
+  const unlock = (e) => {
+    if (e.target.closest?.('.sound-toggle')) return;
+    connect();
+    startVisuals();
+    if (muted) return;
+    audio.play().then(() => {
+      gestures.forEach((t) => window.removeEventListener(t, unlock, true));
+      render();
+    }, render);
+  };
+  gestures.forEach((t) => window.addEventListener(t, unlock, true));
+
+  btn.addEventListener('click', () => {
+    muted = !audio.paused;
+    store(() => sessionStorage.setItem('bg-on', muted ? '0' : '1'));
+    if (!muted) connect();
+    muted ? audio.pause() : audio.play().then(render, render);
+    render();
+  });
+
+  /* Lo que se mueve con la música:
+     - una onda (osciloscopio) fija en el borde inferior de la pantalla,
+     - las flechas del bloque rojo laten con los graves,
+     - cada golpe de bombo lanza un anillo cuadrado detrás del pase y le da un empujón,
+     - las barras del botón muestran graves, medios y agudos de verdad. */
+  const wave = document.createElement('canvas');
+  wave.className = 'beat-wave';
+  wave.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(wave);
+  const pen = wave.getContext('2d');
+  const pulsing = document.querySelectorAll('.field, .hero-pass');
+  const passFrame = document.querySelector('.hero-pass');
+
+  let running = false, avgBass = 0, lastBeat = 0, bassSmooth = 0;
+  const band = (data, from, to) => {
+    let sum = 0;
+    for (let i = from; i < to; i++) sum += data[i];
+    return sum / (to - from) / 255;
+  };
+
+  const ring = (strength) => {
+    if (!passFrame || passFrame.getBoundingClientRect().bottom < 0) return;
+    const el = document.createElement('span');
+    el.className = 'beat-ring';
+    el.style.setProperty('--k', strength.toFixed(2));
+    passFrame.appendChild(el);
+    el.addEventListener('animationend', () => el.remove());
+  };
+
+  const frame = (now) => {
+    if (!running) return;
+    const freq = new Uint8Array(analyser.frequencyBinCount);
+    const time = new Uint8Array(analyser.fftSize);
+    analyser.getByteFrequencyData(freq);
+    analyser.getByteTimeDomainData(time);
+
+    // con fftSize 1024 cada franja mide ~43 Hz: 1–4 es el bombo, 8–60 voces y bajo, 60–200 platos
+    const bass = band(freq, 1, 5), mid = band(freq, 8, 60), high = band(freq, 60, 200);
+    bassSmooth += (bass - bassSmooth) * 0.35;
+    avgBass += (bass - avgBass) * 0.04;
+    // el pulso se mide contra la media reciente, así late igual en las partes flojas y en las fuertes
+    const pulse = Math.max(0, Math.min(1, (bassSmooth - avgBass * 0.95) / 0.15));
+    pulsing.forEach((el) => el.style.setProperty('--bass', pulse.toFixed(3)));
+
+    // golpe: los graves saltan por encima de su media reciente (ajustado con el tema: ~2 por segundo)
+    if (bass > avgBass * 1.05 && bass > 0.5 && now - lastBeat > 280) {
+      lastBeat = now;
+      const k = Math.max(0.4, Math.min(1, (bass - avgBass) / 0.15));
+      ring(k);
+      window.dispatchEvent(new CustomEvent('music:beat', { detail: k }));
+    }
+
+    btn.querySelectorAll('.sound-bars i').forEach((bar, i) => {
+      bar.style.height = `${3 + [bass, mid, high][i] * 9}px`;
+    });
+
+    // osciloscopio
+    const dpr = window.devicePixelRatio || 1;
+    const w = wave.clientWidth, h = wave.clientHeight;
+    if (wave.width !== w * dpr) { wave.width = w * dpr; wave.height = h * dpr; }
+    pen.setTransform(dpr, 0, 0, dpr, 0, 0);
+    pen.clearRect(0, 0, w, h);
+    pen.beginPath();
+    const step = 4, n = time.length;
+    for (let i = 0; i < n; i += step) {
+      const x = (i / (n - step)) * w;
+      const y = h / 2 + ((time[i] - 128) / 128) * (h / 2) * 0.9;
+      i ? pen.lineTo(x, y) : pen.moveTo(x, y);
+    }
+    pen.strokeStyle = `rgba(255, 45, 45, ${0.35 + pulse * 0.6})`;
+    pen.lineWidth = 1.5;
+    pen.stroke();
+
+    requestAnimationFrame(frame);
+  };
+
+  const startVisuals = () => {
+    if (running || !analyser || audio.paused) return;
+    running = true;
+    btn.classList.add('is-live');
+    wave.classList.add('is-on');
+    requestAnimationFrame(frame);
+  };
+  const stopVisuals = () => {
+    running = false;
+    btn.classList.remove('is-live');
+    wave.classList.remove('is-on');
+    pulsing.forEach((el) => el.style.setProperty('--bass', '0'));
+  };
+
+  audio.addEventListener('error', () => btn.remove());
+  audio.addEventListener('play', render);
+  audio.addEventListener('pause', () => { render(); stopVisuals(); });
+  // si sonó por autoplay sin gesto, el analizador espera al primer gesto para no dejar el audio mudo
+  audio.addEventListener('playing', () => {
+    if (analyser || navigator.userActivation?.hasBeenActive) connect();
+    startVisuals();
+  });
+  window.addEventListener('pagehide', () => store(() => sessionStorage.setItem('bg-time', String(audio.currentTime))));
+
+  render();
+  play();
 })();
