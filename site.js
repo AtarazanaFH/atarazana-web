@@ -1,4 +1,4 @@
-/* Atarazana House · interacciones pequeñas y mecánicas */
+/* Atarazana Founder House · interacciones pequeñas y mecánicas */
 
 /* Cursor propio: un punto blanco que crece sobre lo que se puede pulsar y hace una onda al hacer clic.
    Solo con ratón; en pantallas táctiles se queda el comportamiento nativo. */
