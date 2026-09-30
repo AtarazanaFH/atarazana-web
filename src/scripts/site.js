@@ -1,3 +1,38 @@
+// Recreate page effects after navigation and release references to the previous DOM.
+let disposePage = () => {};
+document.addEventListener('astro:before-swap', () => disposePage());
+document.addEventListener('astro:page-load', () => {
+  disposePage();
+  const controller = new AbortController();
+  const { signal } = controller;
+  const frames = new Set();
+  const timers = new Set();
+  const cleanups = [];
+  const on = (target, type, listener, options = {}) =>
+    target.addEventListener(type, listener, { ...options, signal });
+  const nextFrame = (callback) => {
+    const id = requestAnimationFrame((time) => {
+      frames.delete(id);
+      if (!signal.aborted) callback(time);
+    });
+    frames.add(id);
+    return id;
+  };
+  const later = (callback, delay) => {
+    const id = setTimeout(() => {
+      timers.delete(id);
+      if (!signal.aborted) callback();
+    }, delay);
+    timers.add(id);
+    return id;
+  };
+  disposePage = () => {
+    controller.abort();
+    frames.forEach(cancelAnimationFrame);
+    timers.forEach(clearTimeout);
+    cleanups.forEach((cleanup) => cleanup());
+  };
+
 /* Atarazana Founder House · interacciones pequeñas y mecánicas */
 
 /* Cursor propio: un punto blanco que crece sobre lo que se puede pulsar y hace una onda al hacer clic.
@@ -10,18 +45,19 @@
   cursor.setAttribute('aria-hidden', 'true');
   cursor.innerHTML = '<i></i>';
   document.body.appendChild(cursor);
+  cleanups.push(() => cursor.remove());
   document.documentElement.classList.add('has-cursor');
 
   const interactive = 'a, button, [role="button"], label, summary, .has-physics .pass';
 
-  window.addEventListener('pointermove', (e) => {
+  on(window, 'pointermove', (e) => {
     cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
     cursor.classList.add('is-visible');
     cursor.classList.toggle('is-link', !!e.target.closest(interactive));
   }, { passive: true });
 
-  document.documentElement.addEventListener('pointerleave', () => cursor.classList.remove('is-visible'));
-  window.addEventListener('pointerdown', (e) => {
+  on(document.documentElement, 'pointerleave', () => cursor.classList.remove('is-visible'));
+  on(window, 'pointerdown', (e) => {
     cursor.classList.add('is-down');
     const ripple = document.createElement('span');
     ripple.className = 'cursor-ripple';
@@ -29,10 +65,10 @@
     ripple.style.left = `${e.clientX}px`;
     ripple.style.top = `${e.clientY}px`;
     document.body.appendChild(ripple);
-    ripple.addEventListener('animationend', () => ripple.remove());
-    setTimeout(() => ripple.remove(), 800); // por si la animación está desactivada
+    on(ripple, 'animationend', () => ripple.remove());
+    later(() => ripple.remove(), 800); // por si la animación está desactivada
   });
-  window.addEventListener('pointerup', () => cursor.classList.remove('is-down'));
+  on(window, 'pointerup', () => cursor.classList.remove('is-down'));
 })();
 
 /* Perfiles de "Para quién es": si la descripción se sale por la derecha, se alinea al otro lado. */
@@ -45,8 +81,8 @@
     if (tip.getBoundingClientRect().right > limit) li.classList.add('flip');
   };
   document.querySelectorAll('.audience li').forEach((li) => {
-    li.addEventListener('pointerenter', () => place(li));
-    li.addEventListener('focusin', () => place(li));
+    on(li, 'pointerenter', () => place(li));
+    on(li, 'focusin', () => place(li));
   });
 })();
 
@@ -81,7 +117,7 @@
      que deja el texto, como un mapa de gradiente que se inclina hacia el botón. */
   const field = document.querySelector('.field');
   const buildField = () => {
-    if (!field) return;
+    if (signal.aborted || !field) return;
     const wrap = field.parentElement;
     const box = wrap.getBoundingClientRect();
     const gap = Math.max(64, Math.min(120, box.width / 11));  // distancia entre flechas
@@ -121,14 +157,14 @@
   const schedule = () => {
     if (queued) return;
     queued = true;
-    requestAnimationFrame(() => { queued = false; aim(); });
+    nextFrame(() => { queued = false; aim(); });
   };
   let resizeTimer;
-  addEventListener('scroll', schedule, { passive: true });
-  addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(buildField, 150); });
+  on(window, 'scroll', schedule, { passive: true });
+  on(window, 'resize', () => { clearTimeout(resizeTimer); resizeTimer = later(buildField, 150); });
   // el hueco depende de la tipografía: se recalcula cuando carga
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(buildField);
-  addEventListener('load', buildField);
+  on(window, 'load', buildField);
   buildField();
 })();
 
@@ -187,24 +223,26 @@
     y = Math.max(-70, Math.min(40, y + vy * dt));
 
     render();
-    requestAnimationFrame(step);
+    nextFrame(step);
   };
 
   const start = () => {
     if (running || !visible) return;
     running = true; last = performance.now();
-    requestAnimationFrame(step);
+    nextFrame(step);
   };
 
-  new IntersectionObserver(([entry]) => {
+  const observer = new IntersectionObserver(([entry]) => {
     visible = entry.isIntersecting;
     if (visible) start(); else running = false;
-  }).observe(figure);
+  });
+  observer.observe(figure);
+  cleanups.push(() => observer.disconnect());
 
   // ángulo que tendría la tarjeta si apuntara al puntero desde el punto de giro
   const angleTo = (x, py) => -Math.atan2(x - pivot.x, Math.max(py - pivot.y, 1));
 
-  card.addEventListener('pointerdown', (e) => {
+  on(card, 'pointerdown', (e) => {
     measure();
     card.setPointerCapture(e.pointerId);
     card.classList.add('is-dragging');
@@ -213,7 +251,7 @@
     omega = 0;
   });
 
-  card.addEventListener('pointermove', (e) => {
+  on(card, 'pointermove', (e) => {
     if (!dragging) return;
     const now = performance.now();
     const next = Math.max(-MAX, Math.min(MAX, angleTo(e.clientX, e.clientY) + dragging.offset));
@@ -229,12 +267,12 @@
     card.classList.remove('is-dragging');
     omega = Math.max(-6, Math.min(6, omega));
   };
-  card.addEventListener('pointerup', release);
-  card.addEventListener('pointercancel', release);
+  on(card, 'pointerup', release);
+  on(card, 'pointercancel', release);
 
   // rozarla con el cursor la empuja en la dirección del movimiento
   let lastX = null, lastT = 0;
-  figure.addEventListener('pointermove', (e) => {
+  on(figure, 'pointermove', (e) => {
     const now = performance.now();
     if (!dragging && lastX !== null && e.pointerType === 'mouse') {
       const r = card.getBoundingClientRect();
@@ -247,11 +285,11 @@
     }
     lastX = e.clientX; lastT = now;
   });
-  figure.addEventListener('pointerleave', () => { lastX = null; });
+  on(figure, 'pointerleave', () => { lastX = null; });
 
   // el scroll sacude la cinta: estirón vertical y algo de balanceo
   let lastScroll = scrollY;
-  addEventListener('scroll', () => {
+  on(window, 'scroll', () => {
     const d = scrollY - lastScroll;
     lastScroll = scrollY;
     if (!visible) return;
@@ -262,19 +300,22 @@
 
   // con música, cada golpe de bombo la estira hacia abajo y la empuja a un lado y a otro
   let side = 1;
-  addEventListener('music:beat', (e) => {
+  on(window, 'music:beat', (e) => {
     if (!visible || dragging) return;
     side = -side;
     vy += 70 * e.detail;
     omega += side * 0.35 * e.detail;
   });
 
-  addEventListener('resize', measure);
-  addEventListener('load', measure);
+  on(window, 'resize', measure);
+  on(window, 'load', measure);
   measure();
   render();
   start();
 })();
+
+
+});
 
 /* Música de fondo: audio/fondo.mp3 en bucle. Empieza apagada; se enciende con el botón de abajo a la izquierda.
    Al pasar de una página a otra de la web sigue sonando por donde iba. Al recargar, o al salir y volver
@@ -306,12 +347,12 @@
   btn.className = 'sound-toggle';
   document.body.appendChild(btn);
 
-  const en = document.documentElement.lang === 'en';
-  const label = en ? { on: 'Music on', off: 'Play music', mute: 'Mute music' }
-                   : { on: 'Música on', off: 'Pon la música', mute: 'Silenciar música' };
   let wanted = store(() => sessionStorage.getItem('bg-on')) === '1';   // la persona la encendió en esta visita
   let muted = !wanted;
   const render = () => {
+    const label = document.documentElement.lang === 'en'
+      ? { on: 'Music on', off: 'Play music', mute: 'Mute music' }
+      : { on: 'Música on', off: 'Pon la música', mute: 'Silenciar música' };
     const on = !muted && !audio.paused;
     btn.classList.toggle('is-on', on);
     btn.setAttribute('aria-pressed', String(on));
@@ -372,9 +413,10 @@
   wave.setAttribute('aria-hidden', 'true');
   document.body.appendChild(wave);
   const pen = wave.getContext('2d');
-  const pulsing = document.querySelectorAll('.field, .hero-pass');
-  const passFrame = document.querySelector('.hero-pass');
+  let pulsing = document.querySelectorAll('.field, .hero-pass');
+  let passFrame = document.querySelector('.hero-pass');
 
+  let frameId = 0;
   let running = false, avgBass = 0, lastBeat = 0, bassSmooth = 0;
   const band = (data, from, to) => {
     let sum = 0;
@@ -435,7 +477,7 @@
     pen.lineWidth = 1.5;
     pen.stroke();
 
-    requestAnimationFrame(frame);
+    frameId = requestAnimationFrame(frame);
   };
 
   const startVisuals = () => {
@@ -443,10 +485,11 @@
     running = true;
     btn.classList.add('is-live');
     wave.classList.add('is-on');
-    requestAnimationFrame(frame);
+    frameId = requestAnimationFrame(frame);
   };
   const stopVisuals = () => {
     running = false;
+    cancelAnimationFrame(frameId);
     btn.classList.remove('is-live');
     wave.classList.remove('is-on');
     pulsing.forEach((el) => el.style.setProperty('--bass', '0'));
@@ -461,6 +504,17 @@
     startVisuals();
   });
   window.addEventListener('pagehide', () => store(() => sessionStorage.setItem('bg-time', String(audio.currentTime))));
+
+  // Keep the same audio and controls across client-side navigation.
+  document.addEventListener('astro:before-swap', stopVisuals);
+  document.addEventListener('astro:page-load', () => {
+    if (!audio.error) document.body.appendChild(btn);
+    document.body.appendChild(wave);
+    pulsing = document.querySelectorAll('.field, .hero-pass');
+    passFrame = document.querySelector('.hero-pass');
+    render();
+    startVisuals();
+  });
 
   render();
   play();
