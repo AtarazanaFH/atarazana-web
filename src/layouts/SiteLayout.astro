@@ -1,0 +1,80 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import Analytics from '@vercel/analytics/astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FinalCTA from '../components/FinalCTA.astro';
+import { pages, pageUrl, type Locale, type Page } from '../data/pages';
+import '@fontsource/anton/400.css';
+import '@fontsource-variable/inter/wght.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource/ibm-plex-mono/700.css';
+import '@fontsource/permanent-marker/400.css';
+import '../styles/global.css';
+interface Props { lang: Locale; page: Page; }
+const { lang, page } = Astro.props;
+const meta = pages[lang][page];
+const absolute = (path: string) => new URL(path, Astro.site).href;
+const canonical = absolute(pageUrl(lang, page));
+const image = absolute(`/assets/social-preview-${lang}.png`);
+const imageAlt = lang === 'es'
+  ? 'Atarazana Founder House. Encuentros para la gente que construye tecnología en Málaga.'
+  : 'Atarazana Founder House. Meetups for the people building technology in Málaga.';
+const organization = {
+  '@context': 'https://schema.org', '@type': 'Organization',
+  name: 'Atarazana Founder House', url: canonical,
+  email: 'atarazanafh@gmail.com', foundingDate: '2026', description: meta.description,
+  address: { '@type': 'PostalAddress', addressLocality: 'Málaga', addressCountry: 'ES' },
+};
+---
+<!DOCTYPE html>
+<html lang={lang}>
+<head>
+  <ClientRouter />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{meta.title}</title>
+  <meta name="description" content={meta.description} />
+  <meta name="theme-color" content="#0b0b0b" />
+  <link rel="canonical" href={canonical} />
+  <link rel="alternate" hreflang="es" href={absolute(pageUrl('es', page))} />
+  <link rel="alternate" hreflang="en" href={absolute(pageUrl('en', page))} />
+  <meta property="og:type" content={meta.type} />
+  <meta property="og:site_name" content="Atarazana Founder House" />
+  <meta property="og:title" content={meta.title} />
+  <meta property="og:description" content={meta.socialDescription} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={image} />
+  <meta property="og:image:secure_url" content={image} />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content={imageAlt} />
+  <meta property="og:locale" content={lang === 'es' ? 'es_ES' : 'en_US'} />
+  <meta property="og:locale:alternate" content={lang === 'es' ? 'en_US' : 'es_ES'} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={meta.title} />
+  <meta name="twitter:description" content={meta.socialDescription} />
+  <meta name="twitter:image" content={image} />
+  <meta name="twitter:image:alt" content={imageAlt} />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 -90 885 885'><rect x='0' y='-90' width='885' height='885' fill='%230b0b0b'/><path fill='%23f5f5f5' fill-rule='evenodd' d='M40 420 L405 45 L545 45 L545 345 L710 345 L710 215 L845 215 L845 580 L710 580 L710 455 L545 455 L545 580 L405 580 L405 455 L165 455 L165 580 L40 580 Z M290 345 L405 227 L405 345 Z'/></svg>">
+  {page === 'index' && <script type="application/ld+json" set:html={JSON.stringify(organization)} />}
+  <script>
+    import '../scripts/site.js';
+  </script>
+  <Analytics />
+</head>
+<body>
+  <a class="skip" href="#main">{lang === 'es' ? 'Saltar al contenido' : 'Skip to content'}</a>
+  <div class="meta-bar" aria-hidden="true">
+    <div class="wrap meta-inner"><span>36.7202° N / 4.4214° W</span><span>Build / Connect / Demo / Repeat</span><span>Málaga / ES · 2026</span></div>
+  </div>
+  <Header lang={lang} page={page} />
+  <main id="main">
+    <slot />
+    <FinalCTA lang={lang} />
+  </main>
+  <Footer lang={lang} />
+</body>
+</html>

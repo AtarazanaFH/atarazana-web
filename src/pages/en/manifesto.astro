@@ -1,64 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Manifesto · Atarazana Founder House</title>
-  <meta name="description" content="Why Atarazana Founder House exists, who it is for and how we want it to work: small, regular meetups for the people building technology in Málaga.">
-  <meta name="theme-color" content="#0b0b0b">
-  <link rel="canonical" href="https://atarazana.house/en/manifesto.html">
-  <link rel="alternate" hreflang="es" href="https://atarazana.house/manifesto.html">
-  <link rel="alternate" hreflang="en" href="https://atarazana.house/en/manifesto.html">
-  <meta property="og:type" content="article">
-  <meta property="og:site_name" content="Atarazana Founder House">
-  <meta property="og:title" content="Manifesto · Atarazana Founder House">
-  <meta property="og:description" content="Why Atarazana Founder House exists, who it is for and how we want it to work: small, regular meetups for the people building technology in Málaga.">
-  <meta property="og:url" content="https://atarazana.house/en/manifesto.html">
-  <meta property="og:image" content="https://atarazana.house/assets/social-preview-en.png">
-  <meta property="og:image:secure_url" content="https://atarazana.house/assets/social-preview-en.png">
-  <meta property="og:image:type" content="image/png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Atarazana Founder House. Meetups for the people building technology in Málaga.">
-  <meta property="og:locale" content="en_US">
-  <meta property="og:locale:alternate" content="es_ES">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Manifesto · Atarazana Founder House">
-  <meta name="twitter:description" content="Why Atarazana Founder House exists, who it is for and how we want it to work: small, regular meetups for the people building technology in Málaga.">
-  <meta name="twitter:image" content="https://atarazana.house/assets/social-preview-en.png">
-  <meta name="twitter:image:alt" content="Atarazana Founder House. Meetups for the people building technology in Málaga.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;900&family=Permanent+Marker&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../styles.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 -90 885 885'><rect x='0' y='-90' width='885' height='885' fill='%230b0b0b'/><path fill='%23f5f5f5' fill-rule='evenodd' d='M40 420 L405 45 L545 45 L545 345 L710 345 L710 215 L845 215 L845 580 L710 580 L710 455 L545 455 L545 580 L405 580 L405 455 L165 455 L165 580 L40 580 Z M290 345 L405 227 L405 345 Z'/></svg>">
-  <script src="../site.js" defer></script>
-</head>
-<body>
-
-<a class="skip" href="#main">Skip to content</a>
-
-<div class="meta-bar" aria-hidden="true">
-  <div class="wrap meta-inner"><span>36.7202° N / 4.4214° W</span><span>Build / Connect / Demo / Repeat</span><span>Málaga / ES · 2026</span></div>
-</div>
-
-<header class="site-header">
-  <div class="wrap header-inner">
-    <a class="logo" href="index.html" aria-label="Atarazana Founder House, home"><svg class="logo-mark" viewBox="40 45 805 535" aria-hidden="true"><path fill-rule="evenodd" d="M40 420 L405 45 L545 45 L545 345 L710 345 L710 215 L845 215 L845 580 L710 580 L710 455 L545 455 L545 580 L405 580 L405 455 L165 455 L165 580 L40 580 Z M290 345 L405 227 L405 345 Z"/></svg><span class="logo-word">Atarazana<br>Founder House</span></a>
-    <nav class="nav" aria-label="Primary">
-      <a href="index.html#what">What it is</a>
-      <a href="manifesto.html" aria-current="page">Manifesto</a>
-      <a href="partners.html">Partners</a>
-      <a href="index.html#faq">FAQ</a>
-      <a href="../manifesto.html" class="nav-lang" hreflang="es">Leer en español</a>
-      <a class="nav-cta" href="https://luma.com/rjl7pq7g" target="_blank" rel="noopener">Request an invite</a>
-    </nav>
-  </div>
-</header>
-
-<main id="main">
-
-  <section class="hero manifesto-hero reveal">
+---
+import Arrow from "../../components/Arrow.astro";
+import SiteLayout from "../../layouts/SiteLayout.astro";
+---
+<SiteLayout lang="en" page="manifesto">
+<section class="hero manifesto-hero reveal">
     <div class="wrap">
       <h1>Manifesto</h1>
       <p class="lead">Why Atarazana Founder House exists, who it is for and how we want it to work.</p>
@@ -111,17 +56,17 @@
       <p class="lede">We get together to meet other people in Málaga’s tech community. There are talks to discover what others are working on, and time to chat, grab a bite and see what comes of it.</p>
       <div class="format-grid">
         <div class="fmt--wide">
-          <span class="pointer" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="butt" stroke-linejoin="miter"><path d="M14 5l7 7-7 7M2 12h18"/></svg></span>
+          <Arrow />
           <h3>Get to know each other</h3>
           <p>Put faces to people working in technology in Málaga, share what you are working on and hear what others are doing. Sometimes it is simply a good conversation. Other times, it leads to a friendship, an idea or something you work on together.</p>
         </div>
         <div>
-          <span class="pointer" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="butt" stroke-linejoin="miter"><path d="M14 5l7 7-7 7M2 12h18"/></svg></span>
+          <Arrow />
           <h3>Talks</h3>
           <p>People working in software, AI, deep tech and startups share what they are doing and what they have learned along the way. A chance to discover projects and ask the people behind them questions.</p>
         </div>
         <div>
-          <span class="pointer" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="butt" stroke-linejoin="miter"><path d="M14 5l7 7-7 7M2 12h18"/></svg></span>
+          <Arrow />
           <h3>Grab a bite and keep talking</h3>
           <p>After the talks, there is food, drinks and time to get to know each other. Continue a conversation, approach someone who just presented or chat with the person next to you.</p>
         </div>
@@ -189,37 +134,4 @@
       <p>We want to be the place you come back to: where a conversation turns into a company, a demo finds its first customer and an idea finds its first engineer. See you inside.</p>
     </div>
   </section>
-
-  <section class="final-cta reveal">
-    <div class="wrap">
-      <h2>Tell us what you are building.</h2>
-      <p>Request an invite on Luma with a link to what you are working on: your website, GitHub, product or a post. Session 001 will take place on 29 October.</p>
-      <div class="final-actions">
-        <a class="cta" href="https://luma.com/rjl7pq7g" target="_blank" rel="noopener">Request an invite</a>
-        <span class="muted">Or write to us at <a href="mailto:atarazanafh@gmail.com">atarazanafh@gmail.com</a></span>
-      </div>
-    </div>
-  </section>
-
-</main>
-
-<footer class="site-footer">
-  <div class="wrap">
-    <a class="footer-mark" href="index.html" aria-label="Atarazana Founder House, home"><svg viewBox="40 45 805 535" aria-hidden="true"><path fill-rule="evenodd" d="M40 420 L405 45 L545 45 L545 345 L710 345 L710 215 L845 215 L845 580 L710 580 L710 455 L545 455 L545 580 L405 580 L405 455 L165 455 L165 580 L40 580 Z M290 345 L405 227 L405 345 Z"/></svg></a>
-    <p class="footer-brand"><span class="footer-brand-name">Atarazana Founder House.</span><br>Meetups for the people building technology in Málaga.</p>
-    <nav class="footer-links" aria-label="Links">
-      <!-- TODO: revisar la URL de X -->
-      <a href="https://luma.com/user/atarazana" target="_blank" rel="noopener">Luma</a>
-      <a href="https://x.com/atarazanafh" target="_blank" rel="noopener">X</a>
-      <a href="https://www.linkedin.com/company/atarazanafh/" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="mailto:atarazanafh@gmail.com">atarazanafh@gmail.com</a>
-      <a href="index.html">Home</a>
-      <a href="manifesto.html">Manifesto</a>
-      <a href="partners.html">Partners</a>
-    </nav>
-    <p class="footer-meta"><span>© 2026 Atarazana Founder House · Made in Málaga</span><span>36.7202° N / 4.4214° W · Málaga / ES</span></p>
-  </div>
-</footer>
-
-</body>
-</html>
+</SiteLayout>
