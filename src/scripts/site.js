@@ -280,13 +280,18 @@
    Al pasar de una página a otra de la web sigue sonando por donde iba. Al recargar, o al salir y volver
    a entrar desde fuera, empieza de cero y apagada. */
 (() => {
-  const src = new URL('audio/fondo.mp3', document.currentScript.src).href;
+  const src = '/audio/fondo.mp3';
   const store = (fn) => { try { return fn(); } catch { return null; } };
 
-  const audio = new Audio(src);
+  const audio = new Audio();
   audio.loop = true;
   audio.volume = 0.35;
-  audio.preload = 'auto';
+  audio.preload = 'none';
+  // No asignar la URL hasta que se active la música: evita cualquier descarga inicial.
+  const startPlayback = () => {
+    if (!audio.hasAttribute('src')) audio.src = src;
+    return audio.play();
+  };
   // ¿venimos de otra página de la web? Recargar o llegar desde fuera cuenta como entrar de nuevo
   const nav = performance.getEntriesByType?.('navigation')[0];
   const fromInside = nav?.type !== 'reload'
@@ -319,7 +324,9 @@
   const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let analyser = null;
   const connect = () => {
-    const Ctx = window.AudioContext || window.webkitAudioContext;
+    /** @type {Window & { webkitAudioContext?: typeof AudioContext }} */
+    const audioWindow = window;
+    const Ctx = audioWindow.AudioContext || audioWindow.webkitAudioContext;
     if (still || !Ctx) return;
     if (!analyser) {
       const ctx = new Ctx();
@@ -333,15 +340,14 @@
     analyser.context.resume();
   };
 
-  const play = () => { if (!muted) audio.play().then(render, render); };
+  const play = () => { if (!muted) startPlayback().then(render, render); };
   // Varios tipos de gesto porque cada navegador acepta unos distintos para desbloquear el audio.
   const gestures = ['pointerdown', 'pointerup', 'click', 'touchend', 'keydown'];
   const unlock = (e) => {
-    if (e.target.closest?.('.sound-toggle')) return;
+    if (muted || e.target.closest?.('.sound-toggle')) return;
     connect();
     startVisuals();
-    if (muted) return;
-    audio.play().then(() => {
+    startPlayback().then(() => {
       gestures.forEach((t) => window.removeEventListener(t, unlock, true));
       render();
     }, render);
@@ -352,7 +358,7 @@
     muted = !audio.paused;
     store(() => sessionStorage.setItem('bg-on', muted ? '0' : '1'));
     if (!muted) connect();
-    muted ? audio.pause() : audio.play().then(render, render);
+    muted ? audio.pause() : startPlayback().then(render, render);
     render();
   });
 

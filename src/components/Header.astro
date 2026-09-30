@@ -1,0 +1,46 @@
+---
+import Logo from "./Logo.astro";
+import type { Locale, Page } from '../data/pages';
+import { pageUrl } from '../data/pages';
+interface Props { lang: Locale; page?: Page; }
+const { lang, page = 'index' } = Astro.props;
+const otherLang = lang === 'es' ? 'en' : 'es';
+const copy = {
+  "es": {
+    "homeLabel": "Atarazana Founder House, inicio",
+    "navLabel": "Principal",
+    "aboutAnchor": "que-es",
+    "about": "Qué es",
+    "manifesto": "Manifiesto",
+    "faq": "Preguntas",
+    "otherLang": "en",
+    "languageLabel": "Read in English",
+    "invite": "Solicita invitación"
+  },
+  "en": {
+    "homeLabel": "Atarazana Founder House, home",
+    "navLabel": "Primary",
+    "aboutAnchor": "what",
+    "about": "What it is",
+    "manifesto": "Manifesto",
+    "faq": "FAQ",
+    "otherLang": "es",
+    "languageLabel": "Leer en español",
+    "invite": "Request an invite"
+  }
+};
+const t = copy[lang];
+---
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="logo" href={pageUrl(lang, "index")} aria-label={t.homeLabel}><Logo class="logo-mark" /><span class="logo-word">Atarazana<br>Founder House</span></a>
+    <nav class="nav" aria-label={t.navLabel}>
+      <a href={`${pageUrl(lang, "index")}#${t.aboutAnchor}`}>{t.about}</a>
+      <a href={pageUrl(lang, "manifesto")} aria-current={page === "manifesto" ? "page" : undefined}>{t.manifesto}</a>
+      <a href={pageUrl(lang, "partners")} aria-current={page === "partners" ? "page" : undefined}>Partners</a>
+      <a href={`${pageUrl(lang, "index")}#faq`}>{t.faq}</a>
+      <a href={pageUrl(otherLang, page)} class="nav-lang" hreflang={t.otherLang}>{t.languageLabel}</a>
+      <a class="nav-cta" href="https://luma.com/user/atarazana" target="_blank" rel="noopener">{t.invite}</a>
+    </nav>
+  </div>
+</header>

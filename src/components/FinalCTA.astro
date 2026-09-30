@@ -1,0 +1,30 @@
+---
+import type { Locale } from '../data/pages';
+interface Props { lang: Locale; }
+const { lang } = Astro.props;
+const copy = {
+  "es": {
+    "title": "Cuéntanos qué estás construyendo.",
+    "description": "Solicita invitación en Luma con un enlace a lo que estás haciendo: tu web, tu GitHub, tu producto o un post. La Session 001 será el 29 de octubre.",
+    "invite": "Solicita invitación",
+    "contact": "O escríbenos a "
+  },
+  "en": {
+    "title": "Tell us what you are building.",
+    "description": "Request an invite on Luma with a link to what you are working on: your website, GitHub, product or a post. Session 001 will take place on 29 October.",
+    "invite": "Request an invite",
+    "contact": "Or write to us at "
+  }
+};
+const t = copy[lang];
+---
+<section class="final-cta reveal">
+    <div class="wrap">
+      <h2>{t.title}</h2>
+      <p>{t.description}</p>
+      <div class="final-actions">
+        <a class="cta" href="https://luma.com/user/atarazana" target="_blank" rel="noopener">{t.invite}</a>
+        <span class="muted">{t.contact}<a href="mailto:atarazanafh@gmail.com">atarazanafh@gmail.com</a></span>
+      </div>
+    </div>
+  </section>
