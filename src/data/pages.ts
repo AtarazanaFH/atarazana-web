@@ -17,11 +17,17 @@ export const pages = {
       "description": "Por qué existe Atarazana Founder House, para quién es y cómo queremos que funcione: encuentros pequeños y frecuentes para la gente que construye tecnología en Málaga.",
       "socialDescription": "Por qué existe Atarazana Founder House, para quién es y cómo queremos que funcione: encuentros pequeños y frecuentes para la gente que construye tecnología en Málaga.",
       "type": "article"
+    },
+    "faq": {
+      "title": "Preguntas frecuentes · Atarazana Founder House",
+      "description": "Dónde es, cuánto cuesta, por qué hay invitación, si puedes llevar a alguien y en qué idioma se habla en Atarazana Founder House.",
+      "socialDescription": "Dónde es, cuánto cuesta, por qué hay invitación y en qué idioma se habla en Atarazana Founder House.",
+      "type": "website"
     }
   },
   "en": {
     "index": {
-      "title": "Atarazana Founder House · Builders community in Málaga",
+      "title": "Atarazana Founder House · Builder community in Málaga",
       "description": "Small, regular meetups for the people building technology in Málaga: founders, engineers, product, design and AI. Talks and time to get to know each other. Free and invite-only.",
       "socialDescription": "Meet people building technology in Málaga. Talks, projects and time to chat. Free, by invitation.",
       "type": "website"
@@ -37,13 +43,25 @@ export const pages = {
       "description": "Why Atarazana Founder House exists, who it is for and how we want it to work: small, regular meetups for the people building technology in Málaga.",
       "socialDescription": "Why Atarazana Founder House exists, who it is for and how we want it to work: small, regular meetups for the people building technology in Málaga.",
       "type": "article"
+    },
+    "faq": {
+      "title": "FAQ · Atarazana Founder House",
+      "description": "Where it is, what it costs, why there are invites, whether you can bring someone and what language is spoken at Atarazana Founder House.",
+      "socialDescription": "Where it is, what it costs, why there are invites and what language is spoken at Atarazana Founder House.",
+      "type": "website"
     }
   }
 } as const;
 export type Locale = keyof typeof pages;
 export type Page = keyof typeof pages.es;
 
+// Rutas que cambian de nombre según el idioma; el resto usa la clave de la página.
+const slugs: Record<Locale, Partial<Record<Page, string>>> = {
+  es: { faq: 'preguntas' },
+  en: {},
+};
+
 export function pageUrl(lang: Locale, page: Page) {
   const prefix = lang === 'en' ? '/en' : '';
-  return page === 'index' ? prefix || '/' : `${prefix}/${page}`;
+  return page === 'index' ? prefix || '/' : `${prefix}/${slugs[lang][page] ?? page}`;
 }

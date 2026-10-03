@@ -1,5 +1,6 @@
 ---
-import Arrow from "../../components/Arrow.astro";
+import { pageUrl } from "../../data/pages";
+import Puerta from "../../components/Puerta.astro";
 import SiteLayout from "../../layouts/SiteLayout.astro";
 ---
 <SiteLayout lang="en" page="manifesto">
@@ -14,7 +15,7 @@ import SiteLayout from "../../layouts/SiteLayout.astro";
     <div class="wrap">
       <div class="toc-head"><span>Contents</span><span>8 chapters</span></div>
       <ol class="toc-list">
-        <li><a href="#malaga">Málaga is already on the map</a></li>
+        <li><a href="#malaga">They were already building here</a></li>
         <li><a href="#work">What you do, not how you pitch it</a></li>
         <li><a href="#formats">What happens at each meetup</a></li>
         <li><a href="#who">Who gets in and why</a></li>
@@ -28,11 +29,11 @@ import SiteLayout from "../../layouts/SiteLayout.astro";
 
   <section class="chapter reveal" id="malaga">
     <div class="wrap">
-      <h2>Málaga is already on the map</h2>
-      <blockquote class="pull chapter-quote">You visit a big event once. <strong>You come back to a community.</strong></blockquote>
-      <p>Málaga stopped being a promise a while ago. There are startups, universities, technical talent, investment, accelerators and a tech hub that keeps growing. That work is already done, and it was no accident.</p>
-      <p>What we missed was not another big event. It was a place where people who build could get together regularly, without waiting for the next big date and without catching a plane. An ecosystem does not live on its big events alone, but on what happens in between: an unplanned conversation, a prototype shown too early, a face that comes back and an idea several people decide to build together.</p>
-      <p>Atarazana Founder House fills that gap: small, regular meetups so faces stop being strangers.</p>
+      <h2>They were already building here</h2>
+      <blockquote class="pull chapter-quote">In the 14th century, Málaga built ships. <strong>Today it builds technology.</strong></blockquote>
+      <p>Behind the gate that now leads into the Atarazanas Market, Málaga spent centuries building the ships that crossed the Mediterranean. Today the city has startups, universities, technical talent, investment, accelerators and a tech hub that keeps growing. That work is already done, and it was no accident.</p>
+      <p>What we missed was a shared workshop: a place where people who build could get together regularly, without waiting for the next big date and without catching a plane. A place for the unplanned conversation, the prototype shown too early and the idea several people decide to build together.</p>
+      <p>Atarazana Founder House fills that gap: small, regular meetups where the people building in Málaga actually get to know each other.</p>
     </div>
   </section>
 
@@ -53,24 +54,9 @@ import SiteLayout from "../../layouts/SiteLayout.astro";
   <section class="chapter reveal" id="formats">
     <div class="wrap">
       <h2>What happens at each meetup</h2>
-      <p class="lede">We get together to meet other people in Málaga’s tech community. There are talks to discover what others are working on, and time to chat, grab a bite and see what comes of it.</p>
-      <div class="format-grid">
-        <div class="fmt--wide">
-          <Arrow />
-          <h3>Get to know each other</h3>
-          <p>Put faces to people working in technology in Málaga, share what you are working on and hear what others are doing. Sometimes it is simply a good conversation. Other times, it leads to a friendship, an idea or something you work on together.</p>
-        </div>
-        <div>
-          <Arrow />
-          <h3>Talks</h3>
-          <p>People working in software, AI, deep tech and startups share what they are doing and what they have learned along the way. A chance to discover projects and ask the people behind them questions.</p>
-        </div>
-        <div>
-          <Arrow />
-          <h3>Grab a bite and keep talking</h3>
-          <p>After the talks, there is food, drinks and time to get to know each other. Continue a conversation, approach someone who just presented or chat with the person next to you.</p>
-        </div>
-      </div>
+      <blockquote class="pull chapter-quote">A few talks. <strong>Plenty of time to talk.</strong></blockquote>
+      <p>At each marea, a few people who are building share what they do, what they have learned and what they still have not figured out. Then there is food, drinks and plenty of time to keep the conversation going with whoever just presented or whoever is next to you.</p>
+      <p>The programme matters less than what happens around it: the unplanned conversation and what comes out of it. <a href={`${pageUrl("en", "index")}#session`}>Here is the programme for the next marea</a>.</p>
     </div>
   </section>
 
@@ -118,9 +104,11 @@ import SiteLayout from "../../layouts/SiteLayout.astro";
       <div>
         <h2>Why this name</h2>
         <blockquote class="pull chapter-quote">Different tools, <strong>same attitude.</strong></blockquote>
+        <Puerta caption="Gate of the Atarazanas · 14th c. · 36.7202° N / 4.4214° W" />
       </div>
       <div>
         <p>The Atarazanas were Málaga’s shipyards in Nasrid times: the place where the ships that crossed the Mediterranean were built. Workshop work, no stage. The gate of that building still stands and is now the entrance to the Atarazanas Market.</p>
+        <p>The word comes from Andalusi Arabic <em>dār aṣ-ṣināʿa</em>, “house of industry”: the place where things are made. The same word, by way of Venetian, gave English <em>arsenal</em>.</p>
         <p>We care about that attitude, not nostalgia: making things by hand, experimenting, mixing and creating without asking for permission. Today that energy is in the people building products, companies and technology from here. The material changed. The attitude is the same.</p>
       </div>
     </div>

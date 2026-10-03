@@ -1,0 +1,39 @@
+---
+import { pageUrl } from "../../data/pages";
+import SiteLayout from "../../layouts/SiteLayout.astro";
+---
+<SiteLayout lang="en" page="faq">
+<section class="hero faq-hero reveal">
+    <div class="wrap">
+      <h1>FAQ</h1>
+      <p class="lead">What people ask us most about Atarazana Founder House.</p>
+    </div>
+  </section>
+
+  <section class="chapter reveal" id="faq">
+    <div class="wrap">
+      <dl class="faq">
+        <div>
+          <dt>Where is it?</dt>
+          <dd>Each meetup happens in a different place in Málaga: an office, a workshop, a terrace… The exact address comes with the invite.</dd>
+        </div>
+        <div>
+          <dt>How much does it cost?</dt>
+          <dd>Nothing. Entry is free. Costs are covered by <a href={pageUrl("en", "partners")}>partners</a>.</dd>
+        </div>
+        <div>
+          <dt>Why do I need an invite?</dt>
+          <dd>Because spots are few (around 30) and we want a varied room of people who are building. A link to what you do is enough.</dd>
+        </div>
+        <div>
+          <dt>Can I bring someone?</dt>
+          <dd>Invites are individual because the room is small. If you know someone who fits, they can request an invite, or you can write to us telling us who they are and what they are building.</dd>
+        </div>
+        <div>
+          <dt>What language is spoken?</dt>
+          <dd>Spanish and English, depending on who is taking part in the conversation.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+</SiteLayout>

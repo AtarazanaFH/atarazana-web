@@ -35,6 +35,16 @@ document.addEventListener('astro:page-load', () => {
 
 /* Atarazana Founder House · interacciones pequeñas y mecánicas */
 
+/* Enlaces antiguos a secciones que salieron de la portada: llevan a su sitio nuevo. */
+(() => {
+  const moved = {
+    '/': { faq: '/preguntas', formatos: '/#que-es', 'como-lo-hacemos': '/manifesto' },
+    '/en': { faq: '/en/faq', formats: '/en#what', 'how-we-work': '/en/manifesto' },
+  };
+  const target = moved[location.pathname]?.[location.hash.slice(1)];
+  if (target) location.replace(target);
+})();
+
 /* Cursor propio: un punto blanco que crece sobre lo que se puede pulsar y hace una onda al hacer clic.
    Solo con ratón; en pantallas táctiles se queda el comportamiento nativo. */
 (() => {
@@ -86,7 +96,7 @@ document.addEventListener('astro:page-load', () => {
   });
 })();
 
-/* Flechas: apuntan siempre al botón rojo "Solicita invitación" del menú
+/* Flechas: apuntan siempre al botón rojo "Pide paso" del menú
    y se reorientan al hacer scroll o cambiar el tamaño de la ventana. */
 (() => {
   const target = document.querySelector('.nav-cta');

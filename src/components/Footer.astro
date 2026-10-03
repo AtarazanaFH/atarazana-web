@@ -6,18 +6,22 @@ const { lang } = Astro.props;
 const copy = {
   "es": {
     "homeLabel": "Atarazana Founder House, inicio",
-    "description": "Encuentros para la gente que construye tecnología en Málaga.",
+    "description": "Comunidad de gente que construye tecnología en Málaga.",
+    "signoff": "Hasta la próxima marea",
     "navLabel": "Enlaces",
     "home": "Inicio",
     "manifesto": "Manifiesto",
+    "faq": "Preguntas",
     "copyright": "© 2026 Atarazana Founder House · Hecho en Málaga"
   },
   "en": {
     "homeLabel": "Atarazana Founder House, home",
-    "description": "Meetups for the people building technology in Málaga.",
+    "description": "A community of people building technology in Málaga.",
+    "signoff": "Until the next tide",
     "navLabel": "Links",
     "home": "Home",
     "manifesto": "Manifesto",
+    "faq": "FAQ",
     "copyright": "© 2026 Atarazana Founder House · Made in Málaga"
   }
 };
@@ -35,7 +39,8 @@ const t = copy[lang];
       <a href={pageUrl(lang, "index")}>{t.home}</a>
       <a href={pageUrl(lang, "manifesto")}>{t.manifesto}</a>
       <a href={pageUrl(lang, "partners")}>Partners</a>
+      <a href={pageUrl(lang, "faq")}>{t.faq}</a>
     </nav>
-    <p class="footer-meta"><span>{t.copyright}</span><span>36.7202° N / 4.4214° W · Málaga / ES</span></p>
+    <p class="footer-meta"><span>{t.copyright}</span><span class="footer-signoff">{t.signoff}</span><span>36.7202° N / 4.4214° W · Málaga / ES · s. XIV</span></p>
   </div>
 </footer>

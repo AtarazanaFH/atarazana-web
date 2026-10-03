@@ -1,5 +1,6 @@
 ---
-import Arrow from "../components/Arrow.astro";
+import { pageUrl } from "../data/pages";
+import Puerta from "../components/Puerta.astro";
 import SiteLayout from "../layouts/SiteLayout.astro";
 ---
 <SiteLayout lang="es" page="manifesto">
@@ -14,7 +15,7 @@ import SiteLayout from "../layouts/SiteLayout.astro";
     <div class="wrap">
       <div class="toc-head"><span>Contenido</span><span>8 capítulos</span></div>
       <ol class="toc-list">
-        <li><a href="#malaga">Málaga ya está en el mapa</a></li>
+        <li><a href="#malaga">Aquí ya se construía</a></li>
         <li><a href="#trabajo">Lo que haces, no cómo lo cuentas</a></li>
         <li><a href="#formatos">Qué pasa en cada encuentro</a></li>
         <li><a href="#quien">Quién entra y por qué</a></li>
@@ -28,11 +29,11 @@ import SiteLayout from "../layouts/SiteLayout.astro";
 
   <section class="chapter reveal" id="malaga">
     <div class="wrap">
-      <h2>Málaga ya está en el mapa</h2>
-      <blockquote class="pull chapter-quote">Un gran evento se visita una vez. <strong>A una comunidad se vuelve.</strong></blockquote>
-      <p>Málaga hace tiempo que dejó de ser una promesa. Hay startups, universidades, talento técnico, inversión, aceleradoras y un polo tecnológico que no deja de crecer. Ese trabajo ya está hecho, y no fue casualidad.</p>
-      <p>Lo que echábamos de menos no era otro gran evento. Era un sitio donde la gente que construye pudiera juntarse con regularidad, sin esperar a la próxima gran cita y sin tener que coger un avión. Un ecosistema no vive solo de sus grandes eventos, sino de lo que pasa entre uno y otro: una conversación que no estaba prevista, un prototipo que se enseña antes de tiempo, una cara que vuelve y una idea que se decide montar entre varios.</p>
-      <p>Atarazana Founder House ocupa ese hueco: encuentros pequeños y frecuentes para que las caras dejen de ser desconocidas.</p>
+      <h2>Aquí ya se construía</h2>
+      <blockquote class="pull chapter-quote">En el siglo XIV, Málaga construía barcos. <strong>Hoy construye tecnología.</strong></blockquote>
+      <p>Detrás de la puerta que hoy da paso al Mercado de Atarazanas, Málaga construyó durante siglos los barcos que cruzaban el Mediterráneo. Hoy la ciudad tiene startups, universidades, talento técnico, inversión, aceleradoras y un polo tecnológico que no deja de crecer. Ese trabajo ya está hecho, y no fue casualidad.</p>
+      <p>Lo que echábamos de menos era un taller compartido: un sitio donde la gente que construye pudiera juntarse con regularidad, sin esperar a la próxima gran cita y sin tener que coger un avión. Un sitio para la conversación que no estaba prevista, el prototipo que se enseña antes de tiempo y la idea que se decide montar entre varios.</p>
+      <p>Atarazana Founder House ocupa ese hueco: encuentros pequeños y frecuentes en los que la gente que construye en Málaga se conoce de verdad.</p>
     </div>
   </section>
 
@@ -53,24 +54,9 @@ import SiteLayout from "../layouts/SiteLayout.astro";
   <section class="chapter reveal" id="formatos">
     <div class="wrap">
       <h2>Qué pasa en cada encuentro</h2>
-      <p class="lede">Nos juntamos para conocer a otras personas del mundo tech de Málaga. Hay charlas para descubrir qué están haciendo los demás y tiempo para hablar, picar algo y ver qué surge.</p>
-      <div class="format-grid">
-        <div class="fmt--wide">
-          <Arrow />
-          <h3>Conocernos</h3>
-          <p>Poner cara a gente que trabaja en tecnología en Málaga, contar en qué andas y escuchar a los demás. A veces la conversación se queda en una buena charla. Otras, acaba en una amistad, una idea o algo que hacéis juntos.</p>
-        </div>
-        <div>
-          <Arrow />
-          <h3>Charlas</h3>
-          <p>Personas de software, IA, deep tech y startups comparten lo que están haciendo y lo que han aprendido por el camino. Una oportunidad para descubrir proyectos y preguntar a quienes están detrás.</p>
-        </div>
-        <div>
-          <Arrow />
-          <h3>Algo para picar y seguir hablando</h3>
-          <p>Después de las charlas hay comida, bebida y tiempo para conocernos. Puedes seguir una conversación, acercarte a alguien que acaba de presentar o hablar con quien tienes al lado.</p>
-        </div>
-      </div>
+      <blockquote class="pull chapter-quote">Unas pocas charlas. <strong>Mucho tiempo para hablar.</strong></blockquote>
+      <p>En cada marea, unas pocas personas que están construyendo cuentan qué hacen, qué han aprendido y qué siguen sin resolver. Después hay comida, bebida y tiempo de sobra para seguir la conversación con quien acaba de presentar o con quien tienes al lado.</p>
+      <p>El programa importa menos que lo que pasa alrededor: la conversación que no estaba prevista y lo que sale de ella. <a href={`${pageUrl("es", "index")}#session`}>Así es el programa de la próxima marea</a>.</p>
     </div>
   </section>
 
@@ -118,9 +104,11 @@ import SiteLayout from "../layouts/SiteLayout.astro";
       <div>
         <h2>Por qué este nombre</h2>
         <blockquote class="pull chapter-quote">Otras herramientas, <strong>la misma actitud.</strong></blockquote>
+        <Puerta caption="Puerta de las Atarazanas · s. XIV · 36.7202° N / 4.4214° W" />
       </div>
       <div>
         <p>Las Atarazanas eran los astilleros de Málaga en época nazarí: el sitio donde se construían los barcos que cruzaban el Mediterráneo. Trabajo de taller, sin escenario. Del edificio queda la puerta, que hoy es la entrada del Mercado de Atarazanas.</p>
+        <p>La palabra viene del árabe andalusí <em>dār aṣ-ṣināʿa</em>, «casa de la industria»: el sitio donde se fabrica. De la misma palabra, a través del veneciano, viene <em>arsenal</em>.</p>
         <p>Nos interesa esa actitud, no la nostalgia: hacer las cosas con las manos, probar, mezclarse y crear sin pedir permiso. Hoy esa energía está en quienes construyen productos, empresas y tecnología desde aquí. Ha cambiado el material. La actitud es la misma.</p>
       </div>
     </div>

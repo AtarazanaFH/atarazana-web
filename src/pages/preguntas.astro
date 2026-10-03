@@ -1,0 +1,39 @@
+---
+import { pageUrl } from "../data/pages";
+import SiteLayout from "../layouts/SiteLayout.astro";
+---
+<SiteLayout lang="es" page="faq">
+<section class="hero faq-hero reveal">
+    <div class="wrap">
+      <h1>Preguntas</h1>
+      <p class="lead">Lo que más nos preguntan sobre Atarazana Founder House.</p>
+    </div>
+  </section>
+
+  <section class="chapter reveal" id="faq">
+    <div class="wrap">
+      <dl class="faq">
+        <div>
+          <dt>¿Dónde es?</dt>
+          <dd>Cada encuentro se hace en un sitio distinto de Málaga: una oficina, un taller, una terraza… La dirección exacta va en la invitación.</dd>
+        </div>
+        <div>
+          <dt>¿Cuánto cuesta?</dt>
+          <dd>Nada. La entrada es gratis. Los gastos los cubren <a href={pageUrl("es", "partners")}>los partners</a>.</dd>
+        </div>
+        <div>
+          <dt>¿Por qué hay que pedir invitación?</dt>
+          <dd>Porque hay pocas plazas (unas 30) y queremos una sala variada, con gente que está construyendo. Basta con un enlace a lo que haces.</dd>
+        </div>
+        <div>
+          <dt>¿Puedo llevar a alguien?</dt>
+          <dd>Las invitaciones son individuales porque la sala es pequeña. Si conoces a alguien que encaje, que pida paso, o escríbenos tú contándonos quién es y qué está construyendo.</dd>
+        </div>
+        <div>
+          <dt>¿En qué idioma se habla?</dt>
+          <dd>En español y en inglés, según quién participe en la conversación.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+</SiteLayout>
