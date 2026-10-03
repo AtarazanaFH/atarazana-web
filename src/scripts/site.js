@@ -483,7 +483,7 @@ document.addEventListener('astro:page-load', () => {
       const y = h / 2 + ((time[i] - 128) / 128) * (h / 2) * 0.9;
       i ? pen.lineTo(x, y) : pen.moveTo(x, y);
     }
-    pen.strokeStyle = `rgba(255, 45, 45, ${0.35 + pulse * 0.6})`;
+    pen.strokeStyle = `rgba(52, 224, 194, ${0.35 + pulse * 0.6})`;
     pen.lineWidth = 1.5;
     pen.stroke();
 
