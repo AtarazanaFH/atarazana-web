@@ -8,7 +8,7 @@ import SiteLayout from "../../layouts/SiteLayout.astro";
 <section class="hero reveal">
     <div class="wrap hero-grid">
       <div class="hero-copy">
-        <p class="kicker">Málaga · Builders community</p>
+        <p class="kicker">Málaga · Builder community</p>
         <h1>Atarazana <span class="hl">Founder House</span></h1>
         <p class="sub">Meetups in Málaga for the people building technology: founders, engineers, product, design and AI. Talks and time to get to know each other. <strong>Free and invite-only.</strong></p>
         <div class="hero-actions">
@@ -17,7 +17,7 @@ import SiteLayout from "../../layouts/SiteLayout.astro";
           <a class="cta-ghost" href={pageUrl("en", "partners")}>How to become a partner</a>
         </div>
       </div>
-      <figure class="hero-pass" aria-label="Invitation to Atarazana Founder House Session 001">
+      <figure class="hero-pass" aria-label="Invitation to Atarazana Founder House Marea 001">
         <div class="pass">
           <div class="pass-slot" aria-hidden="true"></div>
           <div class="pass-top"><span>Invitation</span><span>No. 001</span></div>
@@ -25,23 +25,17 @@ import SiteLayout from "../../layouts/SiteLayout.astro";
             <Logo class="pass-mark" />
             <p class="pass-title">Atarazana<br>Founder House</p>
             <dl class="pass-data">
-              <div><dt>Session</dt><dd>001</dd></div>
+              <div><dt>Marea</dt><dd>001</dd></div>
               <div><dt>City</dt><dd>Málaga</dd></div>
               <div><dt>Date</dt><dd>29 October</dd></div>
-              <div><dt>Places</dt><dd>50</dd></div>
+              <div><dt>Spots</dt><dd>50</dd></div>
             </dl>
             <p class="pass-name"><span>Name</span><b>You?</b></p>
           </div>
           <div class="pass-foot" aria-hidden="true"><span>Build / Connect / Demo / Repeat</span><svg class="pass-code" viewBox="0 0 56 24" preserveAspectRatio="none"><rect x="0" width="2" height="24"/><rect x="3" width="3" height="24"/><rect x="7" width="1" height="24"/><rect x="10" width="4" height="24"/><rect x="15" width="2" height="24"/><rect x="18" width="1" height="24"/><rect x="22" width="2" height="24"/><rect x="25" width="3" height="24"/><rect x="29" width="2" height="24"/><rect x="33" width="1" height="24"/><rect x="38" width="1" height="24"/><rect x="40" width="2" height="24"/><rect x="45" width="1" height="24"/><rect x="48" width="1" height="24"/><rect x="52" width="1" height="24"/><rect x="54" width="2" height="24"/></svg></div>
         </div>
-        <p class="pass-hint" aria-hidden="true">Grab it and swing it</p>
+        <p class="pass-hint" aria-hidden="true">Grab it and throw it</p>
       </figure>
-      <ul class="hero-stats">
-        <li><b>001</b><span>First meetup</span></li>
-        <li><b>50</b><span>Places</span></li>
-        <li><b>€0</b><span>Entry</span></li>
-        <li><b>2026</b><span>29 October</span></li>
-      </ul>
     </div>
   </section>
 
@@ -49,11 +43,12 @@ import SiteLayout from "../../layouts/SiteLayout.astro";
     <div class="wrap session-grid">
       <div class="session-meta">
         <p class="kicker">Next meetup</p>
-        <p class="big">Session 001</p>
+        <p class="big">Marea 001</p>
+        <p class="muted">We call each meetup a marea, Spanish for tide: it always comes back.</p>
         <dl class="facts">
           <div><dt>When</dt><dd>29 October</dd></div>
           <div><dt>Where</dt><dd>Málaga. The address comes with the invite</dd></div>
-          <div><dt>Places</dt><dd>Around 50 people</dd></div>
+          <div><dt>Spots</dt><dd>Around 50 people</dd></div>
           <div><dt>Price</dt><dd>Free</dd></div>
         </dl>
         <p class="session-status"><span class="pulse" aria-hidden="true"></span>Invites open</p>
@@ -86,9 +81,10 @@ import SiteLayout from "../../layouts/SiteLayout.astro";
       <h2>What Atarazana Founder House is</h2>
       <blockquote class="pull">Small, regular meetups for the people <strong>building technology in Málaga</strong>.</blockquote>
       <div class="cols-2">
-        <p>Málaga already has talent, companies and big events. What was missing was something closer: a meetup you come back to regularly, where little by little you start recognising faces.</p>
-        <p>Each meetup brings together around 50 people in a different place in the city. There are talks, something to eat and plenty of time to get to know each other and discuss what we are working on. <strong>Entry is free and by invitation.</strong></p>
+        <p>Each marea brings together around 50 people in a different place in the city. It is a shared workshop you come back to regularly, where the people building things actually get to know each other.</p>
+        <p>There are a few talks from people who are building something and then food, drinks and plenty of time to talk with whoever just presented or whoever is next to you.</p>
       </div>
+      <div class="actions"><a class="cta-ghost" href={pageUrl("en", "manifesto")}>Read the manifesto</a></div>
     </div>
   </section>
 
@@ -110,127 +106,37 @@ import SiteLayout from "../../layouts/SiteLayout.astro";
     </div>
   </section>
 
-  <section class="chapter reveal" id="formats">
-    <div class="wrap">
-      <h2>What happens at a meetup</h2>
-      <p class="lede">We get together to meet other people in Málaga’s tech community. There are talks to discover what others are working on, and time to chat, grab a bite and see what comes of it.</p>
-      <ol class="format-grid">
-        <li class="fmt--wide">
-          <Arrow />
-          <h3>Get to know each other</h3>
-          <p>Put faces to people working in technology in Málaga, share what you are working on and hear what others are doing. Sometimes it is simply a good conversation. Other times, it leads to a friendship, an idea or something you work on together.</p>
-        </li>
-        <li>
-          <Arrow />
-          <h3>Talks</h3>
-          <p>People working in software, AI, deep tech and startups share what they are doing and what they have learned along the way. A chance to discover projects and ask the people behind them questions.</p>
-        </li>
-        <li>
-          <Arrow />
-          <h3>Grab a bite and keep talking</h3>
-          <p>After the talks, there is food, drinks and time to get to know each other. Continue a conversation, approach someone who just presented or chat with the person next to you.</p>
-        </li>
-      </ol>
-    </div>
-  </section>
 
-  <section class="chapter band reveal" id="how-to-join">
+  <section class="chapter reveal" id="how-to-join">
     <div class="wrap">
       <h2>How to get in</h2>
-      <div class="principles">
+      <div class="principles principles--3">
         <div>
           <h3>Request an invite</h3>
           <p>Sign up on Luma and leave us a link to what you are working on: your website, GitHub, product or a post.</p>
         </div>
         <div>
           <h3>We review requests</h3>
-          <p>Places are limited. We aim for a varied room and always keep space for new people.</p>
+          <p>Spots are limited. We aim for a varied room and always keep space for new people.</p>
         </div>
         <div>
           <h3>You get the invite</h3>
           <p>If you are in, you receive the invite with the date and address of the meetup.</p>
         </div>
-        <div>
-          <h3>Want to show something?</h3>
-          <p>If you want to give a demo at a future meetup, write to <a href="mailto:atarazanafh@gmail.com">atarazanafh@gmail.com</a>. It does not need to be finished.</p>
-        </div>
       </div>
+      <p><strong>Want to show something?</strong> If you want to give a demo at a future marea, write to <a href="mailto:atarazanafh@gmail.com">atarazanafh@gmail.com</a>. It does not need to be finished.</p>
       <div class="actions"><a class="cta" href="https://luma.com/rjl7pq7g" target="_blank" rel="noopener">Request an invite</a></div>
     </div>
   </section>
 
-  <section class="chapter reveal" id="how-we-work">
-    <div class="wrap">
-      <h2>How we do it</h2>
-      <div class="principles">
-        <div>
-          <h3>Share what we are building</h3>
-          <p>We share working products and the stories of how they got there: lessons learned, key decisions and the challenges still ahead.</p>
-        </div>
-        <div>
-          <h3>Coming back matters</h3>
-          <p>We prefer small, frequent meetups to one big event a year: that way you see the same people again and relationships grow.</p>
-        </div>
-        <div>
-          <h3>From Málaga</h3>
-          <p>You can build a world-class company without leaving. We want the people doing it to have somewhere to meet each other.</p>
-        </div>
-        <div>
-          <h3>Invitation, not status</h3>
-          <p>We ask for invites to look after the mix in the room, not to be exclusive. Inside, it does not matter if you are junior or a serial founder.</p>
-        </div>
-      </div>
-      <div class="actions"><a class="cta-ghost" href={pageUrl("en", "manifesto")}>Read the manifesto</a></div>
+
+  <section class="strip reveal" id="partners">
+    <div class="wrap strip-inner">
+      <p class="kicker">For companies</p>
+      <p class="strip-title">Getting in is free. <strong>Partners pay for it.</strong></p>
+      <p class="strip-text">Companies that cover the venue, food and drinks, without deciding who gets in or what gets shown. We are closing the ones for Marea 001.</p>
+      <a class="cta-ghost strip-cta" href={pageUrl("en", "partners")}>How to become a partner</a>
     </div>
   </section>
 
-  <section class="chapter band reveal" id="partners">
-    <div class="wrap">
-      <h2>Who pays for it</h2>
-      <blockquote class="pull">Getting in is free. <strong>Costs are covered by partner companies.</strong></blockquote>
-      <p>Partners pay for the venue, food and drinks at each meetup. They do not buy demos, talks or invites: who gets in and what gets shown is decided by the community.</p>
-      <p>We are closing the partners for Session 001. If your company wants to support the Málaga tech community, we will tell you how.</p>
-      <div class="actions"><a class="cta-ghost" href={pageUrl("en", "partners")}>How to become a partner</a></div>
-    </div>
-  </section>
-
-  <section class="chapter reveal" id="faq">
-    <div class="wrap">
-      <h2>Frequently asked questions</h2>
-      <dl class="faq">
-        <div>
-          <dt>Where is it?</dt>
-          <dd>Each meetup happens in a different place in Málaga: an office, a workshop, a terrace… The exact address comes with the invite.</dd>
-        </div>
-        <div>
-          <dt>When is the next one?</dt>
-          <dd>The first one, Session 001, will take place on 29 October. Details will be shared on Luma.</dd>
-        </div>
-        <div>
-          <dt>How much does it cost?</dt>
-          <dd>Nothing. Entry is free. Costs are covered by partners.</dd>
-        </div>
-        <div>
-          <dt>Do I have to be a founder?</dt>
-          <dd>No. Founders, engineers, research, product and design people and early startup employees all come. We look at what you are building, not your job title.</dd>
-        </div>
-        <div>
-          <dt>Do I have to present something?</dt>
-          <dd>No. Most people come to listen, ask questions and talk. If you want to show something at a future meetup, write to us: it does not need to be finished.</dd>
-        </div>
-        <div>
-          <dt>Why do I need an invite?</dt>
-          <dd>Because places are few (around 50) and we want a varied room of people who are building. A link to what you do is enough.</dd>
-        </div>
-        <div>
-          <dt>Can I bring someone?</dt>
-          <dd>Invites are individual because the room is small. If you know someone who fits, they can request an invite, or write to us telling us who they are and what they are building.</dd>
-        </div>
-        <div>
-          <dt>What language is spoken?</dt>
-          <dd>Spanish and English, depending on who is taking part in the conversation.</dd>
-        </div>
-      </dl>
-    </div>
-  </section>
 </SiteLayout>

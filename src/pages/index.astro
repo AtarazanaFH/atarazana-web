@@ -12,12 +12,12 @@ import SiteLayout from "../layouts/SiteLayout.astro";
         <h1>Atarazana <span class="hl">Founder House</span></h1>
         <p class="sub">Encuentros en Málaga para la gente que construye tecnología: founders, ingenieros, producto, diseño e IA. Charlas y tiempo para conocernos. <strong>Gratis y con invitación.</strong></p>
         <div class="hero-actions">
-          <a class="cta" href="https://luma.com/rjl7pq7g" target="_blank" rel="noopener">Solicita invitación</a>
+          <a class="cta" href="https://luma.com/rjl7pq7g" target="_blank" rel="noopener">Pide paso</a>
           <a class="cta-ghost" href="#que-es">Qué es</a>
           <a class="cta-ghost" href={pageUrl("es", "partners")}>Cómo ser partner</a>
         </div>
       </div>
-      <figure class="hero-pass" aria-label="Invitación a la Session 001 de Atarazana Founder House">
+      <figure class="hero-pass" aria-label="Invitación a la Marea 001 de Atarazana Founder House">
         <div class="pass">
           <div class="pass-slot" aria-hidden="true"></div>
           <div class="pass-top"><span>Invitación</span><span>Nº 001</span></div>
@@ -25,9 +25,9 @@ import SiteLayout from "../layouts/SiteLayout.astro";
             <Logo class="pass-mark" />
             <p class="pass-title">Atarazana<br>Founder House</p>
             <dl class="pass-data">
-              <div><dt>Session</dt><dd>001</dd></div>
+              <div><dt>Marea</dt><dd>001</dd></div>
               <div><dt>Ciudad</dt><dd>Málaga</dd></div>
-              <div><dt>Fecha</dt><dd>29 Octubre</dd></div>
+              <div><dt>Fecha</dt><dd>29 de octubre</dd></div>
               <div><dt>Plazas</dt><dd>50</dd></div>
             </dl>
             <p class="pass-name"><span>Nombre</span><b>¿Tú?</b></p>
@@ -36,12 +36,6 @@ import SiteLayout from "../layouts/SiteLayout.astro";
         </div>
         <p class="pass-hint" aria-hidden="true">Agárrala y lánzala</p>
       </figure>
-      <ul class="hero-stats">
-        <li><b>001</b><span>Primer encuentro</span></li>
-        <li><b>50</b><span>Plazas</span></li>
-        <li><b>0 €</b><span>Entrada</span></li>
-        <li><b>2026</b><span>29 Octubre</span></li>
-      </ul>
     </div>
   </section>
 
@@ -49,9 +43,10 @@ import SiteLayout from "../layouts/SiteLayout.astro";
     <div class="wrap session-grid">
       <div class="session-meta">
         <p class="kicker">Próximo encuentro</p>
-        <p class="big">Session 001</p>
+        <p class="big">Marea 001</p>
+        <p class="muted">Llamamos marea a cada encuentro: siempre vuelve.</p>
         <dl class="facts">
-          <div><dt>Cuándo</dt><dd>29 Octubre</dd></div>
+          <div><dt>Cuándo</dt><dd>29 de octubre</dd></div>
           <div><dt>Dónde</dt><dd>Málaga. La dirección va en la invitación</dd></div>
           <div><dt>Plazas</dt><dd>Unas 50 personas</dd></div>
           <div><dt>Precio</dt><dd>Gratis</dd></div>
@@ -86,9 +81,10 @@ import SiteLayout from "../layouts/SiteLayout.astro";
       <h2>Qué es Atarazana Founder House</h2>
       <blockquote class="pull">Encuentros pequeños y frecuentes para la gente que <strong>construye tecnología en Málaga</strong>.</blockquote>
       <div class="cols-2">
-        <p>Málaga ya tiene talento, empresas y grandes eventos. Lo que faltaba era algo más cercano: un encuentro al que vuelves con regularidad y en el que, poco a poco, empiezas a reconocer caras.</p>
-        <p>Cada encuentro reúne a unas 50 personas en un sitio distinto de la ciudad. Hay charlas, algo para picar y mucho tiempo para conocernos y hablar de lo que estamos haciendo. <strong>La entrada es gratis y se accede con invitación.</strong></p>
+        <p>Cada marea reúne a unas 50 personas en un sitio distinto de la ciudad. Es un taller compartido al que vuelves con regularidad y donde la gente que construye acaba conociéndose de verdad.</p>
+        <p>Hay unas pocas charlas de gente que está construyendo algo y, después, comida, bebida y mucho tiempo para hablar con quien acaba de presentar o con quien tienes al lado.</p>
       </div>
+      <div class="actions"><a class="cta-ghost" href={pageUrl("es", "manifesto")}>Lee el manifiesto</a></div>
     </div>
   </section>
 
@@ -110,37 +106,14 @@ import SiteLayout from "../layouts/SiteLayout.astro";
     </div>
   </section>
 
-  <section class="chapter reveal" id="formatos">
-    <div class="wrap">
-      <h2>Qué pasa en un encuentro</h2>
-      <p class="lede">Nos juntamos para conocer a otras personas del mundo tech de Málaga. Hay charlas para descubrir qué están haciendo los demás y tiempo para hablar, picar algo y ver qué surge.</p>
-      <ol class="format-grid">
-        <li class="fmt--wide">
-          <Arrow />
-          <h3>Conocernos</h3>
-          <p>Poner cara a gente que trabaja en tecnología en Málaga, contar en qué andas y escuchar a los demás. A veces la conversación se queda en una buena charla. Otras, acaba en una amistad, una idea o algo que hacéis juntos.</p>
-        </li>
-        <li>
-          <Arrow />
-          <h3>Charlas</h3>
-          <p>Personas de software, IA, deep tech y startups comparten lo que están haciendo y lo que han aprendido por el camino. Una oportunidad para descubrir proyectos y preguntar a quienes están detrás.</p>
-        </li>
-        <li>
-          <Arrow />
-          <h3>Algo para picar y seguir hablando</h3>
-          <p>Después de las charlas hay comida, bebida y tiempo para conocernos. Puedes seguir una conversación, acercarte a alguien que acaba de presentar o hablar con quien tienes al lado.</p>
-        </li>
-      </ol>
-    </div>
-  </section>
 
-  <section class="chapter band reveal" id="como-entrar">
+  <section class="chapter reveal" id="como-entrar">
     <div class="wrap">
       <h2>Cómo entrar</h2>
-      <div class="principles">
+      <div class="principles principles--3">
         <div>
-          <h3>Solicita invitación</h3>
-          <p>Apúntate en Luma y déjanos un enlace a lo que estás haciendo: tu web, tu GitHub, tu producto o un post.</p>
+          <h3>Pide paso por la Puerta</h3>
+          <p>Como en las antiguas Atarazanas, se entra por la Puerta. Apúntate en Luma y déjanos un enlace a lo que estás haciendo: tu web, tu GitHub, tu producto o un post.</p>
         </div>
         <div>
           <h3>Revisamos las solicitudes</h3>
@@ -150,87 +123,20 @@ import SiteLayout from "../layouts/SiteLayout.astro";
           <h3>Te llega la invitación</h3>
           <p>Si entras, recibes la invitación con la fecha y la dirección del encuentro.</p>
         </div>
-        <div>
-          <h3>¿Quieres enseñar algo?</h3>
-          <p>Si quieres hacer una demo en un próximo encuentro, escríbenos a <a href="mailto:atarazanafh@gmail.com">atarazanafh@gmail.com</a>. No hace falta que esté terminado.</p>
-        </div>
       </div>
-      <div class="actions"><a class="cta" href="https://luma.com/rjl7pq7g" target="_blank" rel="noopener">Solicita invitación</a></div>
+      <p><strong>¿Quieres enseñar algo?</strong> Si quieres hacer una demo en una próxima marea, escríbenos a <a href="mailto:atarazanafh@gmail.com">atarazanafh@gmail.com</a>. No hace falta que esté terminado.</p>
+      <div class="actions"><a class="cta" href="https://luma.com/rjl7pq7g" target="_blank" rel="noopener">Pide paso</a></div>
     </div>
   </section>
 
-  <section class="chapter reveal" id="como-lo-hacemos">
-    <div class="wrap">
-      <h2>Cómo lo hacemos</h2>
-      <div class="principles">
-        <div>
-          <h3>Compartir lo que estamos construyendo</h3>
-          <p>Compartimos productos en funcionamiento y las historias de cómo llegaron hasta ahí: aprendizajes, decisiones clave y qué retos siguen abiertos.</p>
-        </div>
-        <div>
-          <h3>Volver importa</h3>
-          <p>Preferimos encuentros pequeños y frecuentes a uno grande al año: así vuelves a ver a la misma gente y las relaciones crecen.</p>
-        </div>
-        <div>
-          <h3>Desde Málaga</h3>
-          <p>Se puede levantar una empresa de primer nivel sin irse de aquí. Queremos que quien lo está haciendo tenga dónde encontrarse con los demás.</p>
-        </div>
-        <div>
-          <h3>Invitación, no estatus</h3>
-          <p>Pedimos invitación para cuidar la mezcla de la sala, no para ser exclusivos. Dentro, da igual si eres junior o has montado varias empresas.</p>
-        </div>
-      </div>
-      <div class="actions"><a class="cta-ghost" href={pageUrl("es", "manifesto")}>Lee el manifiesto</a></div>
+
+  <section class="strip reveal" id="partners">
+    <div class="wrap strip-inner">
+      <p class="kicker">Para empresas</p>
+      <p class="strip-title">Entrar es gratis. <strong>Lo pagan los partners.</strong></p>
+      <p class="strip-text">Empresas que cubren el espacio, la comida y la bebida, sin decidir quién entra ni qué se enseña. Estamos cerrando los de la Marea 001.</p>
+      <a class="cta-ghost strip-cta" href={pageUrl("es", "partners")}>Cómo ser partner</a>
     </div>
   </section>
 
-  <section class="chapter band reveal" id="partners">
-    <div class="wrap">
-      <h2>Quién lo paga</h2>
-      <blockquote class="pull">Entrar es gratis. <strong>Los gastos los cubren empresas partners.</strong></blockquote>
-      <p>Los partners pagan el espacio, la comida y la bebida de cada encuentro. No compran demos, charlas ni invitaciones: quién entra y qué se enseña lo decide la comunidad.</p>
-      <p>Estamos cerrando los partners de la Session 001. Si tu empresa quiere apoyar a la comunidad tech de Málaga, te contamos cómo.</p>
-      <div class="actions"><a class="cta-ghost" href={pageUrl("es", "partners")}>Cómo ser partner</a></div>
-    </div>
-  </section>
-
-  <section class="chapter reveal" id="faq">
-    <div class="wrap">
-      <h2>Preguntas frecuentes</h2>
-      <dl class="faq">
-        <div>
-          <dt>¿Dónde es?</dt>
-          <dd>Cada encuentro se hace en un sitio distinto de Málaga: una oficina, un taller, una terraza… La dirección exacta va en la invitación.</dd>
-        </div>
-        <div>
-          <dt>¿Cuándo es el próximo?</dt>
-          <dd>El primero, la Session 001, será el 29 de octubre. Los detalles se compartirán en Luma.</dd>
-        </div>
-        <div>
-          <dt>¿Cuánto cuesta?</dt>
-          <dd>Nada. La entrada es gratis. Los gastos los cubren los partners.</dd>
-        </div>
-        <div>
-          <dt>¿Tengo que ser founder?</dt>
-          <dd>No. Vienen founders, ingenieros, gente de research, producto y diseño, y primeros empleados de startups. Lo que miramos es qué estás construyendo, no tu cargo.</dd>
-        </div>
-        <div>
-          <dt>¿Tengo que presentar algo?</dt>
-          <dd>No. La mayoría viene a escuchar, preguntar y hablar. Si quieres enseñar algo en un próximo encuentro, escríbenos: no hace falta que esté terminado.</dd>
-        </div>
-        <div>
-          <dt>¿Por qué hay que pedir invitación?</dt>
-          <dd>Porque hay pocas plazas (unas 50) y queremos una sala variada, con gente que está construyendo. Basta con un enlace a lo que haces.</dd>
-        </div>
-        <div>
-          <dt>¿Puedo llevar a alguien?</dt>
-          <dd>Las invitaciones son individuales porque la sala es pequeña. Si conoces a alguien que encaje, que solicite invitación o escríbenos contándonos quién es y qué está construyendo.</dd>
-        </div>
-        <div>
-          <dt>¿En qué idioma se habla?</dt>
-          <dd>En español y en inglés, según quién participe en la conversación.</dd>
-        </div>
-      </dl>
-    </div>
-  </section>
 </SiteLayout>

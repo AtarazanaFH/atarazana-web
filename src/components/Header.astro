@@ -15,7 +15,7 @@ const copy = {
     "faq": "Preguntas",
     "otherLang": "en",
     "languageLabel": "Read in English",
-    "invite": "Solicita invitación"
+    "invite": "Pide paso"
   },
   "en": {
     "homeLabel": "Atarazana Founder House, home",
@@ -38,7 +38,7 @@ const t = copy[lang];
       <a href={`${pageUrl(lang, "index")}#${t.aboutAnchor}`}>{t.about}</a>
       <a href={pageUrl(lang, "manifesto")} aria-current={page === "manifesto" ? "page" : undefined}>{t.manifesto}</a>
       <a href={pageUrl(lang, "partners")} aria-current={page === "partners" ? "page" : undefined}>Partners</a>
-      <a href={`${pageUrl(lang, "index")}#faq`}>{t.faq}</a>
+      <a href={pageUrl(lang, "faq")} aria-current={page === "faq" ? "page" : undefined}>{t.faq}</a>
       <a href={pageUrl(otherLang, page)} class="nav-lang" hreflang={t.otherLang}>{t.languageLabel}</a>
       <a class="nav-cta" href="https://luma.com/rjl7pq7g" target="_blank" rel="noopener">{t.invite}</a>
     </nav>
