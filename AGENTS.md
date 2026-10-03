@@ -96,7 +96,7 @@ Para no calcar a Barraca ni a otras *founder houses*:
 - ❌ "las mismas caras", "mismas caras, nuevas ideas", "que las caras dejen de ser desconocidas"
 - ❌ "los grandes eventos ponen una ciudad en el mapa", "un ecosistema vive de lo que pasa entre eventos" y variantes → ✅ la historia propia: el astillero, el siglo XIV, la Puerta
 - ❌ "builders" como palabra para todo → ✅ "gente que construye" (salvo en la etiqueta del hero y en SEO, ver arriba)
-- ❌ "Build / Connect / Demo / Repeat" como lema principal (sigue en la barra superior y en la invitación hasta que haya un lema propio decidido)
+- ❌ "Build / Connect / Demo / Repeat". Quitado de la web (barra superior, invitación y banda de "Menos networking") el 3 de octubre de 2026; no hay lema en inglés.
 - ❌ Tono de feria o de LinkedIn: "hacer contactos", "oportunidades únicas", "exclusivo", "top talent"
 - ❌ Dinámicas de networking forzadas, rondas de tarjetas, charlas comerciales
 
