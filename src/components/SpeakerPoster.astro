@@ -1,0 +1,17 @@
+---
+import type { Locale } from '../data/pages';
+interface Props { name: string; slug: string; lang: Locale; }
+const { name, slug, lang } = Astro.props;
+const id = `speaker-${slug}`;
+const label = lang === 'es' ? `Cartel de ${name}` : `${name} speaker poster`;
+---
+<button class="tag tag--solid speaker-trigger" type="button" popovertarget={id}
+  aria-haspopup="dialog" aria-controls={id} data-speaker-trigger={id}>{name}</button>
+<div id={id} class="speaker-poster" popover="auto" role="dialog" aria-label={label}>
+  <div class="speaker-poster-head">
+    <span>{name}</span>
+    <button class="speaker-poster-close" type="button" popovertarget={id} popovertargetaction="hide"
+      aria-label={lang === 'es' ? 'Cerrar cartel' : 'Close poster'}>×</button>
+  </div>
+  <img src={`/assets/speakers/${slug}.webp`} alt={label} lang="es" width="1122" height="1402" loading="lazy" decoding="async" />
+</div>

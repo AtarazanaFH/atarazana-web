@@ -1,6 +1,7 @@
 ---
 import { pageUrl } from "../../data/pages";
 import Arrow from "../../components/Arrow.astro";
+import SpeakerPoster from "../../components/SpeakerPoster.astro";
 import Logo from "../../components/Logo.astro";
 import SiteLayout from "../../layouts/SiteLayout.astro";
 ---
@@ -57,12 +58,11 @@ import SiteLayout from "../../layouts/SiteLayout.astro";
         <h3 class="lineup-title">Planned programme</h3>
         <ul class="lineup">
           <li><span class="lineup-item">Arrival<small>Come in and settle in</small></span></li>
-          <li><span class="lineup-item">Talk</span> <span class="tag tag--solid">Topic TBA</span></li>
-          <li><span class="lineup-item">Talk</span> <span class="tag tag--solid">Topic TBA</span></li>
-          <li><span class="lineup-item">Technical talk</span> <span class="tag tag--solid">Topic TBA</span></li>
+          <li><span class="lineup-item">Talk</span> <SpeakerPoster name="Carlos Galán" slug="carlos-galan" lang="en" /></li>
+          <li><span class="lineup-item">Talk</span> <SpeakerPoster name="Victor González" slug="victor-gonzalez" lang="en" /></li>
+          <li><span class="lineup-item">Technical talk</span> <SpeakerPoster name="Ernesto Romance" slug="ernesto-romance" lang="en" /></li>
           <li><span class="lineup-item">Time to chat<small>Space to get to know each other and talk freely</small></span></li>
         </ul>
-        <p class="muted">We have 3 brilliant speakers confirmed. We’ll be announcing them one by one.</p>
       </div>
     </div>
   </section>

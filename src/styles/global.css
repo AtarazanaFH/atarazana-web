@@ -317,6 +317,37 @@ h1, h2 {
 .tag--beacon  { border-color:var(--beacon); color:var(--beacon); }
 .session-lineup > .muted { margin-top:24px; line-height:1.7; }
 
+/* Carteles de ponentes: hover, teclado y toque, sin mover el programa. */
+.speaker-trigger { cursor:pointer; }
+.speaker-trigger:hover, .speaker-trigger[aria-expanded="true"] { background:var(--white); border-color:var(--white); }
+.speaker-poster {
+  position:fixed; inset:auto; left:var(--poster-left, 16px); top:var(--poster-top, 88px); margin:0;
+  width:min(340px, calc(100vw - 32px), calc((100dvh - 144px) * 0.8)); padding:0;
+  border:1px solid var(--signal); background:var(--black); color:var(--white); overflow:hidden;
+}
+.speaker-poster::backdrop { background:transparent; }
+.speaker-poster-head { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 12px; }
+.speaker-poster-head span { font:500 11px/1.4 var(--font-mono); text-transform:uppercase; }
+.speaker-poster-close { border:0; background:transparent; color:var(--white); padding:2px 8px; font:400 24px/1 var(--font-body); cursor:pointer; }
+.speaker-poster-close:hover { color:var(--signal); }
+.speaker-poster img { display:block; width:100%; height:auto; }
+.has-cursor .speaker-poster, .has-cursor .speaker-poster * { cursor:auto !important; }
+.has-cursor .speaker-poster .speaker-poster-close { cursor:pointer !important; }
+@media (hover:none), (max-width:600px) {
+  .speaker-poster { inset:0; margin:auto; width:min(360px, calc(100vw - 32px), calc((100dvh - 96px) * 0.8)); height:fit-content; }
+}
+@media (prefers-reduced-motion:no-preference) {
+  .speaker-trigger { transition:background 0.15s var(--ease), border-color 0.15s var(--ease); }
+  .speaker-poster {
+    opacity:0; transform:translateY(10px) scale(0.98);
+    transition:opacity 0.2s var(--ease), transform 0.2s var(--ease), display 0.2s allow-discrete, overlay 0.2s allow-discrete;
+  }
+  .speaker-poster:popover-open { opacity:1; transform:translateY(0) scale(1); }
+  @starting-style {
+    .speaker-poster:popover-open { opacity:0; transform:translateY(10px) scale(0.98); }
+  }
+}
+
 .facts { border-top:1px solid var(--structure); }
 .facts > div {
   display:grid; grid-template-columns:96px 1fr; gap:16px; padding:14px 0;

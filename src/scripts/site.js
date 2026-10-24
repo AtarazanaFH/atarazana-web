@@ -35,6 +35,72 @@ document.addEventListener('astro:page-load', () => {
 
 /* Atarazana Founder House · interacciones pequeñas y mecánicas */
 
+/* Carteles: el popover nativo gestiona Escape, clic fuera y los controles táctiles. */
+(() => {
+  const finePointer = window.matchMedia('(hover:hover) and (pointer:fine)');
+  const compact = window.matchMedia('(max-width:600px)');
+  let keyboardInput = false;
+  on(document, 'keydown', (event) => { if (event.key === 'Tab') keyboardInput = true; });
+  on(document, 'pointerdown', () => { keyboardInput = false; });
+  document.querySelectorAll('[data-speaker-trigger]').forEach((trigger) => {
+    const poster = document.getElementById(trigger.dataset.speakerTrigger);
+    if (!poster) return;
+    let pendingClose;
+    const cancelClose = () => {
+      clearTimeout(pendingClose);
+      timers.delete(pendingClose);
+    };
+    const place = () => {
+      if (!finePointer.matches || compact.matches) return;
+      const anchor = trigger.getBoundingClientRect();
+      const width = poster.offsetWidth;
+      const height = poster.offsetHeight;
+      const preferred = anchor.left - width - 16;
+      const left = preferred >= 16 ? preferred : anchor.right + 16;
+      poster.style.setProperty('--poster-left', `${Math.max(16, Math.min(left, innerWidth - width - 16))}px`);
+      poster.style.setProperty('--poster-top', `${Math.max(80, Math.min(anchor.top - height / 2, innerHeight - height - 16))}px`);
+    };
+    const show = () => {
+      cancelClose();
+      if (!poster.matches(':popover-open')) poster.showPopover();
+      place();
+    };
+    const hide = () => {
+      cancelClose();
+      if (poster.matches(':popover-open')) poster.hidePopover();
+    };
+    const leave = () => {
+      cancelClose();
+      pendingClose = later(() => {
+        if (trigger.matches(':hover') || poster.matches(':hover') || poster.contains(document.activeElement) || trigger.matches(':focus-visible')) return;
+        hide();
+      }, 180);
+    };
+    on(trigger, 'pointerenter', () => { if (finePointer.matches) show(); });
+    on(trigger, 'pointerleave', () => { if (finePointer.matches) leave(); });
+    on(poster, 'pointerenter', cancelClose);
+    on(poster, 'pointerleave', () => { if (finePointer.matches) leave(); });
+    on(trigger, 'focus', () => { if (keyboardInput) show(); });
+    on(trigger, 'click', (event) => {
+      if (finePointer.matches) { event.preventDefault(); show(); }
+    });
+    on(trigger, 'blur', leave);
+    on(poster, 'focusout', leave);
+    on(poster, 'beforetoggle', (event) => {
+      trigger.setAttribute('aria-expanded', String(event.newState === 'open'));
+      if (event.newState === 'open') nextFrame(place);
+    });
+    trigger.setAttribute('aria-expanded', 'false');
+    on(window, 'resize', () => { if (poster.matches(':popover-open')) place(); });
+    on(document, 'scroll', () => {
+      if (!finePointer.matches || !poster.matches(':popover-open')) return;
+      if (trigger.matches(':focus-visible')) place();
+      else hide();
+    }, { passive:true });
+    cleanups.push(hide);
+  });
+})();
+
 /* Enlaces antiguos a secciones que salieron de la portada: llevan a su sitio nuevo. */
 (() => {
   const moved = {
