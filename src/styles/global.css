@@ -306,7 +306,7 @@ h1, h2 {
 .lineup-item small { display:block; margin-top:6px; color:var(--cement); font-size:13px; font-weight:400; line-height:1.5; }
 .lineup li::before {
   content:counter(slot, decimal-leading-zero);
-  font:500 12px/1 var(--font-mono); color:var(--signal); width:24px;
+  font:500 12px/1 var(--font-mono); color:var(--signal); width:24px; flex:none;
 }
 .tag {
   margin-left:auto; padding:6px 10px; white-space:nowrap;
@@ -695,6 +695,9 @@ main { counter-reset:chapter; }
 /* ---------- Móvil ---------- */
 @media (max-width:600px) {
   :root { --gutter:16px; }
+  .lineup li { flex-wrap:wrap; row-gap:12px; }
+  .lineup-item { flex:1 1 calc(100% - 44px); }
+  .lineup .speaker-trigger { margin-left:44px; }
   .header-inner { height:auto; padding-top:12px; padding-bottom:12px; flex-wrap:wrap; row-gap:12px; }
   .nav { width:100%; flex-wrap:wrap; gap:14px 16px; }
   .nav .nav-cta { margin-left:auto; }
