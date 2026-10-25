@@ -1,9 +1,11 @@
 ---
 import { pageUrl } from "../../data/pages";
 import Arrow from "../../components/Arrow.astro";
-import SpeakerPoster from "../../components/SpeakerPoster.astro";
 import Logo from "../../components/Logo.astro";
 import SiteLayout from "../../layouts/SiteLayout.astro";
+import Lineup from "../../components/Lineup.astro";
+import PartnerGrid from "../../components/PartnerGrid.astro";
+import { archiveLive, formatDate, mareaUrl, nextMarea } from "../../data/mareas";
 ---
 <SiteLayout lang="en" page="index">
 <section class="hero reveal">
@@ -18,18 +20,18 @@ import SiteLayout from "../../layouts/SiteLayout.astro";
           <a class="cta-ghost" href={pageUrl("en", "partners")}>How to become a partner</a>
         </div>
       </div>
-      <figure class="hero-pass" aria-label="Invitation to Atarazana Founder House Marea 001">
+      <figure class="hero-pass" aria-label={`Invitation to Atarazana Founder House Marea ${nextMarea.number}`}>
         <div class="pass">
           <div class="pass-slot" aria-hidden="true"></div>
-          <div class="pass-top"><span>Invitation</span><span>No. 001</span></div>
+          <div class="pass-top"><span>Invitation</span><span>No. {nextMarea.number}</span></div>
           <div class="pass-body">
             <Logo class="pass-mark" />
             <p class="pass-title">Atarazana<br>Founder House</p>
             <dl class="pass-data">
-              <div><dt>Marea</dt><dd>001</dd></div>
+              <div><dt>Marea</dt><dd>{nextMarea.number}</dd></div>
               <div><dt>City</dt><dd>Málaga</dd></div>
-              <div><dt>Date</dt><dd>29 October</dd></div>
-              <div><dt>Spots</dt><dd>30</dd></div>
+              <div><dt>Date</dt><dd>{formatDate("en", nextMarea.date)}</dd></div>
+              <div><dt>Spots</dt><dd>{nextMarea.capacity}</dd></div>
             </dl>
             <p class="pass-name"><span>Name</span><b>You?</b></p>
           </div>
@@ -44,25 +46,19 @@ import SiteLayout from "../../layouts/SiteLayout.astro";
     <div class="wrap session-grid">
       <div class="session-meta">
         <p class="kicker">Next meetup</p>
-        <p class="big">Marea 001</p>
+        <p class="big">Marea {nextMarea.number}</p>
         <p class="muted">We call each meetup a marea, Spanish for tide: it always comes back.</p>
         <dl class="facts">
-          <div><dt>When</dt><dd>29 October</dd></div>
+          <div><dt>When</dt><dd>{formatDate("en", nextMarea.date)}</dd></div>
           <div><dt>Where</dt><dd>Málaga. The address comes with the invite</dd></div>
-          <div><dt>Spots</dt><dd>30 people</dd></div>
+          <div><dt>Spots</dt><dd>{nextMarea.capacity} people</dd></div>
           <div><dt>Price</dt><dd>Free</dd></div>
         </dl>
         <p class="session-status"><span class="pulse" aria-hidden="true"></span>Invites open</p>
       </div>
       <div class="session-lineup">
-        <h3 class="lineup-title">Planned programme</h3>
-        <ul class="lineup">
-          <li><span class="lineup-item">Arrival<small>Come in and settle in</small></span></li>
-          <li><span class="lineup-item">Talk</span> <SpeakerPoster name="Carlos Galán" slug="carlos-galan" lang="en" /></li>
-          <li><span class="lineup-item">Talk</span> <SpeakerPoster name="Victor González" slug="victor-gonzalez" lang="en" /></li>
-          <li><span class="lineup-item">Technical talk</span> <SpeakerPoster name="Ernesto Romance" slug="ernesto-romance" lang="en" /></li>
-          <li><span class="lineup-item">Time to chat<small>Space to get to know each other and talk freely</small></span></li>
-        </ul>
+        <Lineup lang="en" marea={nextMarea} />
+        {archiveLive && <a class="text-link session-more" href={mareaUrl("en")}>All mareas →</a>}
       </div>
     </div>
   </section>
@@ -133,8 +129,8 @@ import SiteLayout from "../../layouts/SiteLayout.astro";
     <div class="wrap strip-inner">
       <p class="kicker">For companies</p>
       <p class="strip-title">Getting in is free. <strong>Partners pay for it.</strong></p>
-      <p class="strip-text">Companies that cover the venue, food and drinks, without deciding who gets in or what gets shown. We are closing the ones for Marea 001.</p>
-      <a class="cta-ghost strip-cta" href={pageUrl("en", "partners")}>How to become a partner</a>
+      <p class="strip-text">Companies that cover the venue, food and drinks, without deciding who gets in or what gets shown.</p>
+      <PartnerGrid lang="en" open />
     </div>
   </section>
 

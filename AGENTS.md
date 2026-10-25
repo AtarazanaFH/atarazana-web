@@ -66,7 +66,7 @@ Tenemos un vocabulario propio, sacado del astillero y de Málaga, para no sonar 
 - Fechas en castellano con el mes en minúscula: "29 de octubre" (en la invitación va en mayúsculas por diseño). En inglés, "29 October".
 - En inglés, "Builder community" (no "Builders community") y "Spots" para las plazas.
 - No repetir bloques enteros entre páginas: el manifiesto resume y enlaza a la portada en lugar de copiar sus textos.
-- **La portada se mantiene ligera** (decidido el 3 de octubre de 2026). Orden: hero con la invitación, bloque de la próxima marea (datos y programa), "Menos networking", y debajo solo cuatro piezas: Qué es (con enlace al manifiesto), Para quién es, Cómo entrar y un bloque corto de partners ("Para empresas": una frase destacada, una línea de explicación y el enlace a la página de partners). Cada dato (gratis, 30 personas, programa…) se dice una vez en la portada. Lo que se amplía va en su página: manifiesto, partners y preguntas.
+- **La portada se mantiene ligera** (decidido el 3 de octubre de 2026). Orden: hero con la invitación, bloque de la próxima marea (datos y programa), "Menos networking", y debajo solo cuatro piezas: Qué es (con enlace al manifiesto), Para quién es, Cómo entrar y un bloque corto de partners ("Para empresas": una frase destacada, una línea de explicación y la retícula de partners). Los partners van en general, no por marea: cada uno en una celda con su logo en monocromo `--white` (en `public/assets/partners/`), una línea en mono sobre qué hace y enlace a su web. La última celda es "¿Tu empresa? Cómo ser partner" y enlaza a la página de partners. Cada dato (gratis, 30 personas, programa…) se dice una vez en la portada. Lo que se amplía va en su página: manifiesto, partners y preguntas.
 
 **Descartado:**
 
@@ -220,6 +220,8 @@ Discreto y mecánico: flechas que se desplazan, subrayados que aparecen, cambios
 - Páginas en `src/pages/` (castellano en la raíz, inglés en `src/pages/en/`). **Cualquier cambio de copy se hace en los dos idiomas.**
 - Metadatos SEO y sociales por página e idioma en `src/data/pages.ts`. Allí también está `pageUrl` y el mapa de rutas que cambian según el idioma (la página `faq` es `/preguntas` en castellano y `/en/faq` en inglés).
 - Los textos de los componentes (`Header`, `Footer`, `FinalCTA`) están en un objeto `es`/`en` dentro de cada componente.
+- **Mareas** (`src/data/mareas.ts`): cada encuentro es una entrada (número, fecha, plazas, charlas, partners). De ahí salen la invitación del hero, el bloque de la próxima marea, el CTA final, el catálogo `/mareas` (`/en/mareas`) y la página de cada marea (`/mareas/001`). Para crear una marea nueva, se añade una entrada al principio del array. Con `draft: true` solo se ve en `npm run dev`; mientras no haya ninguna publicada, el catálogo no se genera ni sale en el menú ni en el footer. Si la marea ya ha pasado, se marca como pasada en el siguiente build: en ese momento se puede añadir `venue`, `doors` y una crónica en `body`. Cada ponente con cartel necesita también su retrato en `public/assets/speakers/thumbs/` (400×500, blanco y negro, recortado del cartel sin texto): sale en la fila del catálogo y en la banda de ponentes.
+- **Partners** (`src/data/partners.ts`): nombre, web, logo y una línea por idioma. La portada enseña todos; cada marea, los suyos.
 - Estilos globales y tokens en `src/styles/global.css`. Sigue el estilo existente: CSS plano, propiedades compactas en una línea y variables para todo.
 - Accesibilidad: contraste alto, `aria-label` en lo interactivo, respeto a `prefers-reduced-motion`.
 

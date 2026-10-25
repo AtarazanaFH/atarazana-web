@@ -18,6 +18,12 @@ export const pages = {
       "socialDescription": "Por qué existe Atarazana Founder House, para quién es y cómo queremos que funcione: encuentros pequeños y frecuentes para la gente que construye tecnología en Málaga.",
       "type": "article"
     },
+    "mareas": {
+      "title": "Mareas · Atarazana Founder House",
+      "description": "Todas las mareas de Atarazana Founder House: la próxima y el archivo de las que ya han pasado, con su programa, sus ponentes y sus partners.",
+      "socialDescription": "La próxima marea y el archivo de las que ya han pasado, con su programa y sus ponentes.",
+      "type": "website"
+    },
     "faq": {
       "title": "Preguntas frecuentes · Atarazana Founder House",
       "description": "Dónde es, cuánto cuesta, por qué hay invitación, si puedes llevar a alguien y en qué idioma se habla en Atarazana Founder House.",
@@ -43,6 +49,12 @@ export const pages = {
       "description": "Why Atarazana Founder House exists, who it is for and how we want it to work: small, regular meetups for the people building technology in Málaga.",
       "socialDescription": "Why Atarazana Founder House exists, who it is for and how we want it to work: small, regular meetups for the people building technology in Málaga.",
       "type": "article"
+    },
+    "mareas": {
+      "title": "Mareas · Atarazana Founder House",
+      "description": "Every Atarazana Founder House marea: the next one and the archive of past ones, with their programme, speakers and partners.",
+      "socialDescription": "The next marea and the archive of past ones, with their programme and speakers.",
+      "type": "website"
     },
     "faq": {
       "title": "FAQ · Atarazana Founder House",

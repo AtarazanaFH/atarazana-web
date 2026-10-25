@@ -12,11 +12,14 @@ import '@fontsource/ibm-plex-mono/500.css';
 import '@fontsource/ibm-plex-mono/700.css';
 import '@fontsource/permanent-marker/400.css';
 import '../styles/global.css';
-interface Props { lang: Locale; page: Page; }
-const { lang, page } = Astro.props;
-const meta = pages[lang][page];
+type Meta = { title: string; description: string; socialDescription: string; type: string };
+// Las páginas generadas (cada marea) pasan sus propios metadatos y rutas.
+interface Props { lang: Locale; page: Page; meta?: Meta; paths?: Record<Locale, string>; }
+const { lang, page, meta: metaOverride, paths } = Astro.props;
+const meta: Meta = metaOverride ?? pages[lang][page];
+const pathFor = (l: Locale) => paths?.[l] ?? pageUrl(l, page);
 const absolute = (path: string) => new URL(path, Astro.site).href;
-const canonical = absolute(pageUrl(lang, page));
+const canonical = absolute(pathFor(lang));
 const image = absolute(`/assets/social-preview-${lang}.png`);
 const imageAlt = lang === 'es'
   ? 'Atarazana Founder House. Encuentros para la gente que construye tecnología en Málaga.'
@@ -38,8 +41,8 @@ const organization = {
   <meta name="description" content={meta.description} />
   <meta name="theme-color" content="#061418" />
   <link rel="canonical" href={canonical} />
-  <link rel="alternate" hreflang="es" href={absolute(pageUrl('es', page))} />
-  <link rel="alternate" hreflang="en" href={absolute(pageUrl('en', page))} />
+  <link rel="alternate" hreflang="es" href={absolute(pathFor('es'))} />
+  <link rel="alternate" hreflang="en" href={absolute(pathFor('en'))} />
   <meta property="og:type" content={meta.type} />
   <meta property="og:site_name" content="Atarazana Founder House" />
   <meta property="og:title" content={meta.title} />
@@ -58,7 +61,10 @@ const organization = {
   <meta name="twitter:description" content={meta.socialDescription} />
   <meta name="twitter:image" content={image} />
   <meta name="twitter:image:alt" content={imageAlt} />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 -90 885 885'><rect x='0' y='-90' width='885' height='885' fill='%23061418'/><path fill='%23e8f3f1' fill-rule='evenodd' d='M40 420 L405 45 L545 45 L545 345 L710 345 L710 215 L845 215 L845 580 L710 580 L710 455 L545 455 L545 580 L405 580 L405 455 L165 455 L165 580 L40 580 Z M290 345 L405 227 L405 345 Z'/></svg>">
+  <link rel="icon" href="/favicon.ico" sizes="48x48" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-96.png" type="image/png" sizes="96x96" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   {page === 'index' && <script type="application/ld+json" set:html={JSON.stringify(organization)} />}
   <script>
     import '../scripts/site.js';
@@ -70,7 +76,7 @@ const organization = {
   <div class="meta-bar" aria-hidden="true">
     <div class="wrap meta-inner"><span>36.7202° N / 4.4214° W</span><span>Málaga / ES · s. XIV — 2026</span></div>
   </div>
-  <Header lang={lang} page={page} />
+  <Header lang={lang} page={page} alternate={pathFor(lang === 'es' ? 'en' : 'es')} />
   <main id="main">
     <slot />
     <FinalCTA lang={lang} />

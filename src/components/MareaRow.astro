@@ -1,0 +1,35 @@
+---
+import type { Locale } from '../data/pages';
+import { formatDate, isPast, mareaUrl, type Marea } from '../data/mareas';
+interface Props { lang: Locale; marea: Marea; }
+const { lang, marea } = Astro.props;
+const past = isPast(marea);
+const copy = {
+  es: { past: 'Pasada', next: 'Próxima', draft: 'Borrador', spots: 'plazas', talks: 'ponentes' },
+  en: { past: 'Past', next: 'Upcoming', draft: 'Draft', spots: 'spots', talks: 'speakers' },
+};
+const t = copy[lang];
+const place = past && marea.venue ? marea.venue : 'Málaga';
+const faces = marea.talks.filter((talk) => talk.poster);
+---
+<li class:list={['marea-row', { 'marea-row--next': !past }]}>
+  <span class="marea-row-num" aria-hidden="true">{marea.number}</span>
+  <div class="marea-row-when">
+    <time datetime={marea.date}>{formatDate(lang, marea.date, 'short')}</time>
+    <span class="marea-row-status">{past ? t.past : t.next}</span>
+    {marea.draft && <span class="marea-row-draft">{t.draft}</span>}
+  </div>
+  <div class="marea-row-main">
+    <h3><a href={mareaUrl(lang, marea)}><span class="sr-only">Marea {marea.number}: </span>{marea.title[lang]}</a></h3>
+    <p>{marea.summary[lang]}</p>
+  </div>
+  <div class="marea-row-meta">
+    {faces.length > 0 && (
+      <span class="marea-row-faces" aria-hidden="true">
+        {faces.map((talk) => <img src={`/assets/speakers/thumbs/${talk.poster}.webp`} alt="" width="400" height="500" loading="lazy" decoding="async" />)}
+      </span>
+    )}
+    <span>{marea.format[lang]} · {marea.talks.length} {t.talks}<br />{place} · {marea.capacity} {t.spots}</span>
+  </div>
+  <span class="marea-row-arrow" aria-hidden="true">→</span>
+</li>

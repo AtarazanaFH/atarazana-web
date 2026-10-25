@@ -1,0 +1,12 @@
+---
+// El catálogo solo se genera cuando hay alguna marea publicada (en local, siempre).
+import SiteLayout from "../../../layouts/SiteLayout.astro";
+import MareasCatalog from "../../../components/MareasCatalog.astro";
+import { archiveLive } from "../../../data/mareas";
+export function getStaticPaths() {
+  return archiveLive ? [{ params: { index: undefined } }] : [];
+}
+---
+<SiteLayout lang="en" page="mareas">
+  <MareasCatalog lang="en" />
+</SiteLayout>

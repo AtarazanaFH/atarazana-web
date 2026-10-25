@@ -1,0 +1,19 @@
+---
+import SiteLayout from "../../../layouts/SiteLayout.astro";
+import MareaPage from "../../../components/MareaPage.astro";
+import { mareaUrl, visibleMareas, type Marea } from "../../../data/mareas";
+export function getStaticPaths() {
+  return visibleMareas.map((marea) => ({ params: { numero: marea.number }, props: { marea } }));
+}
+const { marea } = Astro.props as { marea: Marea };
+const lang = "en";
+const meta = {
+  title: `Marea ${marea.number} · ${marea.title[lang]} · Atarazana Founder House`,
+  description: marea.summary[lang],
+  socialDescription: marea.summary[lang],
+  type: "article",
+};
+---
+<SiteLayout lang={lang} page="mareas" meta={meta} paths={{ es: mareaUrl("es", marea), en: mareaUrl("en", marea) }}>
+  <MareaPage lang={lang} marea={marea} />
+</SiteLayout>

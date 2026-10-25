@@ -1,17 +1,18 @@
 ---
 import type { Locale } from '../data/pages';
+import { formatDate, nextMarea } from '../data/mareas';
 interface Props { lang: Locale; }
 const { lang } = Astro.props;
 const copy = {
   "es": {
     "title": "Cuéntanos qué estás construyendo.",
-    "description": "Pide paso en Luma con un enlace a lo que estás haciendo: tu web, tu GitHub, tu producto o un post. La Marea 001 será el 29 de octubre.",
+    "description": `Pide paso en Luma con un enlace a lo que estás haciendo: tu web, tu GitHub, tu producto o un post. La Marea ${nextMarea.number} será el ${formatDate("es", nextMarea.date)}.`,
     "invite": "Pide paso",
     "contact": "O escríbenos a "
   },
   "en": {
     "title": "Tell us what you are building.",
-    "description": "Request an invite on Luma with a link to what you are working on: your website, GitHub, product or a post. Marea 001 will take place on 29 October.",
+    "description": `Request an invite on Luma with a link to what you are working on: your website, GitHub, product or a post. Marea ${nextMarea.number} will take place on ${formatDate("en", nextMarea.date)}.`,
     "invite": "Request an invite",
     "contact": "Or write to us at "
   }

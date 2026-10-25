@@ -1,0 +1,123 @@
+---
+import type { Locale } from '../data/pages';
+import { formatDate, isPast, mareaUrl, neighbours, type Marea } from '../data/mareas';
+import Lineup from './Lineup.astro';
+import PartnerGrid from './PartnerGrid.astro';
+import SpeakerPoster from './SpeakerPoster.astro';
+interface Props { lang: Locale; marea: Marea; }
+const { lang, marea } = Astro.props;
+const past = isPast(marea);
+const { newer, older } = neighbours(marea);
+const copy = {
+  es: {
+    crumbs: 'Ruta', all: 'Mareas', draft: 'Borrador: solo se ve en local', past: 'Marea pasada', next: 'Próxima marea',
+    speakers: 'Ponentes', programme: 'Programa', chronicle: 'Cómo fue', partners: 'Partners',
+    partnersLead: 'Pagan el espacio, la comida y la bebida de esta marea, sin decidir quién entra ni qué se enseña.',
+    date: 'Fecha', doors: 'Puertas', where: 'Dónde', spots: 'Plazas', price: 'Precio',
+    whereNext: 'Málaga. La dirección va en la invitación', people: 'personas', free: 'Gratis', invite: 'Pide paso',
+    older: 'Marea anterior', newer: 'Marea siguiente', back: 'Todas las mareas', jump: 'En esta página', poster: 'Ver cartel',
+  },
+  en: {
+    crumbs: 'Breadcrumb', all: 'Mareas', draft: 'Draft: only visible locally', past: 'Past marea', next: 'Upcoming marea',
+    speakers: 'Speakers', programme: 'Programme', chronicle: 'How it went', partners: 'Partners',
+    partnersLead: 'They pay for the venue, food and drinks of this marea, without deciding who gets in or what gets shown.',
+    date: 'Date', doors: 'Doors', where: 'Where', spots: 'Spots', price: 'Price',
+    whereNext: 'Málaga. The address comes with the invite', people: 'people', free: 'Free', invite: 'Request an invite',
+    older: 'Previous marea', newer: 'Next marea', back: 'All mareas', jump: 'On this page', poster: 'See poster',
+  },
+};
+const t = copy[lang];
+const body = marea.body?.[lang] ?? [];
+const speakers = marea.talks.filter((talk) => talk.poster);
+// Secciones numeradas en orden, solo las que existen.
+const sections = [
+  body.length > 0 && { id: 'cronica', title: t.chronicle },
+  speakers.length > 0 && { id: 'ponentes', title: t.speakers },
+  { id: 'programa', title: t.programme },
+  marea.partners.length > 0 && { id: 'partners', title: t.partners },
+].filter(Boolean) as { id: string; title: string }[];
+const num = (id: string) => String(sections.findIndex((s) => s.id === id) + 1).padStart(2, '0');
+---
+<section class="hero marea-hero reveal">
+  <div class="wrap">
+    <nav class="crumbs" aria-label={t.crumbs}>
+      <a href={mareaUrl(lang)}>{t.all}</a><span aria-hidden="true">/</span><span aria-current="page">{marea.number}</span>
+      {marea.draft && <span class="marea-draft">{t.draft}</span>}
+    </nav>
+    <div class="marea-hero-grid">
+      <div>
+        <p class="kicker">Marea {marea.number} · {marea.format[lang]} · {past ? t.past : t.next}</p>
+        <h1>{marea.title[lang]}</h1>
+        <p class="lead">{marea.summary[lang]}</p>
+        {!past && marea.luma && <a class="cta" href={marea.luma} target="_blank" rel="noopener">{t.invite}</a>}
+      </div>
+      <span class="marea-hero-num" aria-hidden="true">{marea.number}</span>
+    </div>
+  </div>
+  <dl class="wrap marea-strip">
+    <div><dt>{t.date}</dt><dd><time datetime={marea.date}>{formatDate(lang, marea.date, 'full')}</time></dd></div>
+    {marea.doors && <div><dt>{t.doors}</dt><dd>{marea.doors}</dd></div>}
+    <div><dt>{t.where}</dt><dd>{past && marea.venue ? marea.venue : t.whereNext}</dd></div>
+    <div><dt>{t.spots}</dt><dd>{marea.capacity} {t.people}</dd></div>
+    <div><dt>{t.price}</dt><dd>{t.free}</dd></div>
+  </dl>
+  <nav class="wrap marea-jump" aria-label={t.jump}>
+    {sections.map((s) => <a href={`#${s.id}`}><span>{num(s.id)}</span>{s.title}</a>)}
+  </nav>
+</section>
+
+{body.length > 0 && (
+  <section class="mareas-block reveal" id="cronica">
+    <div class="wrap">
+      <div class="sec-head"><span>{num('cronica')}</span><h2>{t.chronicle}</h2></div>
+      <div class="marea-body">{body.map((p) => <p>{p}</p>)}</div>
+    </div>
+  </section>
+)}
+
+{speakers.length > 0 && (
+  <section class="mareas-block reveal" id="ponentes">
+    <div class="wrap">
+      <div class="sec-head"><span>{num('ponentes')}</span><h2>{t.speakers}</h2></div>
+      <ul class="speaker-grid">
+        {speakers.map((talk) => (
+          <li class="speaker-cell">
+            <img src={`/assets/speakers/thumbs/${talk.poster}.webp`} alt={talk.speaker} width="400" height="500" loading="lazy" decoding="async" />
+            <div class="speaker-cell-body">
+              <p class="speaker-cell-name">{talk.speaker}</p>
+              <h3>{talk.title[lang]}</h3>
+              <p>{talk.line[lang]}</p>
+              <SpeakerPoster name={talk.speaker} slug={talk.poster!} lang={lang} text={t.poster} />
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
+
+<section class="mareas-block band reveal" id="programa">
+  <div class="wrap">
+    <div class="sec-head"><span>{num('programa')}</span><h2>{t.programme}</h2></div>
+    <div class="marea-lineup"><Lineup lang={lang} marea={marea} heading={false} posters={false} /></div>
+  </div>
+</section>
+
+{marea.partners.length > 0 && (
+  <section class="mareas-block reveal" id="partners">
+    <div class="wrap">
+      <div class="sec-head"><span>{num('partners')}</span><h2>{t.partners}</h2></div>
+      <p class="mareas-empty">{t.partnersLead}</p>
+      <PartnerGrid lang={lang} ids={marea.partners} label="" />
+    </div>
+  </section>
+)}
+
+<nav class="marea-pager" aria-label={t.all}>
+  <div class="wrap">
+    {older
+      ? <><a href={mareaUrl(lang, older)}><span>← {t.older}</span>Marea {older.number}</a><a class="marea-pager-all" href={mareaUrl(lang)}><span>{t.back}</span>Mareas</a></>
+      : <><a href={mareaUrl(lang)}><span>← {t.back}</span>Mareas</a><span></span></>}
+    {newer ? <a class="marea-pager-next" href={mareaUrl(lang, newer)}><span>{t.newer} →</span>Marea {newer.number}</a> : <span></span>}
+  </div>
+</nav>

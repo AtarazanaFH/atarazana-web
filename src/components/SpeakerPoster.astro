@@ -1,12 +1,12 @@
 ---
 import type { Locale } from '../data/pages';
-interface Props { name: string; slug: string; lang: Locale; }
-const { name, slug, lang } = Astro.props;
+interface Props { name: string; slug: string; lang: Locale; text?: string; }
+const { name, slug, lang, text = name } = Astro.props;
 const id = `speaker-${slug}`;
 const label = lang === 'es' ? `Cartel de ${name}` : `${name} speaker poster`;
 ---
 <button class="tag tag--solid speaker-trigger" type="button" popovertarget={id}
-  aria-haspopup="dialog" aria-controls={id} data-speaker-trigger={id}>{name}</button>
+  aria-haspopup="dialog" aria-controls={id} data-speaker-trigger={id}>{text}</button>
 <div id={id} class="speaker-poster" popover="auto" role="dialog" aria-label={label}>
   <div class="speaker-poster-head">
     <span>{name}</span>
