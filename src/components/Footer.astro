@@ -1,6 +1,7 @@
 ---
 import Logo from "./Logo.astro";
 import { pageUrl, type Locale } from '../data/pages';
+import { archiveLive, mareaUrl } from '../data/mareas';
 interface Props { lang: Locale; }
 const { lang } = Astro.props;
 const copy = {
@@ -37,6 +38,7 @@ const t = copy[lang];
       <a href="https://www.linkedin.com/company/atarazanafh/" target="_blank" rel="noopener">LinkedIn</a>
       <a href="mailto:atarazanafh@gmail.com">atarazanafh@gmail.com</a>
       <a href={pageUrl(lang, "index")}>{t.home}</a>
+      {archiveLive && <a href={mareaUrl(lang)}>Mareas</a>}
       <a href={pageUrl(lang, "manifesto")}>{t.manifesto}</a>
       <a href={pageUrl(lang, "partners")}>Partners</a>
       <a href={pageUrl(lang, "faq")}>{t.faq}</a>

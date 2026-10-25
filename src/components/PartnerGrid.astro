@@ -1,0 +1,23 @@
+---
+import { pageUrl, type Locale } from '../data/pages';
+import { partners, type PartnerId } from '../data/partners';
+interface Props { lang: Locale; ids?: PartnerId[]; open?: boolean; label?: string; }
+const { lang, ids = Object.keys(partners) as PartnerId[], open = false, label = 'Partners' } = Astro.props;
+const copy = {
+  es: { question: '¿Tu empresa?', cta: 'Cómo ser partner' },
+  en: { question: 'Your company?', cta: 'How to become a partner' },
+};
+const t = copy[lang];
+---
+<div class="strip-partners">
+  {label && <p class="strip-partners-label">{label}</p>}
+  <ul class="partner-grid">
+    {ids.map((id) => {
+      const p = partners[id];
+      return (
+        <li><a class="partner" href={p.url} target="_blank" rel="noopener"><img src={p.logo.src} alt={p.name} width={p.logo.width} height={p.logo.height} loading="lazy" decoding="async" /><span>{p.line[lang]}</span></a></li>
+      );
+    })}
+    {open && <li><a class="partner partner--open" href={pageUrl(lang, 'partners')}><b>{t.question}</b><span>{t.cta}</span></a></li>}
+  </ul>
+</div>

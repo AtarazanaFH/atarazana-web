@@ -2,8 +2,9 @@
 import Logo from "./Logo.astro";
 import type { Locale, Page } from '../data/pages';
 import { pageUrl } from '../data/pages';
-interface Props { lang: Locale; page?: Page; }
-const { lang, page = 'index' } = Astro.props;
+import { archiveLive, mareaUrl } from '../data/mareas';
+interface Props { lang: Locale; page?: Page; alternate?: string; }
+const { lang, page = 'index', alternate } = Astro.props;
 const otherLang = lang === 'es' ? 'en' : 'es';
 const copy = {
   "es": {
@@ -36,10 +37,11 @@ const t = copy[lang];
     <a class="logo" href={pageUrl(lang, "index")} aria-label={t.homeLabel}><Logo class="logo-mark" /><span class="logo-word">Atarazana<br>Founder House</span></a>
     <nav class="nav" aria-label={t.navLabel}>
       <a href={`${pageUrl(lang, "index")}#${t.aboutAnchor}`}>{t.about}</a>
+      {archiveLive && <a href={mareaUrl(lang)} aria-current={page === "mareas" ? "page" : undefined}>Mareas</a>}
       <a href={pageUrl(lang, "manifesto")} aria-current={page === "manifesto" ? "page" : undefined}>{t.manifesto}</a>
       <a href={pageUrl(lang, "partners")} aria-current={page === "partners" ? "page" : undefined}>Partners</a>
       <a href={pageUrl(lang, "faq")} aria-current={page === "faq" ? "page" : undefined}>{t.faq}</a>
-      <a href={pageUrl(otherLang, page)} class="nav-lang" hreflang={t.otherLang}>{t.languageLabel}</a>
+      <a href={alternate ?? pageUrl(otherLang, page)} class="nav-lang" hreflang={t.otherLang}>{t.languageLabel}</a>
       <a class="nav-cta" href="https://luma.com/rjl7pq7g" target="_blank" rel="noopener">{t.invite}</a>
     </nav>
   </div>

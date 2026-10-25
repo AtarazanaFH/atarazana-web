@@ -12,11 +12,14 @@ import '@fontsource/ibm-plex-mono/500.css';
 import '@fontsource/ibm-plex-mono/700.css';
 import '@fontsource/permanent-marker/400.css';
 import '../styles/global.css';
-interface Props { lang: Locale; page: Page; }
-const { lang, page } = Astro.props;
-const meta = pages[lang][page];
+type Meta = { title: string; description: string; socialDescription: string; type: string };
+// Las páginas generadas (cada marea) pasan sus propios metadatos y rutas.
+interface Props { lang: Locale; page: Page; meta?: Meta; paths?: Record<Locale, string>; }
+const { lang, page, meta: metaOverride, paths } = Astro.props;
+const meta: Meta = metaOverride ?? pages[lang][page];
+const pathFor = (l: Locale) => paths?.[l] ?? pageUrl(l, page);
 const absolute = (path: string) => new URL(path, Astro.site).href;
-const canonical = absolute(pageUrl(lang, page));
+const canonical = absolute(pathFor(lang));
 const image = absolute(`/assets/social-preview-${lang}.png`);
 const imageAlt = lang === 'es'
   ? 'Atarazana Founder House. Encuentros para la gente que construye tecnología en Málaga.'
@@ -38,8 +41,8 @@ const organization = {
   <meta name="description" content={meta.description} />
   <meta name="theme-color" content="#061418" />
   <link rel="canonical" href={canonical} />
-  <link rel="alternate" hreflang="es" href={absolute(pageUrl('es', page))} />
-  <link rel="alternate" hreflang="en" href={absolute(pageUrl('en', page))} />
+  <link rel="alternate" hreflang="es" href={absolute(pathFor('es'))} />
+  <link rel="alternate" hreflang="en" href={absolute(pathFor('en'))} />
   <meta property="og:type" content={meta.type} />
   <meta property="og:site_name" content="Atarazana Founder House" />
   <meta property="og:title" content={meta.title} />
@@ -73,7 +76,7 @@ const organization = {
   <div class="meta-bar" aria-hidden="true">
     <div class="wrap meta-inner"><span>36.7202° N / 4.4214° W</span><span>Málaga / ES · s. XIV — 2026</span></div>
   </div>
-  <Header lang={lang} page={page} />
+  <Header lang={lang} page={page} alternate={pathFor(lang === 'es' ? 'en' : 'es')} />
   <main id="main">
     <slot />
     <FinalCTA lang={lang} />
