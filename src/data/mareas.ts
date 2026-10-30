@@ -35,6 +35,24 @@ export interface Marea {
 
 export const mareas: Marea[] = [
   {
+    number: '002',
+    date: '2026-12-03',
+    capacity: 45,
+    format: { es: 'Charlas', en: 'Talks' },
+    title: { es: 'Segunda marea', en: 'Second Marea' },
+    summary: {
+      es: 'Charlas y tiempo para hablar en Málaga. Ponentes por anunciar.',
+      en: 'Talks and time to chat in Málaga. Speakers to be announced.',
+    },
+    talks: [
+      { speaker: '', title: { es: 'Charla', en: 'Talk' }, line: { es: '', en: '' } },
+      { speaker: '', title: { es: 'Charla', en: 'Talk' }, line: { es: '', en: '' } },
+      { speaker: '', title: { es: 'Charla técnica', en: 'Technical talk' }, line: { es: '', en: '' } },
+    ],
+    partners: [],
+    luma: 'https://luma.com/dox9nwj4',
+  },
+  {
     number: '001',
     date: '2026-10-29',
     capacity: 30,

@@ -6,8 +6,8 @@ import SpeakerPoster from './SpeakerPoster.astro';
 interface Props { lang: Locale; marea: Marea; heading?: boolean; posters?: boolean; }
 const { lang, marea, heading = true, posters = true } = Astro.props;
 const copy = {
-  es: { title: 'Programa previsto', pastTitle: 'Programa', arrival: 'Entrada', arrivalLine: 'Llegar y acomodarnos', talk: 'Tiempo para hablar', talkLine: 'Un espacio para conocernos y conversar libremente' },
-  en: { title: 'Planned programme', pastTitle: 'Programme', arrival: 'Arrival', arrivalLine: 'Come in and settle in', talk: 'Time to chat', talkLine: 'Space to get to know each other and talk freely' },
+  es: { speakerTBA: 'Ponente por anunciar', title: 'Programa previsto', pastTitle: 'Programa', arrival: 'Entrada', arrivalLine: 'Llegar y acomodarnos', talk: 'Tiempo para hablar', talkLine: 'Un espacio para conocernos y conversar libremente' },
+  en: { speakerTBA: 'Speaker TBA', title: 'Planned programme', pastTitle: 'Programme', arrival: 'Arrival', arrivalLine: 'Come in and settle in', talk: 'Time to chat', talkLine: 'Space to get to know each other and talk freely' },
 };
 const t = copy[lang];
 ---
@@ -16,10 +16,10 @@ const t = copy[lang];
   <li><span class="lineup-item">{t.arrival}<small>{t.arrivalLine}</small></span></li>
   {marea.talks.map((talk) => (
     <li>
-      <span class="lineup-item">{talk.title[lang]}<small>{talk.line[lang]}</small></span>
+      <span class="lineup-item">{talk.title[lang]}{talk.line[lang] && <small>{talk.line[lang]}</small>}</span>
       {posters && talk.poster
         ? <SpeakerPoster name={talk.speaker} slug={talk.poster} lang={lang} />
-        : <span class="tag tag--solid">{talk.speaker}</span>}
+        : <span class="tag tag--solid">{talk.speaker || t.speakerTBA}</span>}
     </li>
   ))}
   <li><span class="lineup-item">{t.talk}<small>{t.talkLine}</small></span></li>

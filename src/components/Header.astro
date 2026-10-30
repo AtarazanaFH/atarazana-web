@@ -2,7 +2,7 @@
 import Logo from "./Logo.astro";
 import type { Locale, Page } from '../data/pages';
 import { pageUrl } from '../data/pages';
-import { archiveLive, mareaUrl } from '../data/mareas';
+import { archiveLive, mareaUrl, nextMarea } from '../data/mareas';
 interface Props { lang: Locale; page?: Page; alternate?: string; }
 const { lang, page = 'index', alternate } = Astro.props;
 const otherLang = lang === 'es' ? 'en' : 'es';
@@ -42,7 +42,7 @@ const t = copy[lang];
       <a href={pageUrl(lang, "partners")} aria-current={page === "partners" ? "page" : undefined}>Partners</a>
       <a href={pageUrl(lang, "faq")} aria-current={page === "faq" ? "page" : undefined}>{t.faq}</a>
       <a href={alternate ?? pageUrl(otherLang, page)} class="nav-lang" hreflang={t.otherLang}>{t.languageLabel}</a>
-      <a class="nav-cta" href="https://luma.com/rjl7pq7g" target="_blank" rel="noopener">{t.invite}</a>
+      <a class="nav-cta" href={nextMarea.luma} target="_blank" rel="noopener">{t.invite}</a>
     </nav>
   </div>
 </header>
