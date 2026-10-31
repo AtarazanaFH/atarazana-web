@@ -5,8 +5,8 @@ interface Props { lang: Locale; marea: Marea; }
 const { lang, marea } = Astro.props;
 const past = isPast(marea);
 const copy = {
-  es: { past: 'Pasada', next: 'Próxima', draft: 'Borrador', spots: 'plazas', talks: 'ponentes' },
-  en: { past: 'Past', next: 'Upcoming', draft: 'Draft', spots: 'spots', talks: 'speakers' },
+  es: { invite: 'Pide paso', draft: 'Borrador', spots: 'plazas', talks: 'ponentes' },
+  en: { invite: 'Request an invite', draft: 'Draft', spots: 'spots', talks: 'speakers' },
 };
 const t = copy[lang];
 const place = past && marea.venue ? marea.venue : 'Málaga';
@@ -16,12 +16,12 @@ const faces = marea.talks.filter((talk) => talk.poster);
   <span class="marea-row-num" aria-hidden="true">{marea.number}</span>
   <div class="marea-row-when">
     <time datetime={marea.date}>{formatDate(lang, marea.date, 'short')}</time>
-    <span class="marea-row-status">{past ? t.past : t.next}</span>
     {marea.draft && <span class="marea-row-draft">{t.draft}</span>}
   </div>
   <div class="marea-row-main">
     <h3><a href={mareaUrl(lang, marea)}><span class="sr-only">Marea {marea.number}: </span>{marea.title[lang]}</a></h3>
     <p>{marea.summary[lang]}</p>
+    {!past && marea.luma && <a class="cta marea-row-cta" href={marea.luma} target="_blank" rel="noopener" aria-label={`${t.invite}: Marea ${marea.number}`}>{t.invite}</a>}
   </div>
   <div class="marea-row-meta">
     {faces.length > 0 && (

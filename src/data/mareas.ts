@@ -30,6 +30,7 @@ export interface Marea {
   talks: Talk[];
   partners: PartnerId[];
   luma?: string;
+  partnerWanted?: boolean;  // true → "Se busca partner" en la invitación y aviso en su página. Quítalo al encontrarlo
   draft?: boolean;
 }
 
@@ -47,9 +48,9 @@ export const mareas: Marea[] = [
     talks: [
       { speaker: '', title: { es: 'Charla', en: 'Talk' }, line: { es: '', en: '' } },
       { speaker: '', title: { es: 'Charla', en: 'Talk' }, line: { es: '', en: '' } },
-      { speaker: '', title: { es: 'Charla técnica', en: 'Technical talk' }, line: { es: '', en: '' } },
     ],
     partners: [],
+    partnerWanted: true,
     luma: 'https://luma.com/dox9nwj4',
   },
   {
