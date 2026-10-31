@@ -52,6 +52,7 @@ Tenemos un vocabulario propio, sacado del astillero y de Málaga, para no sonar 
 | Manifiesto, capítulo 1 | **"Aquí ya se construía"** | La historia propia (astillero, siglo XIV) en lugar de la idea de "poner Málaga en el mapa" |
 | Manifiesto, "Por qué este nombre" | **dār aṣ-ṣināʿa** y **arsenal** | La etimología: "casa de la industria". *Arsenal* viene de la misma palabra |
 | Metadatos en mono | **s. XIV** | Junto a las coordenadas: footer y pie de la Puerta |
+| Directorio de asistentes (`/mercado`) | **El Mercado** (provisional, 31 de octubre de 2026) | El Mercado está detrás de la Puerta: ves caras conocidas, paras y hablas. El nombre está en `mercadoName` (`src/data/mercado.ts`); si cambia, se cambia ahí y se renombra la carpeta `src/pages/mercado` |
 | Visual | **Lacería** y **la Puerta** | Ver "Elementos secundarios" en la sección 3 |
 
 **Se mantiene como estaba:**
@@ -86,10 +87,9 @@ Tenemos un vocabulario propio, sacado del astillero y de Málaga, para no sonar 
 | Equipo organizador | **contramaestres** | Organiza el trabajo a bordo pero no es el dueño: servicio, no estatus |
 | "¿Puedo llevar a alguien?" | **polizones** | "Aquí no hay polizones, pero sí hay sitio: que pida paso" |
 | Comunidad recurrente | **la cuadrilla** | Los equipos de astillero; en Andalucía la palabra sigue viva |
-| Espacio para ver a la gente que conoces (tipo *the room*) | **el Mercado** | El Mercado está detrás de la Puerta: ves caras conocidas, paras y hablas |
 | Contador de asistencias | **Llevas 3 mareas** | Cuántas veces has venido, sin rankings ni puntos |
 
-Cuadrilla y Mercado no compiten: la cuadrilla es la gente y el Mercado es el sitio donde te la encuentras.
+Cuadrilla y Mercado no compiten: la cuadrilla es la gente y el Mercado (ya en uso, ver arriba) es el sitio donde te la encuentras.
 
 ### Lo que evitamos en el texto
 
@@ -234,6 +234,7 @@ Discreto y mecánico: flechas que se desplazan, subrayados que aparecen, cambios
 - **Menú** (`Header.astro`): Mareas · Manifiesto · Partners · Preguntas · Luma (perfil `luma.com/user/atarazana`) · EN/ES · botón "Pide paso". Se mantiene corto: antes de añadir algo, mira si puede ir en el footer.
 - **Enlaces a Luma:** "Pide paso", "Invitaciones abiertas" y el botón de cada marea próxima llevan al evento de esa marea (`luma` en `mareas.ts`). El perfil general solo va en el menú y en el catálogo vacío.
 - **Mareas** (`src/data/mareas.ts`): cada encuentro es una entrada (número, fecha, plazas, charlas, partners). De ahí salen la invitación del hero, el bloque de la próxima marea, el CTA final, el catálogo `/mareas` (`/en/mareas`) y la página de cada marea (`/mareas/001`). Para crear una marea nueva, se añade una entrada al principio del array. Con `draft: true` solo se ve en `npm run dev`; mientras no haya ninguna publicada, el catálogo no se genera ni sale en el menú ni en el footer. Si la marea ya ha pasado, se marca como pasada en el siguiente build: en ese momento se puede añadir `venue`, `doors` y una crónica en `body`. Cada ponente con cartel necesita también su retrato en `public/assets/speakers/thumbs/` (400×500, blanco y negro, recortado del cartel sin texto): sale en la fila del catálogo y en la banda de ponentes.
+- **El Mercado** (`/mercado`, `/en/mercado`): directorio privado de asistentes con login por enlace mágico, en Supabase. Solo pueden tener cuenta los correos de la lista de asistentes o de admins. Para ver a los demás hay que tener el perfil propio relleno y visible. Cada persona ve los perfiles de quien coincidió con ella en alguna marea; quien no ha rellenado el suyo sale "de incógnita". Los admins lo ven todo y descargan CSV. Las reglas de acceso viven en la base de datos (`supabase/schema.sql`), nunca solo en el navegador. **Producción se cuida:** en local todo va contra el Supabase local; los scripts solo tocan producción con `--prod` y confirmación (ver `supabase/README.md`). Cliente en `src/scripts/mercado.ts`, textos en `src/data/mercado.ts`, carga de asistentes desde el CSV de Luma con `scripts/mercado.mjs`. Puesta en marcha y uso en `supabase/README.md`. Las fotos van en color. El texto de la base de datos se pinta siempre con `textContent`, nunca como HTML.
 - **Partners** (`src/data/partners.ts`): nombre, web, logo y una línea por idioma. La portada enseña todos; cada marea, los suyos.
 - Estilos globales y tokens en `src/styles/global.css`. Sigue el estilo existente: CSS plano, propiedades compactas en una línea y variables para todo.
 - Accesibilidad: contraste alto, `aria-label` en lo interactivo, respeto a `prefers-reduced-motion`.

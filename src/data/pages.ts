@@ -29,6 +29,12 @@ export const pages = {
       "description": "Dónde es, cuánto cuesta, por qué hay invitación, si puedes llevar a alguien y en qué idioma se habla en Atarazana Founder House.",
       "socialDescription": "Dónde es, cuánto cuesta, por qué hay invitación y en qué idioma se habla en Atarazana Founder House.",
       "type": "website"
+    },
+    "mercado": {
+      "title": "El Mercado · Atarazana Founder House",
+      "description": "Vuelve a encontrar a la gente con la que coincidiste en una marea de Atarazana Founder House.",
+      "socialDescription": "Vuelve a encontrar a la gente con la que coincidiste en una marea.",
+      "type": "website"
     }
   },
   "en": {
@@ -60,6 +66,12 @@ export const pages = {
       "title": "FAQ · Atarazana Founder House",
       "description": "Where it is, what it costs, why there are invites, whether you can bring someone and what language is spoken at Atarazana Founder House.",
       "socialDescription": "Where it is, what it costs, why there are invites and what language is spoken at Atarazana Founder House.",
+      "type": "website"
+    },
+    "mercado": {
+      "title": "El Mercado · Atarazana Founder House",
+      "description": "Find the people you met at an Atarazana Founder House marea again.",
+      "socialDescription": "Find the people you met at a marea again.",
       "type": "website"
     }
   }

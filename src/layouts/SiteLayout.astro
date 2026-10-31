@@ -14,8 +14,9 @@ import '@fontsource/permanent-marker/400.css';
 import '../styles/global.css';
 type Meta = { title: string; description: string; socialDescription: string; type: string };
 // Las páginas generadas (cada marea) pasan sus propios metadatos y rutas.
-interface Props { lang: Locale; page: Page; meta?: Meta; paths?: Record<Locale, string>; }
-const { lang, page, meta: metaOverride, paths } = Astro.props;
+// `private` (El Mercado): sin indexar y sin el CTA final.
+interface Props { lang: Locale; page: Page; meta?: Meta; paths?: Record<Locale, string>; private?: boolean; }
+const { lang, page, meta: metaOverride, paths, private: isPrivate = false } = Astro.props;
 const meta: Meta = metaOverride ?? pages[lang][page];
 const pathFor = (l: Locale) => paths?.[l] ?? pageUrl(l, page);
 const absolute = (path: string) => new URL(path, Astro.site).href;
@@ -39,6 +40,7 @@ const organization = {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{meta.title}</title>
   <meta name="description" content={meta.description} />
+  {isPrivate && <meta name="robots" content="noindex, nofollow" />}
   <meta name="theme-color" content="#061418" />
   <link rel="canonical" href={canonical} />
   <link rel="alternate" hreflang="es" href={absolute(pathFor('es'))} />
@@ -76,7 +78,7 @@ const organization = {
   <Header lang={lang} page={page} alternate={pathFor(lang === 'es' ? 'en' : 'es')} />
   <main id="main">
     <slot />
-    <FinalCTA lang={lang} />
+    {!isPrivate && <FinalCTA lang={lang} />}
   </main>
   <Footer lang={lang} />
 </body>
