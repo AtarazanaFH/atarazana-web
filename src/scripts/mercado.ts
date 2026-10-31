@@ -30,7 +30,14 @@ function show(root: HTMLElement, state: string) {
 }
 
 const mareaTitle = (lang: Locale, n: string) => mareas.find((m) => m.number === n)?.title[lang];
-const safeUrl = (u?: string | null) => (u && /^https:\/\//.test(u) ? u : null);
+// Un enlace válido: https, con dominio (algo.algo). Si no, null: nunca rompe la página.
+function parseLink(u?: string | null) {
+  if (!u) return null;
+  try {
+    const url = new URL(u);
+    return url.protocol === 'https:' && /^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(url.hostname) ? url : null;
+  } catch { return null; }
+}
 const initials = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]!.toUpperCase()).join('');
 
 async function signedPhotos(sb: SupabaseClient, paths: string[]) {
@@ -164,9 +171,11 @@ async function exportCsv(sb: SupabaseClient) {
   const { data } = await sb.rpc('mercado_admin_export');
   const rows = (data ?? []) as Record<string, unknown>[];
   const cols = ['email', 'name', 'role', 'company', 'building', 'website', 'linkedin', 'x', 'github', 'visible', 'mareas'];
+  // Todo como texto: entre comillas y con ' delante de lo que una hoja de cálculo tomaría por fórmula.
   const cell = (v: unknown) => {
-    const s = Array.isArray(v) ? v.join(' ') : v == null ? '' : String(v);
-    return /[",\n]/.test(s) ? `"${s.replaceAll('"', '""')}"` : s;
+    let s = Array.isArray(v) ? v.join(' ') : v == null ? '' : String(v);
+    if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`;
+    return `"${s.replaceAll('"', '""')}"`;
   };
   const csv = [cols.join(','), ...rows.map((r) => cols.map((c) => cell(r[c])).join(','))].join('\n');
   const a = h('a', { href: URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' })), download: 'mercado.csv' });
@@ -194,7 +203,8 @@ function normaliseLink(field: string, raw: string) {
   const handle = v.replace(/^@/, '');
   if (field === 'x' && /^[A-Za-z0-9_]{1,15}$/.test(handle)) return `https://x.com/${handle}`;
   if (field === 'github' && /^[A-Za-z0-9-]{1,39}$/.test(handle)) return `https://github.com/${handle}`;
-  return /^https?:\/\//i.test(v) ? v.replace(/^http:/i, 'https:') : `https://${v}`;
+  const url = parseLink(/^https?:\/\//i.test(v) ? v.replace(/^http:/i, 'https:') : `https://${v}`);
+  return url ? url.href : undefined; // undefined = escrito pero no válido
 }
 
 async function profileView({ root, lang, t, sb }: Ctx) {
@@ -278,6 +288,8 @@ async function profileView({ root, lang, t, sb }: Ctx) {
       photo, visible: !incognito, updated_at: new Date().toISOString(),
     };
     if (!row.name) { status.textContent = t.needName; return field('name').focus(); }
+    const bad = (['website', 'linkedin', 'x', 'github'] as const).find((k) => row[k] === undefined);
+    if (bad) { status.textContent = t.badLink; return field(bad).focus(); }
     if (!row.website && !row.linkedin && !row.x && !row.github) { status.textContent = t.needLink; return field('website').focus(); }
     save.disabled = true; status.textContent = t.saving;
     const { error } = await sb.from('mercado_profiles').upsert(row);
@@ -321,8 +333,8 @@ async function personView({ root, lang, t, sb }: Ctx) {
     h('a', { href: `${lang === 'en' ? '/en' : ''}/mareas/${n}` }, `Marea ${n}`), mareaTitle(lang, n) ? ` · ${mareaTitle(lang, n)}` : '')));
   const links: [string, string | null | undefined][] = [['Web', p.website], ['LinkedIn', p.linkedin], ['X', p.x], ['GitHub', p.github]];
   const list = $(root, '[data-links]');
-  list.replaceChildren(...links.filter(([, u]) => safeUrl(u)).map(([label, u]) => h('li', {},
-    h('a', { href: safeUrl(u)!, target: '_blank', rel: 'noopener nofollow ugc' }, h('span', {}, label), new URL(u!).host + new URL(u!).pathname.replace(/\/$/, '')))));
+  list.replaceChildren(...links.map(([label, u]) => [label, parseLink(u)] as const).filter(([, url]) => url).map(([label, url]) => h('li', {},
+    h('a', { href: url!.href, target: '_blank', rel: 'noopener nofollow ugc' }, h('span', {}, label), url!.host + url!.pathname.replace(/\/$/, '')))));
   if (p.email) list.append(h('li', {}, h('a', { href: `mailto:${p.email}` }, h('span', {}, 'Email'), p.email)));
   list.hidden = !list.childElementCount;
 

@@ -39,6 +39,15 @@ create table if not exists public.mercado_profiles (
   updated_at timestamptz not null default now()
 );
 
+-- Enlaces: https con dominio de verdad (algo.algo), sin espacios.
+alter table public.mercado_profiles drop constraint if exists mercado_profiles_links_valid;
+alter table public.mercado_profiles add constraint mercado_profiles_links_valid check (
+  coalesce(website, 'https://a.b') ~ '^https://[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+(:[0-9]+)?([/?#][^[:space:]]*)?$'
+  and coalesce(linkedin, 'https://a.b') ~ '^https://[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+(:[0-9]+)?([/?#][^[:space:]]*)?$'
+  and coalesce(x, 'https://a.b') ~ '^https://[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+(:[0-9]+)?([/?#][^[:space:]]*)?$'
+  and coalesce(github, 'https://a.b') ~ '^https://[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+(:[0-9]+)?([/?#][^[:space:]]*)?$'
+);
+
 -- Nombre (arriba) y al menos un enlace para que te puedan escribir.
 alter table public.mercado_profiles drop constraint if exists mercado_profiles_contact;
 alter table public.mercado_profiles add constraint mercado_profiles_contact
@@ -173,6 +182,16 @@ begin
 end
 $$;
 
+-- ¿Puedo ver esta foto? Solo si es la guardada en un perfil cuya ficha puedo ver.
+-- Las fotos subidas pero aún no guardadas (o descartadas) no las ve nadie más.
+create or replace function public.mercado_can_see_photo(path text) returns boolean
+language sql stable security definer set search_path = '' as $$
+  select exists (
+    select 1 from public.mercado_profiles p
+    where p.photo = path and public.mercado_person(p.id) is not null
+  )
+$$;
+
 revoke all on function public.mercado_my_email() from public, anon;
 revoke all on function public.mercado_is_admin() from public, anon;
 revoke all on function public.mercado_can_see() from public, anon;
@@ -180,11 +199,13 @@ revoke all on function public.mercado_directory() from public, anon;
 revoke all on function public.mercado_person(uuid) from public, anon;
 revoke all on function public.mercado_admin_export() from public, anon;
 revoke all on function public.mercado_admin_delete_profile(uuid) from public, anon;
+revoke all on function public.mercado_can_see_photo(text) from public, anon;
 grant execute on function public.mercado_is_admin() to authenticated;
 grant execute on function public.mercado_directory() to authenticated;
 grant execute on function public.mercado_person(uuid) to authenticated;
 grant execute on function public.mercado_admin_export() to authenticated;
 grant execute on function public.mercado_admin_delete_profile(uuid) to authenticated;
+grant execute on function public.mercado_can_see_photo(text) to authenticated;
 
 -- ---------- Solo asistentes ----------
 -- Ninguna cuenta se crea (ni cambia de correo) si el correo no está en la lista de asistentes o de admins.
@@ -210,8 +231,9 @@ create trigger mercado_guard_user
   for each row execute function public.mercado_guard_user();
 
 -- ---------- Fotos ----------
--- Bucket privado: cada uno sube solo a su carpeta (su id). Una foto solo se lee si es tuya
--- o si puedes ver la ficha de su dueño (mismas reglas que mercado_person). Los admins leen y borran todas.
+-- Bucket privado: cada uno sube solo a su carpeta (su id). De los demás solo se lee la foto
+-- guardada en su perfil, y solo si puedes ver su ficha (mismas reglas que mercado_person).
+-- Los admins leen y borran todas.
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values ('mercado-fotos', 'mercado-fotos', false, 1048576, array['image/jpeg', 'image/webp'])
@@ -225,7 +247,7 @@ create policy "mercado fotos read" on storage.objects for select to authenticate
   using (bucket_id = 'mercado-fotos' and (
     (storage.foldername(name))[1] = auth.uid()::text
     or public.mercado_is_admin()
-    or public.mercado_person(((storage.foldername(name))[1])::uuid) is not null
+    or public.mercado_can_see_photo(name)
   ));
 create policy "mercado fotos insert" on storage.objects for insert to authenticated
   with check (bucket_id = 'mercado-fotos' and (storage.foldername(name))[1] = auth.uid()::text);

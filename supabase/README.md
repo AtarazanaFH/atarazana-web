@@ -12,9 +12,12 @@ el login (enlace mágico), los datos y las fotos van en [Supabase](https://supab
 4. **Authentication → URL Configuration**
    - Site URL: `https://atarazana.house/mercado`
    - Redirect URLs: `https://atarazana.house/mercado`, `https://atarazana.house/en/mercado`, `http://localhost:4321/mercado`, `http://localhost:4321/en/mercado`
-5. **Correo (SMTP propio, obligatorio).** El SMTP de Supabase solo manda a miembros del equipo y unos pocos por hora.
-   - Crea cuenta en [Resend](https://resend.com) (3.000 correos/mes gratis), verifica el dominio `atarazana.house` (registros DNS) y crea una API key.
-   - Supabase → **Authentication → Emails → SMTP Settings**: host `smtp.resend.com`, puerto `465`, usuario `resend`, contraseña = API key, remitente `mercado@atarazana.house`, nombre `Atarazana Founder House`.
+5. **Correo con Gmail (obligatorio).** El correo de serie de Supabase solo manda a miembros del equipo y unos pocos por hora. Usamos la cuenta `atarazanafh@gmail.com` como servidor de correo (unos 500 correos al día, gratis).
+   - En la cuenta de Google: activa la **verificación en dos pasos** (Seguridad) y crea una **contraseña de aplicación** en [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords) con el nombre "Supabase". Son 16 letras: guárdalas, solo se ven una vez.
+   - Supabase → **Authentication → Emails → SMTP Settings** → activar *Enable custom SMTP*:
+     host `smtp.gmail.com`, puerto `465`, usuario `atarazanafh@gmail.com`, contraseña = la contraseña de aplicación (sin espacios), remitente `atarazanafh@gmail.com`, nombre `Atarazana Founder House`.
+   - Supabase → **Authentication → Rate Limits**: sube "emails per hour" a 60 o más, para poder invitar a una marea entera de una vez.
+   - Si algún día se quiere remitente `@atarazana.house`, se cambian estos campos por los de [Resend](https://resend.com) (host `smtp.resend.com`, usuario `resend`, contraseña = API key, tras verificar el dominio en DNS). No hay que tocar código.
 6. **Plantillas**: Authentication → Emails → Templates. Copia `emails/invite.html` en *Invite user* y `emails/magic-link.html` en *Magic Link* (el asunto va en el comentario de cada archivo).
 7. **Claves** (Project Settings → API):
    - En **Vercel → Settings → Environment Variables**: `PUBLIC_SUPABASE_URL` y `PUBLIC_SUPABASE_ANON_KEY`. Redeploy.
