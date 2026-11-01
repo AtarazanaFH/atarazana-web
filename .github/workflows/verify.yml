@@ -1,0 +1,89 @@
+name: Verify
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Verify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.122.0
+
+      - name: Instalar dependencias y Chromium
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium-headless-shell
+
+      - name: Arrancar Supabase local y aplicar el esquema
+        run: |
+          supabase start -x studio,postgres-meta,vector,logflare,realtime,imgproxy,supavisor
+          docker exec -i supabase_db_atarazana-web psql -U postgres -d postgres -v ON_ERROR_STOP=1 < supabase/schema.sql
+
+      - name: Preparar las variables locales de los tests
+        run: |
+          supabase status -o json > "$RUNNER_TEMP/mercado-status.json"
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import { readFileSync, writeFileSync } from 'node:fs';
+          const status = JSON.parse(readFileSync(`${process.env.RUNNER_TEMP}/mercado-status.json`, 'utf8'));
+          const url = new URL(status.API_URL);
+          assert.ok(url.protocol === 'http:' && ['127.0.0.1', 'localhost'].includes(url.hostname));
+          assert.ok(status.ANON_KEY && status.SERVICE_ROLE_KEY, 'Faltan las claves del Supabase local');
+          const values = {
+            SUPABASE_URL: url.origin,
+            SUPABASE_SERVICE_ROLE_KEY: status.SERVICE_ROLE_KEY,
+            PUBLIC_SUPABASE_URL: url.origin,
+            PUBLIC_SUPABASE_ANON_KEY: status.ANON_KEY,
+            SITE_URL: 'http://localhost:4321',
+          };
+          writeFileSync('.env.development.local', Object.entries(values).map(([key, value]) => `${key}=${value}`).join('\n') + '\n', { mode: 0o600, flag: 'wx' });
+          NODE
+
+      - name: Servir la función de invitaciones
+        run: |
+          supabase functions serve mercado-invite --no-verify-jwt > "$RUNNER_TEMP/mercado-functions.log" 2>&1 &
+          echo "$!" > "$RUNNER_TEMP/mercado-functions.pid"
+          curl --fail --silent --show-error --retry 30 --retry-delay 1 --retry-all-errors --max-time 2 \
+            -H 'Content-Type: application/json' -d '{"t":""}' \
+            http://127.0.0.1:54321/functions/v1/mercado-invite
+
+      - name: Comprobar tipos, tests y build
+        run: npm run verify
+
+      - name: Mostrar diagnóstico si falla
+        if: failure()
+        run: |
+          docker ps -a --filter name=supabase_
+          if [ -f "$RUNNER_TEMP/mercado-functions.log" ]; then
+            tail -n 80 "$RUNNER_TEMP/mercado-functions.log"
+          fi
+
+      - name: Parar Supabase
+        if: always()
+        run: |
+          if [ -f "$RUNNER_TEMP/mercado-functions.pid" ]; then
+            kill "$(cat "$RUNNER_TEMP/mercado-functions.pid")" 2>/dev/null || true
+          fi
+          supabase stop --no-backup

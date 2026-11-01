@@ -39,6 +39,7 @@ el login (enlace mágico), los datos y las fotos van en [Supabase](https://supab
 3. `node scripts/mercado.mjs import 002 ruta/al.csv --prod` → guarda la asistencia e invita a quien aún no tiene cuenta. A quien ya tenía cuenta solo se le suma la marea.
 
 Por defecto solo carga a quien hizo **check-in**. Con `--all`, a todos los aprobados.
+Si un correo falla, el comando termina con error y la invitación queda pendiente: repite el mismo comando y solo se reintentan esas. Borrar una cuenta borra también su invitación.
 `node scripts/mercado.mjs list 002 --prod` enseña quién consta en una marea.
 
 ## Qué ve cada uno
@@ -55,10 +56,12 @@ Por defecto solo carga a quien hizo **check-in**. Con `--all`, a todos los aprob
 
 ## Probar en local
 
-Con Docker: `npx supabase start -x vector,logflare,edge-runtime,realtime,imgproxy,supavisor`, aplica `schema.sql`
+Con Docker: `npx supabase start -x vector,logflare,realtime,imgproxy,supavisor`, aplica `schema.sql`
 (`docker cp supabase/schema.sql supabase_db_atarazana-web:/tmp/s.sql && docker exec supabase_db_atarazana-web psql -U postgres -f /tmp/s.sql`)
 y `node scripts/mercado-demo.mjs` crea 21 personas de prueba en las mareas 001–003 y enseña enlaces para entrar.
 Las claves locales van en `.env.development.local` (no se sube). Buzón de prueba: http://127.0.0.1:54334.
+
+Tests de los recorridos y permisos críticos: `npm test`. Preparación y alcance en [`tests/README.md`](../tests/README.md). `npm run verify` añade la comprobación de tipos de Astro y Deno y el build.
 
 ## Borrar a alguien
 

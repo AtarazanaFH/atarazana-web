@@ -73,12 +73,12 @@ function parseCsv(text) {
 }
 
 async function existingUsers() {
-  const emails = new Set();
+  const users = new Map();
   for (let page = 1; ; page++) {
     const { data, error } = await db.auth.admin.listUsers({ page, perPage: 1000 });
     if (error) fail(error.message);
-    data.users.forEach((u) => u.email && emails.add(u.email.toLowerCase()));
-    if (data.users.length < 1000) return emails;
+    data.users.forEach((u) => u.email && users.set(u.email.toLowerCase(), u));
+    if (data.users.length < 1000) return users;
   }
 }
 
@@ -102,15 +102,34 @@ async function prepareInvites() {
   try { await getMailer().verify(); } catch (e) { await closeCard(); fail(`No puedo conectar con el correo: ${e.message}`); }
 }
 
-async function invite(email, name) {
-  const { error: createError } = await db.auth.admin.createUser({ email, email_confirm: true, user_metadata: name ? { name } : undefined });
-  if (createError) { console.error(`  ✗ ${email}: ${createError.message}`); return; }
+// Cuentas cuyo correo de invitación consta como enviado.
+async function sentInvites() {
+  const { data, error } = await db.from('mercado_invites').select('user_id').not('sent_at', 'is', null);
+  if (error) fail(error.message);
+  return new Set(data.map((r) => r.user_id));
+}
+
+// Hay que invitar si no hay cuenta, o si nunca ha entrado y no consta ningún correo enviado.
+// Así, un fallo a medias (cuenta sin invitación, correo sin salir) se arregla repitiendo el comando.
+const awaitsInvite = (user, sent) => !user || (!user.last_sign_in_at && !sent.has(user.id));
+
+// Devuelve true si el correo ha salido. userId viene relleno cuando la cuenta ya existe y es un reintento.
+async function invite(email, name, userId) {
+  if (!userId) {
+    const { data, error } = await db.auth.admin.createUser({ email, email_confirm: true, user_metadata: name ? { name } : undefined });
+    if (error) { console.error(`  ✗ ${email}: ${error.message}`); return false; }
+    userId = data.user.id;
+  }
   const token = randomBytes(32).toString('hex');
-  const { error: tokenError } = await db.from('mercado_invites').insert({
-    token_hash: createHash('sha256').update(token).digest('hex'), email,
+  const tokenHash = createHash('sha256').update(token).digest('hex');
+  const { error: insertError } = await db.from('mercado_invites').insert({
+    token_hash: tokenHash, user_id: userId, email,
     expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
   });
-  if (tokenError) { console.error(`  ✗ ${email}: cuenta creada, sin invitación: ${tokenError.message}`); return; }
+  if (insertError) { console.error(`  ✗ ${email}: sin invitación: ${insertError.message}`); return false; }
+  // Solo una vez guardada la nueva, para que ningún enlace anterior siga valiendo.
+  const { error: deleteError } = await db.from('mercado_invites').delete().eq('user_id', userId).neq('token_hash', tokenHash);
+  if (deleteError) { console.error(`  ✗ ${email}: no se pudo anular la invitación anterior: ${deleteError.message}`); return false; }
   const link = `${SITE_URL}/mercado#invitacion=${token}`;
   try {
     await getMailer().sendMail({
@@ -119,9 +138,28 @@ async function invite(email, name) {
       attachments: [{ filename: 'invitacion.png', content: await renderCard(email), cid: 'invitacion', contentDisposition: 'inline' }],
       text: `Viniste a una marea, así que te invitamos a pasar. Rellena tu perfil y verás a la gente con la que coincidiste.\n\nPasar al Mercado: ${link}\n\nEste enlace es personal y solo sirve una vez. Si ya lo usaste o han pasado 30 días, pide otro en ${SITE_URL}/mercado\n\nYou came to a marea, so come on in. Fill in your profile to see the people you met there. This link is personal and works once. If you already used it or 30 days have passed, ask for a new one at ${SITE_URL}/mercado\n\nHasta la próxima marea`,
     });
-    console.log(`  ✉ invitación enviada a ${email}`);
-  } catch (e) { console.error(`  ✗ ${email}: cuenta creada, correo no enviado: ${e.message}`); }
+  } catch (e) {
+    console.error(`  ✗ ${email}: correo no enviado, queda pendiente: ${e.message}`);
+    return false;
+  }
+  const { error: sentError } = await db.from('mercado_invites').update({ sent_at: new Date().toISOString() }).eq('token_hash', tokenHash);
+  if (sentError) console.error(`  ⚠ ${email}: correo enviado, pero sin marcar: si repites la importación, le llegará otra vez.`);
+  console.log(`  ✉ invitación enviada a ${email}`);
   await sleep(400);
+  return true;
+}
+
+// Manda las invitaciones y, si alguna falla, termina con error para que se note.
+async function sendInvites(targets) {
+  if (!targets.length) return;
+  await prepareInvites();
+  let failed = 0;
+  for (const [email, name, userId] of targets) if (!(await invite(email, name, userId))) failed++;
+  await closeCard();
+  if (failed) {
+    console.error(`✗ ${failed} invitaciones sin enviar. Repite el mismo comando para reintentarlas.`);
+    process.exitCode = 1;
+  }
 }
 
 if (command === 'import') {
@@ -148,12 +186,12 @@ if (command === 'import') {
   console.log(`✓ Asistencia de la Marea ${marea} guardada.`);
 
   const known = await existingUsers();
-  const fresh = [...people].filter(([email]) => !known.has(email));
-  console.log(`${fresh.length} personas nuevas por invitar; ${people.size - fresh.length} ya tenían cuenta (solo se les suma la marea).`);
-  if (fresh.length) await prepareInvites();
-  for (const [email, name] of fresh) await invite(email, name);
-  await closeCard();
-  console.log('✓ Hecho.');
+  const sent = await sentInvites();
+  const targets = [...people].filter(([email]) => awaitsInvite(known.get(email), sent)).map(([email, name]) => [email, name, known.get(email)?.id]);
+  const retries = targets.filter(([, , id]) => id).length;
+  console.log(`${targets.length - retries} personas nuevas por invitar; ${retries} reintentos; ${people.size - targets.length} ya invitadas (solo se les suma la marea).`);
+  await sendInvites(targets);
+  console.log(process.exitCode ? '✗ Hecho, con fallos.' : '✓ Hecho.');
 } else if (command === 'admin') {
   const email = (first ?? '').toLowerCase();
   if (!email.includes('@')) fail('Uso: admin correo@ejemplo.com');
@@ -161,7 +199,9 @@ if (command === 'import') {
   const { error } = await db.from('mercado_admins').upsert({ email });
   if (error) fail(error.message);
   console.log(`✓ ${email} es admin.`);
-  if (!(await existingUsers()).has(email)) { await prepareInvites(); await invite(email); await closeCard(); }
+  const known = await existingUsers();
+  const user = known.get(email);
+  if (awaitsInvite(user, await sentInvites())) await sendInvites([[email, undefined, user?.id]]);
 } else if (command === 'list') {
   let query = db.from('mercado_attendance').select('email, marea').order('marea').order('email');
   if (first) query = query.eq('marea', first);

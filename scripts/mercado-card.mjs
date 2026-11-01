@@ -35,7 +35,8 @@ export async function openCard() {
   const context = await browser.newContext({ viewport: { width: 560, height: 540 }, deviceScaleFactor: 2, reducedMotion: 'reduce' });
   tab = await context.newPage();
   await tab.setContent(page);
-  await tab.evaluate(() => document.fonts.ready);
+  // La fuente de la línea "Para" no se usa hasta poner un correo: hay que cargarla antes de medir.
+  await tab.evaluate(async () => { await document.fonts.load('26px "Permanent Marker"', 'a@b.c'); await document.fonts.ready; });
 }
 
 export async function renderCard(email) {

@@ -227,7 +227,9 @@ Discreto y mecánico: flechas que se desplazan, subrayados que aparecen, cambios
 ## 4. El repo
 
 - **Astro 7**, sitio estático desplegado en Vercel (`vercel.json`). Node ≥ 22.12.
-- Comandos: `npm run dev`, `npm run build`, `npm run check`.
+- Comandos: `npm run dev`, `npm run build`, `npm run check`, `npm run check:functions` (la función de Supabase va aparte porque es Deno).
+- Tests de El Mercado: `npm test`, siempre contra Supabase local. Preparación y alcance en `tests/README.md`. `npm run verify` comprueba tipos, tests y build. Añade casos para fallos reales o reglas críticas; evita tests que solo repitan la implementación.
+- **Antes de hacer commit:** el hook `.githooks/pre-commit` ejecuta `npm run verify` y bloquea el commit si falla cualquier comprobación. **El hook debe estar instalado en cada clon:** `npm install` / `npm ci` lo instalan mediante `prepare`; también se instala con `npm run hooks:install`. Comprueba que `git config --get core.hooksPath` devuelve `.githooks`. Supabase local y Chromium deben estar preparados según `tests/README.md`. Corrige los fallos antes de repetir el commit; no omitas el hook con `--no-verify` ni desactivándolo. GitHub Actions ejecuta la misma verificación en cada push y PR (`.github/workflows/verify.yml`).
 - Páginas en `src/pages/` (castellano en la raíz, inglés en `src/pages/en/`). **Cualquier cambio de copy se hace en los dos idiomas.**
 - Metadatos SEO y sociales por página e idioma en `src/data/pages.ts`. Allí también está `pageUrl` y el mapa de rutas que cambian según el idioma (la página `faq` es `/preguntas` en castellano y `/en/faq` en inglés).
 - Los textos de los componentes (`Header`, `Footer`, `FinalCTA`, `MareaRow`, `MareaPage`…) están en un objeto `es`/`en` dentro de cada componente.
@@ -263,3 +265,4 @@ Discreto y mecánico: flechas que se desplazan, subrayados que aparecen, cambios
 - [ ] ¿Sobra alguna etiqueta, número o decoración que repite lo que ya se ve?
 - [ ] ¿Funciona a 360 px de ancho sin scroll horizontal?
 - [ ] ¿`npm run build` pasa?
+- [ ] Antes de hacer commit: ¿está instalado el hook y pasa `npm run verify`?

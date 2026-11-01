@@ -257,20 +257,30 @@ create policy "mercado fotos delete" on storage.objects for delete to authentica
   using (bucket_id = 'mercado-fotos' and ((storage.foldername(name))[1] = auth.uid()::text or public.mercado_is_admin()));
 
 -- Invitaciones: el botón del correo lleva un token de un solo uso (30 días) que canjea la función mercado-invite.
--- Aquí solo se guarda su hash. Sin políticas: nadie la lee desde el navegador. También se borra al rellenar el perfil.
+-- Aquí solo se guarda su hash. Sin políticas: nadie la lee desde el navegador. También se borra al rellenar el perfil
+-- y al borrar la cuenta. sent_at vacío significa que el correo no salió: el importador la vuelve a intentar.
+-- Las invitaciones anteriores a esa columna se dan por enviadas: el default solo rellena al añadirla.
 create table if not exists public.mercado_invites (
   token_hash text primary key,
+  user_id uuid not null references auth.users (id) on delete cascade,
   email text not null check (email = lower(email)),
   expires_at timestamptz not null,
+  sent_at timestamptz,
   created_at timestamptz not null default now()
 );
+alter table public.mercado_invites add column if not exists user_id uuid references auth.users (id) on delete cascade;
+alter table public.mercado_invites add column if not exists sent_at timestamptz default now();
+alter table public.mercado_invites alter column sent_at drop default;
+update public.mercado_invites i set user_id = u.id from auth.users u where i.user_id is null and lower(u.email) = i.email;
+delete from public.mercado_invites where user_id is null;
+alter table public.mercado_invites alter column user_id set not null;
 alter table public.mercado_invites enable row level security;
 revoke all on public.mercado_invites from public, anon, authenticated;
 
 create or replace function public.mercado_forget_invite() returns trigger
 language plpgsql security definer set search_path = '' as $$
 begin
-  delete from public.mercado_invites where email = (select lower(email) from auth.users where id = new.id);
+  delete from public.mercado_invites where user_id = new.id;
   return new;
 end $$;
 revoke all on function public.mercado_forget_invite() from public, anon, authenticated;
