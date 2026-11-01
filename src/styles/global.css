@@ -930,8 +930,7 @@ main { counter-reset:chapter; }
   font:700 12px/1 var(--font-mono); text-transform:uppercase; letter-spacing:0.08em; text-decoration:underline; text-underline-offset:4px;
 }
 .m-link:hover { color:var(--white); }
-.m-back { display:inline-block; margin-bottom:40px; font:700 12px/1 var(--font-mono); text-transform:uppercase; letter-spacing:0.08em; color:var(--cement); text-decoration:none; }
-.m-back:hover { color:var(--signal); }
+.m-back { margin-bottom:40px; }
 .m-label { display:block; font:500 11px/1 var(--font-mono); text-transform:uppercase; letter-spacing:0.1em; color:var(--cement); margin-bottom:12px; }
 .m-status { margin-top:16px; font:500 13px/1.5 var(--font-mono); color:var(--signal); min-height:1.5em; }
 .m-notice { margin-top:40px; padding:16px 20px; border:1px solid var(--signal); font-size:15px; line-height:1.6; }
@@ -974,7 +973,7 @@ main { counter-reset:chapter; }
 .m-submit { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
 .m-fields > .m-status { margin:0; }
 .m-links-hint { grid-column:1 / -1; margin:-4px 0 4px; font-size:14px; color:var(--cement); }
-.m-delete::after, .m-return::after { content:none; }
+.m-delete::after, .m-return::after, .m-back::after { content:none; }
 .m-admin { margin-top:48px; padding-top:24px; border-top:1px solid var(--structure); display:flex; flex-direction:column; align-items:flex-start; gap:12px; }
 .m-admin .m-delete { margin-left:0; }
 .m-admin small { font-size:14px; color:var(--cement); max-width:48ch; }
@@ -1025,7 +1024,7 @@ a.m-card:hover .m-name { color:var(--signal); }
 /* ficha de una persona */
 .m-person { display:grid; grid-template-columns:minmax(0, 360px) minmax(0, 1fr); gap:56px; align-items:start; }
 .m-person-photo .m-photo { border:1px solid var(--structure); }
-.m-person h1 { margin-bottom:16px; }
+.m-person h1 { line-height:1.2; margin-bottom:16px; }
 .m-person-role { font:500 13px/1.5 var(--font-mono); text-transform:uppercase; letter-spacing:0.08em; color:var(--cement); margin-bottom:24px; }
 .m-person-links { list-style:none; margin:40px 0; border-top:1px solid var(--structure); max-width:560px; }
 .m-person-links li { border-bottom:1px solid var(--structure); }

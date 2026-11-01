@@ -101,7 +101,7 @@ const t = mercadoCopy[lang];
 
     {view === 'persona' && <>
       <div data-state="person" hidden>
-        <a class="m-back" href={mercadoUrl(lang)}>← {mercadoName}</a>
+        <a class="cta m-back" href={mercadoUrl(lang)}>← {t.backToMercado}</a>
         <div class="m-person">
           <div class="m-person-photo" data-photo></div>
           <div>
@@ -120,7 +120,7 @@ const t = mercadoCopy[lang];
         </div>
       </div>
       <div data-state="missing" hidden>
-        <a class="m-back" href={mercadoUrl(lang)}>← {mercadoName}</a>
+        <a class="cta m-back" href={mercadoUrl(lang)}>← {t.backToMercado}</a>
         <p class="mercado-msg">{t.notFound}</p>
       </div>
     </>}
