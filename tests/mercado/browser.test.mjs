@@ -38,11 +38,117 @@ test('la invitación lleva al perfil, al directorio y al cierre de sesión, tamb
   assert.equal(await page.locator('[data-browse]').isVisible(), false);
   await page.locator('[data-gate] a').click();
   await page.locator('[data-profile]:visible').waitFor();
+
+  // Foto: una imagen roja a la izquierda y azul a la derecha, para saber qué parte queda dentro del encuadre.
+  const image = (width, height, draw) => page.evaluate(async ({ width, height, draw }) => {
+    const canvas = Object.assign(document.createElement('canvas'), { width, height });
+    const ctx = canvas.getContext('2d');
+    if (draw === 'noise') {
+      const pixels = ctx.createImageData(width, height);
+      for (let i = 0; i < pixels.data.length; i++) pixels.data[i] = i % 4 === 3 ? 255 : Math.random() * 256;
+      ctx.putImageData(pixels, 0, 0);
+    } else {
+      ctx.fillStyle = '#f00'; ctx.fillRect(0, 0, width / 2, height);
+      ctx.fillStyle = '#00f'; ctx.fillRect(width / 2, 0, width / 2, height);
+    }
+    return canvas.toDataURL('image/png').split(',')[1];
+  }, { width, height, draw });
+  const pick = async (data, mimeType = 'image/png') => {
+    await page.locator('[data-photo-input]').setInputFiles({ name: 'foto.png', mimeType, buffer: Buffer.from(data, 'base64') });
+  };
+  const edit = async (data) => { await pick(data); await page.locator('[data-photo-editor]:visible').waitFor(); };
+  const stored = async () => {
+    const files = ok(await db.storage.from('mercado-fotos').list(me.id));
+    assert.equal(files.length, 1, 'La foto anterior sin guardar no se queda en el almacén');
+    return files[0];
+  };
+  const use = async (previous) => {
+    await page.locator('[data-photo-use]').click();
+    await page.waitForFunction((old) => { const img = document.querySelector('[data-photo-preview] img'); return img?.complete && img.naturalWidth && !img.src.includes(old); }, previous ?? '~');
+    return stored();
+  };
+  // Mira el resultado subido, no el lienzo: tamaño y color arriba, abajo, a izquierda y a derecha.
+  const inspect = async (file) => {
+    const blob = ok(await db.storage.from('mercado-fotos').download(`${me.id}/${file.name}`));
+    const data = Buffer.from(await blob.arrayBuffer()).toString('base64');
+    return page.evaluate(async (data) => {
+      const bytes = Uint8Array.from(atob(data), (c) => c.charCodeAt(0));
+      const img = await createImageBitmap(new Blob([bytes], { type: 'image/jpeg' }));
+      const canvas = Object.assign(document.createElement('canvas'), { width: img.width, height: img.height });
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      const color = (x, y) => { const [r, , b] = ctx.getImageData(x, y, 1, 1).data; return r > b ? 'rojo' : 'azul'; };
+      return { width: img.width, height: img.height, jpeg: bytes[0] === 0xff && bytes[1] === 0xd8, top: color(240, 10), bottom: color(240, 590), left: color(10, 300), right: color(470, 300) };
+    }, data);
+  };
+  const halves = await image(1600, 800);
+
+  await pick(Buffer.from('no es una imagen').toString('base64'));
+  await page.locator('[data-photo-status]', { hasText: /\S/ }).waitFor();
+  assert.equal(await page.locator('[data-photo-editor]').isVisible(), false, 'Un archivo que no es una imagen no abre el editor');
+
+  await edit(halves);
+  assert.equal(await page.locator('[data-save]').isDisabled(), true, 'No se guarda el perfil a medias de editar la foto');
+  // Espera a que acabe la transición de página: mientras dura, el ratón no llega al lienzo.
+  await page.locator('[data-photo-editor] canvas').click({ trial: true });
+  const box = await page.locator('[data-photo-editor] canvas').boundingBox();
+  assert.ok(box.x + box.width <= 360, 'El editor cabe a 360 px');
+  await page.mouse.move(box.x + 20, box.y + 150);
+  await page.mouse.down();
+  await page.mouse.move(box.x + 220, box.y + 150, { steps: 5 });
+  await page.mouse.up();
+  let file = await use();
+  assert.deepEqual(await inspect(file), { width: 480, height: 600, jpeg: true, top: 'rojo', bottom: 'rojo', left: 'rojo', right: 'rojo' }, 'Arrastrar elige la parte izquierda');
+
+  await edit(halves);
+  await page.locator('[data-photo-rotate]').click();
+  const rotated = await use(file.name);
+  const turned = await inspect(rotated);
+  assert.deepEqual([turned.top, turned.bottom], ['rojo', 'azul'], 'Girar a la derecha lleva la izquierda arriba');
+
+  await edit(halves);
+  await page.locator('[data-photo-zoom]').fill('4');
+  const zoomed = await use(rotated.name);
+  const center = await inspect(zoomed);
+  assert.deepEqual([center.left, center.right], ['rojo', 'azul'], 'El zoom mantiene el centro');
+
+  await edit(halves);
+  await page.locator('[data-photo-cancel]').click();
+  assert.equal((await stored()).name, zoomed.name, 'Cancelar no cambia la foto');
+  assert.equal(await page.locator('[data-save]').isDisabled(), false);
+
+  await edit(await image(480, 600, 'noise'));
+  const heavy = await use(zoomed.name);
+  assert.ok(heavy.metadata.size <= 200 * 1024, `Foto de ${heavy.metadata.size} bytes`);
+
+  // Con la subida en curso no se puede guardar, o el perfil se quedaría sin la foto nueva.
+  let release;
+  const held = new Promise((resolve) => { release = resolve; });
+  let uploading;
+  const started = new Promise((resolve) => { uploading = resolve; });
+  await page.route('**/storage/v1/object/mercado-fotos/**', async (route) => {
+    if (route.request().method() === 'POST') { uploading(); await held; }
+    await route.fallback();
+  });
+  await edit(halves);
+  await page.locator('[data-photo-use]').click();
+  await started;
+  assert.equal(await page.locator('[data-save]').isDisabled(), true, 'No se guarda con la subida en curso');
+  assert.equal(await page.locator('[data-photo-label]').isVisible(), false, 'No se elige otra foto con la subida en curso');
+  assert.equal(await page.locator('[data-photo-remove]').isVisible(), false, 'No se quita la foto con la subida en curso');
+  release();
+  await page.locator('[data-save]:not([disabled])').waitFor();
+  await page.unroute('**/storage/v1/object/mercado-fotos/**');
+  const uploaded = await stored();
+  assert.notEqual(uploaded.name, heavy.name);
+
   await page.locator('[name="name"]').fill('Persona de prueba');
   await page.locator('[name="website"]').fill('example.org');
   await page.locator('[data-save]').click();
   await page.waitForFunction(() => document.querySelector('[name="website"]')?.value === 'https://example.org/');
-  assert.equal(ok(await db.from('mercado_profiles').select('name').eq('id', me.id).single()).name, 'Persona de prueba');
+  const savedProfile = ok(await db.from('mercado_profiles').select('name, photo').eq('id', me.id).single());
+  assert.equal(savedProfile.name, 'Persona de prueba');
+  assert.equal(savedProfile.photo, `${me.id}/${uploaded.name}`, 'El perfil guarda la foto recién subida');
   await page.locator('.m-return').click();
   const peerLink = page.locator(`[data-grid] a[href$="id=${peer.id}"]`);
   await peerLink.waitFor();

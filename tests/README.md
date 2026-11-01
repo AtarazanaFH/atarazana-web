@@ -29,7 +29,7 @@ Vercel sigue desplegando desde GitHub según la configuración existente del pro
 | `import.test.mjs` | CSV con duplicados y check-in, dry-run sin escrituras, fallos de BD y SMTP, recuperación al repetir el comando y ausencia de reenvíos a quien ya recibió la invitación o entró. `--no-invite` no crea cuentas ni envía, y una opción desconocida no escribe ni envía. |
 | `migration.test.mjs` | Las invitaciones antiguas siguen constando como enviadas. Reaplicar el esquema conserva los pendientes nuevos. |
 | `card.test.mjs` | El correo cabe en la primera tarjeta, con su tipografía real. Sin snapshots de píxeles. |
-| `browser.test.mjs` | Entrar desde la invitación, completar el perfil, abrir el directorio y una ficha, y cerrar sesión; castellano e inglés, texto de BD como texto y ancho de 360 px. |
+| `browser.test.mjs` | Entrar desde la invitación, encuadrar, girar y subir una foto con el peso limitado, completar el perfil, abrir el directorio y una ficha, y cerrar sesión; castellano e inglés, texto de BD como texto y ancho de 360 px. |
 
 ## Preparación
 

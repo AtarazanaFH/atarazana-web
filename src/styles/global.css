@@ -983,6 +983,14 @@ main { counter-reset:chapter; }
 .m-photo-field { display:flex; flex-direction:column; align-items:flex-start; gap:16px; }
 .m-upload { cursor:pointer; }
 .m-upload:focus-within { outline:2px solid var(--beacon); outline-offset:3px; }
+.m-photo-field .m-status { margin:0; min-height:0; max-width:240px; }
+.m-photo-field .m-status:empty { display:none; }
+.m-photo-editor { display:flex; flex-direction:column; align-items:flex-start; gap:16px; width:240px; max-width:100%; }
+.m-photo-editor canvas { display:block; width:100%; aspect-ratio:4 / 5; border:1px solid var(--structure); cursor:grab; touch-action:none; }
+.m-photo-editor canvas:active { cursor:grabbing; }
+.m-photo-editor .m-field { width:100%; }
+.m-photo-editor input[type="range"] { width:100%; padding:0; border:0; accent-color:var(--signal); }
+.m-photo-hint { margin:0; font-size:14px; color:var(--cement); }
 
 /* foto: en color, 4:5; sin foto, iniciales */
 .m-photo { display:block; aspect-ratio:4 / 5; width:100%; background:var(--black-2); border-bottom:1px solid var(--structure); overflow:hidden; position:relative; }
