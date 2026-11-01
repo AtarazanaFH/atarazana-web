@@ -255,3 +255,29 @@ create policy "mercado fotos update" on storage.objects for update to authentica
   using (bucket_id = 'mercado-fotos' and (storage.foldername(name))[1] = auth.uid()::text);
 create policy "mercado fotos delete" on storage.objects for delete to authenticated
   using (bucket_id = 'mercado-fotos' and ((storage.foldername(name))[1] = auth.uid()::text or public.mercado_is_admin()));
+
+-- Invitaciones: el botón del correo lleva un token de un solo uso (30 días) que canjea la función mercado-invite.
+-- Aquí solo se guarda su hash. Sin políticas: nadie la lee desde el navegador. También se borra al rellenar el perfil.
+create table if not exists public.mercado_invites (
+  token_hash text primary key,
+  email text not null check (email = lower(email)),
+  expires_at timestamptz not null,
+  created_at timestamptz not null default now()
+);
+alter table public.mercado_invites enable row level security;
+revoke all on public.mercado_invites from public, anon, authenticated;
+
+create or replace function public.mercado_forget_invite() returns trigger
+language plpgsql security definer set search_path = '' as $$
+begin
+  delete from public.mercado_invites where email = (select lower(email) from auth.users where id = new.id);
+  return new;
+end $$;
+revoke all on function public.mercado_forget_invite() from public, anon, authenticated;
+
+drop trigger if exists mercado_forget_invite on public.mercado_profiles;
+create trigger mercado_forget_invite after insert on public.mercado_profiles
+  for each row execute function public.mercado_forget_invite();
+
+-- La cuenta de Atarazana es admin siempre. Volver a ejecutar este archivo la restaura si alguien la quita.
+insert into public.mercado_admins (email) values ('atarazanafh@gmail.com') on conflict do nothing;

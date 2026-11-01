@@ -205,7 +205,7 @@ h1, h2 {
 .pass-hint::before { content:"↔"; color:var(--signal); margin-right:8px; }
 /* cinta */
 .pass::before {
-  content:""; position:absolute; bottom:calc(100% - 20px); left:50%; z-index:-1;
+  content:""; position:absolute; bottom:calc(100% - 14px); left:50%; z-index:-1;
   width:30px; height:600px; transform:translateX(-50%);
   background:
     linear-gradient(90deg, transparent 3px, rgba(6, 20, 24, 0.35) 3px 4px, transparent 4px calc(100% - 4px), rgba(6, 20, 24, 0.35) calc(100% - 4px) calc(100% - 3px), transparent 0),

@@ -1,9 +1,43 @@
-<!-- Supabase → Authentication → Email Templates → Invite user. Asunto: "Ya estás en El Mercado de Atarazana" -->
-<div style="background:#061418;color:#e8f3f1;font-family:Helvetica,Arial,sans-serif;padding:40px 28px;max-width:560px">
-  <p style="font-family:monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#8aa6aa;margin:0 0 24px">Atarazana Founder House</p>
-  <h1 style="font-size:32px;line-height:1.05;text-transform:uppercase;margin:0 0 20px">Ya estás en El Mercado</h1>
-  <p style="font-size:16px;line-height:1.6;margin:0 0 16px">Viniste a una marea. Ahí puedes ver a la gente con la que coincidiste y rellenar tu perfil para que te encuentren a ti.</p>
-  <p style="margin:28px 0"><a href="{{ .ConfirmationURL }}" style="background:#34e0c2;color:#061418;font-family:monospace;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:.06em;text-decoration:none;padding:14px 20px;display:inline-block">Entrar →</a></p>
-  <p style="font-size:14px;line-height:1.6;color:#8aa6aa;margin:0 0 28px">You came to a marea. Use the link above to see the people you met there and fill in your own profile.</p>
-  <p style="font-family:monospace;font-size:12px;color:#8aa6aa;margin:0">Hasta la próxima marea · Until the next tide</p>
-</div>
+<!-- La manda scripts/mercado.mjs con Gmail, no Supabase. Asunto: "Te invitamos a pasar al Mercado de Atarazana" -->
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="supported-color-schemes" content="dark">
+<title>Pasa al Mercado</title>
+</head>
+<body style="margin:0;padding:0;background:#061418" bgcolor="#061418">
+<div style="display:none;max-height:0;overflow:hidden;color:#061418">Te invitamos a pasar. Rellena tu perfil y verás a la gente con la que coincidiste.</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#061418" style="background:#061418">
+<tr><td align="center" style="padding:24px 12px">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#061418" style="max-width:560px;background:#061418;border:1px solid #1e3a40">
+    <tr><td bgcolor="#0a1d22" style="background:#0a1d22;border-bottom:1px solid #1e3a40;font-size:0;line-height:0">
+      <img src="cid:invitacion" width="560" alt="Invitación a El Mercado de Atarazana Founder House para {{ .Email }}. Acceso privado, en Málaga." style="display:block;border:0;width:100%;height:auto;color:#e8f3f1;font-family:Inter,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.5">
+    </td></tr>
+    <tr><td style="padding:36px 28px 0">
+      <img src="https://atarazana.house/assets/email/titulo-invitacion.png" width="400" alt="Pasa al Mercado" style="display:block;border:0;width:100%;max-width:400px;height:auto;color:#e8f3f1;font-family:Impact,'Arial Narrow',Arial,sans-serif;font-size:44px;line-height:1.05;text-transform:uppercase">
+    </td></tr>
+    <tr><td style="padding:24px 28px 0;color:#e8f3f1;font-family:Inter,Helvetica,Arial,sans-serif;font-size:17px;line-height:1.55">
+      Viniste a una marea, así que te invitamos a pasar. Rellena tu perfil y verás a la gente con la que coincidiste.
+    </td></tr>
+    <tr><td style="padding:28px 28px 20px">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+        <td bgcolor="#34e0c2" style="background:#34e0c2"><a href="{{ .ConfirmationURL }}" style="display:block;padding:18px 20px;color:#061418;font-family:'IBM Plex Mono',Menlo,Consolas,monospace;font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-decoration:none">Pasar al Mercado &rarr;</a></td>
+      </tr></table>
+    </td></tr>
+    <tr><td style="padding:0 28px 32px;color:#e8f3f1;font-family:Inter,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55">
+      Este botón es personal y solo sirve una vez. Si ya lo usaste o han pasado 30 días, pide otro enlace en <a href="https://atarazana.house/mercado" style="color:#34e0c2">atarazana.house/mercado</a>.
+    </td></tr>
+    <tr><td style="padding:20px 28px;border-top:1px solid #1e3a40;color:#8aa6aa;font-family:Inter,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.55">
+      You came to a marea, so come on in. Fill in your profile to see the people you met there. This button is personal and works once. If you already used it or 30 days have passed, ask for a new link at <a href="https://atarazana.house/mercado" style="color:#34e0c2">atarazana.house/mercado</a>.
+    </td></tr>
+    <tr><td style="padding:20px 28px;border-top:1px solid #1e3a40;color:#8aa6aa;font-family:'IBM Plex Mono',Menlo,Consolas,monospace;font-size:12px;line-height:1.7">
+      Hasta la próxima marea · Until the next tide
+    </td></tr>
+  </table>
+</td></tr>
+</table>
+</body>
+</html>

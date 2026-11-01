@@ -65,10 +65,19 @@ async function indexView({ root, lang, t, sb }: Ctx) {
   // El enlace mágico vuelve con el token (o con un error) en el hash.
   const hash = new URLSearchParams(location.hash.slice(1));
   const linkError = hash.get('error_code') || hash.get('error');
+  const token = hash.get('invitacion');
   const s = await session(sb);
   if (location.hash) history.replaceState(null, '', location.pathname + location.search);
 
-  if (!s) return loginView({ root, lang, t, sb }, !!linkError);
+  if (!s) {
+    // Botón de la invitación: se canjea aquí, con un POST, y lleva dentro sin pasar por el correo.
+    if (token) {
+      const { data } = await sb.functions.invoke('mercado-invite', { body: { t: token } });
+      if (data?.url) { location.replace(data.url); return; }
+      return loginView({ root, lang, t, sb }, true, data?.email ?? '');
+    }
+    return loginView({ root, lang, t, sb }, !!linkError);
+  }
 
   const [{ data, error }, own] = await Promise.all([
     sb.rpc('mercado_directory'),
@@ -147,12 +156,14 @@ async function indexView({ root, lang, t, sb }: Ctx) {
   render(null);
 }
 
-function loginView({ root, lang, t, sb }: Ctx, expired: boolean) {
+function loginView({ root, lang, t, sb }: Ctx, expired: boolean, invited = '') {
   show(root, 'login');
   const form = $<HTMLFormElement>(root, '[data-login]');
   const status = $(root, '[data-status]');
   const button = $<HTMLButtonElement>(form, 'button');
   status.textContent = expired ? t.expired : '';
+  // Si la invitación ya no vale, el correo sale ya escrito.
+  form.querySelector<HTMLInputElement>('input[name="email"]')!.value = invited;
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = String(new FormData(form).get('email') ?? '').trim().toLowerCase();

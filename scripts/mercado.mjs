@@ -10,9 +10,12 @@
 //   node scripts/mercado.mjs import 001 asistentes.csv --all          todos los aprobados, no solo check-in
 //   node scripts/mercado.mjs admin atarazanafh@gmail.com [--prod]
 //   node scripts/mercado.mjs list 001 [--prod]
+import { createHash, randomBytes } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { createInterface } from 'node:readline/promises';
 import { createClient } from '@supabase/supabase-js';
+import nodemailer from 'nodemailer';
+import { closeCard, openCard, renderCard } from './mercado-card.mjs';
 
 const prod = process.argv.includes('--prod');
 const envFile = prod ? '.env.prod' : '.env.development.local';
@@ -41,6 +44,7 @@ const [command, ...args] = process.argv.slice(2);
 const flags = new Set(args.filter((a) => a.startsWith('--')));
 const [first, second] = args.filter((a) => !a.startsWith('--'));
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const FROM = 'atarazanafh@gmail.com';
 
 
 // CSV con comillas, comas y saltos de línea dentro de los campos.
@@ -78,13 +82,45 @@ async function existingUsers() {
   }
 }
 
+// La invitación la mandamos nosotros, no Supabase, porque Supabase solo tiene una caducidad para todos sus enlaces.
+// El botón lleva a /mercado con un token de un solo uso (30 días), que la página canjea en la función mercado-invite.
+const template = readFileSync('supabase/emails/invite.html', 'utf8');
+const subject = template.match(/Asunto: "(.+?)"/)[1];
+const html = template.replace(/^<!--.*?-->\s*/s, '');
+const escapeHtml = (v) => v.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+let mailer;
+function getMailer() {
+  if (mailer) return mailer;
+  if (!prod) return (mailer = nodemailer.createTransport({ host: '127.0.0.1', port: Number(process.env.LOCAL_SMTP_PORT ?? 54335), secure: false }));
+  if (!process.env.GMAIL_APP_PASSWORD) fail('Falta GMAIL_APP_PASSWORD en .env.prod');
+  return (mailer = nodemailer.createTransport({ host: 'smtp.gmail.com', port: 465, secure: true, auth: { user: FROM, pass: process.env.GMAIL_APP_PASSWORD } }));
+}
+
+// Comprueba el navegador y el correo antes de crear ninguna cuenta.
+async function prepareInvites() {
+  try { await openCard(); } catch (e) { fail(`No puedo pintar la tarjeta: ${e.message.split('\n')[0]}. Prueba: npx playwright install chromium-headless-shell`); }
+  try { await getMailer().verify(); } catch (e) { await closeCard(); fail(`No puedo conectar con el correo: ${e.message}`); }
+}
+
 async function invite(email, name) {
-  const { error } = await db.auth.admin.inviteUserByEmail(email, {
-    redirectTo: `${SITE_URL}/mercado`,
-    data: name ? { name } : undefined,
+  const { error: createError } = await db.auth.admin.createUser({ email, email_confirm: true, user_metadata: name ? { name } : undefined });
+  if (createError) { console.error(`  ✗ ${email}: ${createError.message}`); return; }
+  const token = randomBytes(32).toString('hex');
+  const { error: tokenError } = await db.from('mercado_invites').insert({
+    token_hash: createHash('sha256').update(token).digest('hex'), email,
+    expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
   });
-  if (error) console.error(`  ✗ ${email}: ${error.message}`);
-  else console.log(`  ✉ invitación enviada a ${email}`);
+  if (tokenError) { console.error(`  ✗ ${email}: cuenta creada, sin invitación: ${tokenError.message}`); return; }
+  const link = `${SITE_URL}/mercado#invitacion=${token}`;
+  try {
+    await getMailer().sendMail({
+      from: `"Atarazana Founder House" <${FROM}>`, to: email, subject,
+      html: html.replaceAll('{{ .ConfirmationURL }}', link).replaceAll('{{ .Email }}', escapeHtml(email)),
+      attachments: [{ filename: 'invitacion.png', content: await renderCard(email), cid: 'invitacion', contentDisposition: 'inline' }],
+      text: `Viniste a una marea, así que te invitamos a pasar. Rellena tu perfil y verás a la gente con la que coincidiste.\n\nPasar al Mercado: ${link}\n\nEste enlace es personal y solo sirve una vez. Si ya lo usaste o han pasado 30 días, pide otro en ${SITE_URL}/mercado\n\nYou came to a marea, so come on in. Fill in your profile to see the people you met there. This link is personal and works once. If you already used it or 30 days have passed, ask for a new one at ${SITE_URL}/mercado\n\nHasta la próxima marea`,
+    });
+    console.log(`  ✉ invitación enviada a ${email}`);
+  } catch (e) { console.error(`  ✗ ${email}: cuenta creada, correo no enviado: ${e.message}`); }
   await sleep(400);
 }
 
@@ -114,7 +150,9 @@ if (command === 'import') {
   const known = await existingUsers();
   const fresh = [...people].filter(([email]) => !known.has(email));
   console.log(`${fresh.length} personas nuevas por invitar; ${people.size - fresh.length} ya tenían cuenta (solo se les suma la marea).`);
+  if (fresh.length) await prepareInvites();
   for (const [email, name] of fresh) await invite(email, name);
+  await closeCard();
   console.log('✓ Hecho.');
 } else if (command === 'admin') {
   const email = (first ?? '').toLowerCase();
@@ -123,7 +161,7 @@ if (command === 'import') {
   const { error } = await db.from('mercado_admins').upsert({ email });
   if (error) fail(error.message);
   console.log(`✓ ${email} es admin.`);
-  if (!(await existingUsers()).has(email)) await invite(email);
+  if (!(await existingUsers()).has(email)) { await prepareInvites(); await invite(email); await closeCard(); }
 } else if (command === 'list') {
   let query = db.from('mercado_attendance').select('email, marea').order('marea').order('email');
   if (first) query = query.eq('marea', first);

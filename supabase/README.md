@@ -5,31 +5,32 @@ el login (enlace mágico), los datos y las fotos van en [Supabase](https://supab
 
 ## Una vez
 
-1. **Crear el proyecto** en supabase.com (región Europa, p. ej. `eu-west-3` París).
+1. **Crear el proyecto** en supabase.com (región Europa). El de producción está en `eu-west-1`.
 2. **SQL Editor** → pega y ejecuta `supabase/schema.sql`. Se puede volver a ejecutar si cambia.
 3. **Authentication → Sign In / Providers**
    - Email: activado. **"Allow new users to sign up": desactivado** (solo entra quien invitamos).
 4. **Authentication → URL Configuration**
    - Site URL: `https://atarazana.house/mercado`
-   - Redirect URLs: `https://atarazana.house/mercado`, `https://atarazana.house/en/mercado`, `http://localhost:4321/mercado`, `http://localhost:4321/en/mercado`
+   - Redirect URLs: `https://atarazana.house/mercado`, `https://atarazana.house/en/mercado`
 5. **Correo con Gmail (obligatorio).** El correo de serie de Supabase solo manda a miembros del equipo y unos pocos por hora. Usamos la cuenta `atarazanafh@gmail.com` como servidor de correo (unos 500 correos al día, gratis).
    - En la cuenta de Google: activa la **verificación en dos pasos** (Seguridad) y crea una **contraseña de aplicación** en [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords) con el nombre "Supabase". Son 16 letras: guárdalas, solo se ven una vez.
    - Supabase → **Authentication → Emails → SMTP Settings** → activar *Enable custom SMTP*:
      host `smtp.gmail.com`, puerto `465`, usuario `atarazanafh@gmail.com`, contraseña = la contraseña de aplicación (sin espacios), remitente `atarazanafh@gmail.com`, nombre `Atarazana Founder House`.
-   - Supabase → **Authentication → Rate Limits**: sube "emails per hour" a 60 o más, para poder invitar a una marea entera de una vez.
+   - Supabase → **Authentication → Rate Limits**: deja "emails per hour" en 100. Cuenta los enlaces que pide la gente para entrar; las invitaciones las manda el script directamente con Gmail. No lo subas mucho más: Gmail corta hacia los 500 al día, y ese tope incluye las dos cosas.
    - Si algún día se quiere remitente `@atarazana.house`, se cambian estos campos por los de [Resend](https://resend.com) (host `smtp.resend.com`, usuario `resend`, contraseña = API key, tras verificar el dominio en DNS). No hay que tocar código.
-6. **Plantillas**: Authentication → Emails → Templates. Copia `emails/invite.html` en *Invite user* y `emails/magic-link.html` en *Magic Link* (el asunto va en el comentario de cada archivo).
+6. **Plantillas**: Authentication → Emails → Templates. Copia `emails/magic-link.html` en *Magic Link* (el asunto va en el comentario del archivo). `emails/invite.html` no se pega en Supabase: la manda `scripts/mercado.mjs` con Gmail, usando `GMAIL_APP_PASSWORD` de `.env.prod`. Así la cuenta nace confirmada y la invitación dura 30 días y sirve una vez: su botón lleva a `/mercado`, que la canjea en la función `mercado-invite` y deja a la persona dentro de un clic. Deja de valer al usarla o al rellenar el perfil. Si ya no vale, se pide un enlace en `/mercado`, y ese dura una hora (Authentication → Email OTP Expiration: 3600). Para publicar la función: `SUPABASE_ACCESS_TOKEN=… npx supabase functions deploy mercado-invite --project-ref qdjgqywjqwulzblafnof --no-verify-jwt --use-api`. Las imágenes de los correos están en `public/assets/email/`, así que tienen que estar publicadas antes de enviarlos. La tarjeta de la invitación se pinta para cada persona, con su correo (`scripts/mercado-card.mjs`). Necesita Chromium: `npx playwright install chromium-headless-shell`, una vez. Si cambia el nombre "El Mercado", hay que cambiarlo en esa tarjeta y regenerar `titulo-invitacion.png`.
 7. **Claves** (Project Settings → API):
    - En **Vercel → Settings → Environment Variables**: `PUBLIC_SUPABASE_URL` y `PUBLIC_SUPABASE_ANON_KEY`. Redeploy.
    - En tu ordenador, copia `.env.prod.example` a `.env.prod` y rellénalo, incluida la `SUPABASE_SERVICE_ROLE_KEY`. **Esa clave salta todas las reglas: nunca en Vercel, nunca en el repo.**
-8. **Admin**: `node scripts/mercado.mjs admin atarazanafh@gmail.com --prod` (te llega la invitación).
+8. **Función de la invitación**: publica `mercado-invite` con el comando del paso 6.
+9. **Admin**: `atarazanafh@gmail.com` es admin siempre (lo pone `schema.sql`). `node scripts/mercado.mjs admin atarazanafh@gmail.com --prod` le manda la invitación.
 
 ## Producción se cuida
 
 - `npm run dev` solo habla con el Supabase local (`.env.development.local`). Si ahí apareciera la URL de producción, El Mercado no se conecta y avisa en la consola. Y la web publicada nunca se conecta al local.
 - `scripts/mercado.mjs` trabaja en local por defecto. Producción solo con `--prod`, que lee `.env.prod` y pide escribir el nombre del proyecto antes de escribir nada. `--dry-run` no toca ninguna base de datos.
 - `scripts/mercado-demo.mjs` se niega a funcionar si no es contra localhost.
-- El esquema de producción se aplica a mano en el SQL Editor. No uses `supabase link` ni `supabase db push`.
+- El esquema de producción se aplica a mano en el SQL Editor o, con `SUPABASE_ACCESS_TOKEN` en `.env.prod`, por la API de gestión (ver "Acceso de agentes" en `AGENTS.md`). No uses `supabase link` ni `supabase db push`.
 
 ## Después de cada marea
 

@@ -108,7 +108,7 @@ enabled = true
 # Port to use for the email testing server web interface.
 port = 54334
 # Uncomment to expose additional ports for testing user applications that send emails.
-# smtp_port = 54325
+smtp_port = 54335
 # pop3_port = 54326
 # admin_email = "admin@email.com"
 # sender_name = "Admin"
@@ -416,3 +416,10 @@ enabled = true
 # formatted with uppercase keywords, indent 2, max width 180, trailing commas,
 # and column/key alignment. Set to "null" to emit raw, unformatted SQL.
 # format_options = "{\"keywordCase\":\"upper\",\"indent\":2,\"maxWidth\":180,\"commaStyle\":\"trailing\"}"
+
+# El botón de la invitación: se abre desde un correo, sin sesión.
+[functions.mercado-invite]
+verify_jwt = false
+
+[edge_runtime.secrets]
+MERCADO_SITE_URL = "http://localhost:4321"
