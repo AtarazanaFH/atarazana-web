@@ -1,0 +1,123 @@
+---
+import type { Locale } from '../data/pages';
+import { mercadoCopy, mercadoName, mercadoUrl } from '../data/mercado';
+interface Props { lang: Locale; view: 'index' | 'perfil' | 'persona'; }
+const { lang, view } = Astro.props;
+const t = mercadoCopy[lang];
+---
+<section class="hero mercado reveal" data-mercado={view} data-lang={lang}>
+  <div class="wrap">
+    <p class="mercado-msg" data-state="loading">{t.loading}</p>
+    <p class="mercado-msg" data-state="off" hidden>{t.off}</p>
+
+    {view === 'index' && <>
+      <div data-state="login" hidden>
+        <p class="kicker">{t.loginKicker}</p>
+        <h1>{mercadoName}</h1>
+        <p class="lead">{t.loginLead}</p>
+        <form class="m-form m-login" data-login>
+          <label class="m-field"><span>{t.email}</span><input type="email" name="email" required autocomplete="email" inputmode="email" /><small>{t.emailHint}</small></label>
+          <button class="cta" type="submit">{t.send}</button>
+        </form>
+        <p class="m-status" data-status role="status" aria-live="polite"></p>
+      </div>
+
+      <div data-state="dir" hidden>
+        <div class="m-head">
+          <div>
+            <h1>{mercadoName}</h1>
+            <p class="lead" data-lead>{t.dirLead}</p>
+          </div>
+          <div class="m-actions">
+            <a class="cta-ghost" href={mercadoUrl(lang, 'perfil')}>{t.myProfile}</a>
+            <button class="cta-ghost" type="button" data-export hidden>{t.exportCsv}</button>
+            <button class="m-link" type="button" data-signout>{t.signOut}</button>
+          </div>
+        </div>
+        <div class="m-notice" data-notice hidden></div>
+        <div class="m-gate" data-gate hidden>
+          <p class="m-gate-title">{t.gateTitle}</p>
+          <p data-gate-lead></p>
+          <a class="cta" href={mercadoUrl(lang, 'perfil')}>{t.fillIt}</a>
+        </div>
+        <div data-browse hidden>
+          <div class="m-bar">
+            <div class="m-filters" data-filters role="group" aria-label={t.filter}></div>
+            <p class="m-count" data-count></p>
+          </div>
+          <ul class="m-grid" data-grid></ul>
+          <p class="m-empty" data-empty hidden>{t.empty}</p>
+        </div>
+      </div>
+    </>}
+
+    {view === 'perfil' && (
+      <div data-state="edit" hidden>
+        <h1>{t.editKicker}</h1>
+        <p class="lead">{t.editLead}</p>
+        <form class="m-form m-profile" data-profile novalidate>
+          <div class="m-photo-field">
+            <span class="m-label">{t.photo}</span>
+            <div data-photo-preview></div>
+            <label class="cta-ghost m-upload"><span data-photo-label>{t.photoAdd}</span><input type="file" accept="image/*" data-photo-input class="sr-only" /></label>
+            <button class="m-link" type="button" data-photo-remove hidden>{t.photoRemove}</button>
+          </div>
+          <div class="m-fields">
+            <label class="m-field"><span>{t.name} *</span><input name="name" required maxlength="80" autocomplete="name" /></label>
+            <label class="m-field"><span>{t.role}</span><input name="role" maxlength="80" placeholder={t.rolePh} /></label>
+            <label class="m-field"><span>{t.company}</span><input name="company" maxlength="80" autocomplete="organization" /></label>
+            <label class="m-field"><span>{t.building}</span><textarea name="building" maxlength="280" rows="3" placeholder={t.buildingPh}></textarea></label>
+            <fieldset class="m-links" data-links-field>
+              <legend class="m-label">{t.links} *</legend>
+              <p class="m-links-hint">{t.linksHint}</p>
+              <label class="m-field"><span>Web</span><input name="website" maxlength="200" inputmode="url" placeholder="tuweb.com" /></label>
+              <label class="m-field"><span>LinkedIn</span><input name="linkedin" maxlength="200" inputmode="url" placeholder="linkedin.com/in/…" /></label>
+              <label class="m-field"><span>X</span><input name="x" maxlength="200" placeholder="@…" /></label>
+              <label class="m-field"><span>GitHub</span><input name="github" maxlength="200" placeholder="usuario" /></label>
+            </fieldset>
+            <div class="m-incognito">
+              <button class="m-toggle" type="button" data-incognito aria-pressed="false"><span class="m-toggle-switch" aria-hidden="true"></span>{t.incognito}<b data-incognito-state></b></button>
+              <small data-incognito-hint></small>
+            </div>
+            <p class="m-status" data-status role="status" aria-live="polite"></p>
+            <div class="m-submit">
+              <button class="cta" type="submit" data-save>{t.save}</button>
+              <a class="cta-ghost m-return" href={mercadoUrl(lang)}>← {t.backToMercado}</a>
+              <button class="cta-ghost m-delete" type="button" data-remove hidden>{t.remove}</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    )}
+
+    {view === 'persona' && <>
+      <div data-state="person" hidden>
+        <a class="m-back" href={mercadoUrl(lang)}>← {mercadoName}</a>
+        <div class="m-person">
+          <div class="m-person-photo" data-photo></div>
+          <div>
+            <h1 data-name></h1>
+            <p class="m-person-role" data-role></p>
+            <p class="lead" data-building></p>
+            <ul class="m-person-links" data-links></ul>
+            <p class="m-label" data-shared-label>{t.shared}</p>
+            <ul class="m-person-mareas" data-shared></ul>
+            <div class="m-admin" data-admin hidden>
+              <p class="m-label">Admin</p>
+              <button class="cta-ghost m-delete" type="button" data-admin-delete>{t.adminDelete}</button>
+              <small>{t.adminDeleteHint}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-state="missing" hidden>
+        <a class="m-back" href={mercadoUrl(lang)}>← {mercadoName}</a>
+        <p class="mercado-msg">{t.notFound}</p>
+      </div>
+    </>}
+  </div>
+</section>
+
+<script>
+  import '../scripts/mercado.ts';
+</script>

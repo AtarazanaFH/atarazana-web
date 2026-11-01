@@ -1,0 +1,43 @@
+<!-- Supabase → Authentication → Emails → Templates → Magic Link. Asunto: "Tu enlace para entrar en El Mercado" -->
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="supported-color-schemes" content="dark">
+<title>Tu enlace para entrar</title>
+</head>
+<body style="margin:0;padding:0;background:#061418" bgcolor="#061418">
+<div style="display:none;max-height:0;overflow:hidden;color:#061418">Caduca en una hora y solo sirve una vez.</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#061418" style="background:#061418">
+<tr><td align="center" style="padding:24px 12px">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#061418" style="max-width:560px;background:#061418;border:1px solid #1e3a40">
+    <tr><td style="padding:20px 28px;border-bottom:1px solid #1e3a40">
+      <img src="https://atarazana.house/assets/email/logo.png" width="36" height="36" alt="Atarazana Founder House" style="display:block;border:0">
+    </td></tr>
+    <tr><td style="padding:36px 28px 0">
+      <img src="https://atarazana.house/assets/email/titulo-enlace.png" width="400" alt="Tu enlace para entrar" style="display:block;border:0;width:100%;max-width:400px;height:auto;color:#e8f3f1;font-family:Impact,'Arial Narrow',Arial,sans-serif;font-size:44px;line-height:1.05;text-transform:uppercase">
+    </td></tr>
+    <tr><td style="padding:24px 28px 0;color:#e8f3f1;font-family:Inter,Helvetica,Arial,sans-serif;font-size:17px;line-height:1.55">
+      Caduca en una hora y solo sirve una vez. Si te caduca, pide otro en <a href="https://atarazana.house/mercado" style="color:#34e0c2">atarazana.house/mercado</a>. Si no lo has pedido, ignora este correo.
+    </td></tr>
+    <tr><td style="padding:28px 28px 32px">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+        <td bgcolor="#34e0c2" style="background:#34e0c2"><a href="{{ .ConfirmationURL }}" style="display:block;padding:18px 20px;color:#061418;font-family:'IBM Plex Mono',Menlo,Consolas,monospace;font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-decoration:none">Entrar en El Mercado &rarr;</a></td>
+      </tr></table>
+    </td></tr>
+    <tr><td style="padding:20px 28px;border-top:1px solid #1e3a40;color:#8aa6aa;font-family:Inter,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.55">
+      Your link to get in. It expires in an hour and works once. If it does, ask for a new one at <a href="https://atarazana.house/mercado" style="color:#34e0c2">atarazana.house/mercado</a>. If you did not ask for it, ignore this email.
+    </td></tr>
+    <tr><td bgcolor="#0a1d22" style="background:#0a1d22;border-top:1px solid #1e3a40;font-size:0;line-height:0">
+      <img src="https://atarazana.house/assets/email/laceria.png" width="560" alt="" style="display:block;border:0;width:100%;height:auto">
+    </td></tr>
+    <tr><td style="padding:20px 28px;border-top:1px solid #1e3a40;color:#8aa6aa;font-family:'IBM Plex Mono',Menlo,Consolas,monospace;font-size:12px;line-height:1.7">
+      Hasta la próxima marea · Until the next tide
+    </td></tr>
+  </table>
+</td></tr>
+</table>
+</body>
+</html>

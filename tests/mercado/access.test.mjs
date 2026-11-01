@@ -1,0 +1,61 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import { anon, db, fixture, login, ok } from '../helpers/local.mjs';
+
+test('la privacidad se aplica en BD, RPC y fotos, incluso llamando a la API directamente', { timeout: 30000 }, async (t) => {
+  const f = await fixture(t);
+  assert.ok((await db.auth.admin.createUser({ email: f.email('outsider'), email_confirm: true })).error, 'Ni la service key puede crear una cuenta fuera de la lista');
+  const me = await f.user('me');
+  const shared = await f.user('shared');
+  const hidden = await f.user('hidden');
+  const other = await f.user('other', { marea: f.mareas[1] });
+  const admin = await f.user('admin', { admin: true });
+  const { client } = await login(me);
+  const { client: owner } = await login(shared);
+  const { client: adminClient } = await login(admin);
+  await f.profile(shared);
+  await f.profile(hidden, { visible: false });
+  await f.profile(other);
+  const directory = async () => ok(await client.rpc('mercado_directory'));
+  const person = async (target) => ok(await client.rpc('mercado_person', { target: target.id }));
+  assert.ok((await anon().rpc('mercado_directory')).error, 'Sin sesión no se puede consultar el directorio');
+  assert.deepEqual((await directory()).people, [], 'Sin perfil propio no se revelan personas');
+  assert.equal(await person(shared), null, 'Tampoco se puede saltar la puerta por UUID');
+  assert.ok((await client.from('mercado_profiles').insert({ id: me.id, name: 'Sin contacto' })).error, 'El contacto obligatorio se exige en BD');
+  ok(await client.from('mercado_profiles').insert({ id: me.id, name: me.name, website: 'https://example.org' }));
+  const dir = await directory();
+  assert.deepEqual(dir.people.map((p) => p.id), [shared.id]);
+  assert.deepEqual(dir.hidden, [[f.mareas[0]]], 'Incógnito no filtra ni ID, ni nombre, ni correo');
+  assert.equal((await person(shared)).email, null, 'Los correos solo los ve el admin');
+  assert.equal(await person(other), null, 'Saber un UUID no permite ver otra marea');
+  assert.equal(await person(hidden), null);
+  assert.ok((await client.from('mercado_admins').insert({ email: me.email })).error, 'Un miembro no puede hacerse admin');
+  assert.ok((await client.from('mercado_attendance').insert({ email: me.email, marea: f.mareas[1] })).error, 'No puede añadirse a otra marea');
+  const direct = await client.from('mercado_profiles').select('id').eq('id', other.id);
+  assert.ok(direct.error || direct.data.length === 0, 'RLS bloquea la lectura directa de perfiles ajenos');
+  await client.from('mercado_profiles').update({ name: 'Alterado' }).eq('id', shared.id);
+  assert.equal(ok(await db.from('mercado_profiles').select('name').eq('id', shared.id).single()).name, shared.name, 'RLS bloquea editar a otra persona');
+  assert.deepEqual(ok(await client.rpc('mercado_admin_export')), [], 'Un miembro no puede exportar correos');
+  assert.ok((await client.rpc('mercado_admin_delete_profile', { target: shared.id })).error);
+
+  // No hace falta procesar una foto para probar sus permisos: basta un objeto con el MIME admitido.
+  const photo = `${shared.id}/visible.jpg`, draft = `${shared.id}/draft.jpg`;
+  for (const path of [photo, draft]) ok(await owner.storage.from('mercado-fotos').upload(path, new Uint8Array([255, 216, 255, 217]), { contentType: 'image/jpeg' }));
+  ok(await owner.from('mercado_profiles').update({ photo }).eq('id', shared.id));
+  assert.ok(ok(await client.storage.from('mercado-fotos').createSignedUrl(photo, 60)).signedUrl);
+  assert.ok((await client.storage.from('mercado-fotos').createSignedUrl(draft, 60)).error, 'Una foto sin guardar en el perfil es privada');
+  assert.ok((await anon().storage.from('mercado-fotos').createSignedUrl(photo, 60)).error);
+  ok(await owner.from('mercado_profiles').update({ visible: false }).eq('id', shared.id));
+  assert.ok((await client.storage.from('mercado-fotos').createSignedUrl(photo, 60)).error, 'Ocultar el perfil impide emitir nuevos enlaces de foto');
+  ok(await client.from('mercado_profiles').update({ visible: false }).eq('id', me.id));
+  assert.equal((await directory()).canSee, false);
+  assert.deepEqual((await directory()).people, [], 'Ocultar tu perfil también te cierra el directorio');
+
+  const exported = ok(await adminClient.rpc('mercado_admin_export'));
+  assert.ok(exported.some((p) => p.email === hidden.email && p.visible === false), 'El admin puede exportar perfiles ocultos');
+  assert.ok(exported.some((p) => p.email === other.email), 'El admin tiene acceso a todas las mareas');
+  assert.ok(ok(await adminClient.storage.from('mercado-fotos').createSignedUrl(photo, 60)).signedUrl);
+  assert.equal(ok(await adminClient.rpc('mercado_admin_delete_profile', { target: me.id })), true);
+  assert.equal(ok(await db.auth.admin.getUserById(me.id)).user.id, me.id, 'La moderación borra el perfil, no la cuenta');
+  assert.equal((await directory()).canSee, false);
+});

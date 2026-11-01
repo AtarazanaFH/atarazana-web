@@ -10,8 +10,6 @@ const copy = {
   "es": {
     "homeLabel": "Atarazana Founder House, inicio",
     "navLabel": "Principal",
-    "aboutAnchor": "que-es",
-    "about": "Qué es",
     "manifesto": "Manifiesto",
     "faq": "Preguntas",
     "otherLang": "en",
@@ -21,8 +19,6 @@ const copy = {
   "en": {
     "homeLabel": "Atarazana Founder House, home",
     "navLabel": "Primary",
-    "aboutAnchor": "what",
-    "about": "What it is",
     "manifesto": "Manifesto",
     "faq": "FAQ",
     "otherLang": "es",
@@ -36,12 +32,12 @@ const t = copy[lang];
   <div class="wrap header-inner">
     <a class="logo" href={pageUrl(lang, "index")} aria-label={t.homeLabel}><Logo class="logo-mark" /><span class="logo-word">Atarazana<br>Founder House</span></a>
     <nav class="nav" aria-label={t.navLabel}>
-      <a href={`${pageUrl(lang, "index")}#${t.aboutAnchor}`}>{t.about}</a>
       {archiveLive && <a href={mareaUrl(lang)} aria-current={page === "mareas" ? "page" : undefined}>Mareas</a>}
       <a href={pageUrl(lang, "manifesto")} aria-current={page === "manifesto" ? "page" : undefined}>{t.manifesto}</a>
       <a href={pageUrl(lang, "partners")} aria-current={page === "partners" ? "page" : undefined}>Partners</a>
       <a href={pageUrl(lang, "faq")} aria-current={page === "faq" ? "page" : undefined}>{t.faq}</a>
-      <a href={alternate ?? pageUrl(otherLang, page)} class="nav-lang" hreflang={t.otherLang}>{t.languageLabel}</a>
+      <a href="https://luma.com/user/atarazana" target="_blank" rel="noopener">Luma</a>
+      <a href={alternate ?? pageUrl(otherLang, page)} class="nav-lang" hreflang={t.otherLang} lang={t.otherLang} aria-label={t.languageLabel}>{t.otherLang.toUpperCase()}</a>
       <a class="nav-cta" href={nextMarea.luma} target="_blank" rel="noopener">{t.invite}</a>
     </nav>
   </div>

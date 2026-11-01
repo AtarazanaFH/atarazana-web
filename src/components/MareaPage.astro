@@ -13,28 +13,32 @@ const copy = {
     crumbs: 'Ruta', all: 'Mareas', draft: 'Borrador: solo se ve en local', past: 'Marea pasada', next: 'Próxima marea',
     speakers: 'Ponentes', programme: 'Programa', chronicle: 'Cómo fue', partners: 'Partners',
     partnersLead: 'Pagan el espacio, la comida y la bebida de esta marea, sin decidir quién entra ni qué se enseña.',
+    partnersWanted: 'Esta marea sigue buscando a un partner: una empresa que pague el espacio, la comida y la bebida.',
     date: 'Fecha', doors: 'Puertas', where: 'Dónde', spots: 'Plazas', price: 'Precio',
     whereNext: 'Málaga. La dirección va en la invitación', people: 'personas', free: 'Gratis', invite: 'Pide paso',
-    older: 'Marea anterior', newer: 'Marea siguiente', back: 'Todas las mareas', jump: 'En esta página', poster: 'Ver cartel',
+    older: 'Marea anterior', newer: 'Marea siguiente', back: 'Todas las mareas', poster: 'Ver cartel',
   },
   en: {
     crumbs: 'Breadcrumb', all: 'Mareas', draft: 'Draft: only visible locally', past: 'Past marea', next: 'Upcoming marea',
     speakers: 'Speakers', programme: 'Programme', chronicle: 'How it went', partners: 'Partners',
     partnersLead: 'They pay for the venue, food and drinks of this marea, without deciding who gets in or what gets shown.',
+    partnersWanted: 'This marea is still looking for a partner: a company to pay for the venue, food and drinks.',
     date: 'Date', doors: 'Doors', where: 'Where', spots: 'Spots', price: 'Price',
     whereNext: 'Málaga. The address comes with the invite', people: 'people', free: 'Free', invite: 'Request an invite',
-    older: 'Previous marea', newer: 'Next marea', back: 'All mareas', jump: 'On this page', poster: 'See poster',
+    older: 'Previous marea', newer: 'Next marea', back: 'All mareas', poster: 'See poster',
   },
 };
 const t = copy[lang];
 const body = marea.body?.[lang] ?? [];
 const speakers = marea.talks.filter((talk) => talk.poster);
+// Mientras buscamos partner (`partnerWanted` en mareas.ts), la marea lo dice y enlaza a cómo serlo.
+const partnersWanted = !past && !!marea.partnerWanted;
 // Secciones numeradas en orden, solo las que existen.
 const sections = [
   body.length > 0 && { id: 'cronica', title: t.chronicle },
   speakers.length > 0 && { id: 'ponentes', title: t.speakers },
   { id: 'programa', title: t.programme },
-  marea.partners.length > 0 && { id: 'partners', title: t.partners },
+  (marea.partners.length > 0 || partnersWanted) && { id: 'partners', title: t.partners },
 ].filter(Boolean) as { id: string; title: string }[];
 const num = (id: string) => String(sections.findIndex((s) => s.id === id) + 1).padStart(2, '0');
 ---
@@ -61,9 +65,6 @@ const num = (id: string) => String(sections.findIndex((s) => s.id === id) + 1).p
     <div><dt>{t.spots}</dt><dd>{marea.capacity} {t.people}</dd></div>
     <div><dt>{t.price}</dt><dd>{t.free}</dd></div>
   </dl>
-  <nav class="wrap marea-jump" aria-label={t.jump}>
-    {sections.map((s) => <a href={`#${s.id}`}><span>{num(s.id)}</span>{s.title}</a>)}
-  </nav>
 </section>
 
 {body.length > 0 && (
@@ -103,12 +104,12 @@ const num = (id: string) => String(sections.findIndex((s) => s.id === id) + 1).p
   </div>
 </section>
 
-{marea.partners.length > 0 && (
+{(marea.partners.length > 0 || partnersWanted) && (
   <section class="mareas-block reveal" id="partners">
     <div class="wrap">
       <div class="sec-head"><span>{num('partners')}</span><h2>{t.partners}</h2></div>
-      <p class="mareas-empty">{t.partnersLead}</p>
-      <PartnerGrid lang={lang} ids={marea.partners} label="" />
+      <p class="mareas-empty">{partnersWanted ? t.partnersWanted : t.partnersLead}</p>
+      <PartnerGrid lang={lang} ids={marea.partners} open={partnersWanted} label="" />
     </div>
   </section>
 )}

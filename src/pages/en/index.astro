@@ -11,7 +11,6 @@ import { archiveLive, formatDate, mareaUrl, nextMarea } from "../../data/mareas"
 <section class="hero reveal">
     <div class="wrap hero-grid">
       <div class="hero-copy">
-        <p class="kicker">Málaga · Builder community</p>
         <h1>Atarazana <span class="hl">Founder House</span></h1>
         <p class="sub">Meetups in Málaga for the people building technology: founders, engineers, product, design and AI. Talks and time to get to know each other. <strong>Free and invite-only.</strong></p>
         <div class="hero-actions">
@@ -35,6 +34,7 @@ import { archiveLive, formatDate, mareaUrl, nextMarea } from "../../data/mareas"
             </dl>
             <p class="pass-name"><span>Name</span><b>You?</b></p>
           </div>
+          {nextMarea.partnerWanted && <p class="pass-wanted"><span><span class="pulse" aria-hidden="true"></span>Partner wanted</span><span>Marea {nextMarea.number}</span></p>}
           <div class="pass-foot" aria-hidden="true"><svg class="pass-code" viewBox="0 0 56 24" preserveAspectRatio="none"><rect x="0" width="2" height="24"/><rect x="3" width="3" height="24"/><rect x="7" width="1" height="24"/><rect x="10" width="4" height="24"/><rect x="15" width="2" height="24"/><rect x="18" width="1" height="24"/><rect x="22" width="2" height="24"/><rect x="25" width="3" height="24"/><rect x="29" width="2" height="24"/><rect x="33" width="1" height="24"/><rect x="38" width="1" height="24"/><rect x="40" width="2" height="24"/><rect x="45" width="1" height="24"/><rect x="48" width="1" height="24"/><rect x="52" width="1" height="24"/><rect x="54" width="2" height="24"/></svg></div>
         </div>
         <p class="pass-hint" aria-hidden="true">Grab it and throw it</p>
@@ -54,7 +54,7 @@ import { archiveLive, formatDate, mareaUrl, nextMarea } from "../../data/mareas"
           <div><dt>Spots</dt><dd>{nextMarea.capacity} people</dd></div>
           <div><dt>Price</dt><dd>Free</dd></div>
         </dl>
-        <p class="session-status"><span class="pulse" aria-hidden="true"></span>Invites open</p>
+        <a class="session-status" href={nextMarea.luma} target="_blank" rel="noopener"><span class="pulse" aria-hidden="true"></span>Invites open</a>
       </div>
       <div class="session-lineup">
         <Lineup lang="en" marea={nextMarea} />
