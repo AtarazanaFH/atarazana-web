@@ -1,0 +1,45 @@
+name: Backup
+
+# Copia semanal de El Mercado, cifrada: GitHub solo tiene la clave pública. Guía en supabase/README.md.
+on:
+  schedule:
+    - cron: '17 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backup
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # El entorno solo admite main: las ramas y los PR no llegan a estos secretos.
+    environment: backup
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - name: Instalar dependencias y age
+        run: |
+          npm ci --ignore-scripts
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq age
+      - name: Crear la copia cifrada
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          BACKUP_AGE_RECIPIENT: ${{ vars.BACKUP_AGE_RECIPIENT }}
+        run: node scripts/mercado-backup.mjs mercado.tar.gz.age
+      - uses: actions/upload-artifact@v7
+        with:
+          name: mercado-${{ github.run_number }}
+          path: mercado.tar.gz.age
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 90

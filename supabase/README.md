@@ -43,6 +43,30 @@ Por defecto solo carga a quien hizo **check-in**. Con `--all`, a todos los aprob
 Si un correo falla, el comando termina con error y la invitación queda pendiente: repite el mismo comando y solo se reintentan esas. Borrar una cuenta borra también su invitación.
 `node scripts/mercado.mjs list 002 --prod` enseña quién consta en una marea.
 
+## Copias de seguridad
+
+El plan gratuito de Supabase no hace copias. Las hace `.github/workflows/backup.yml`: cada lunes guarda las cuentas, las tablas de El Mercado y las fotos, y las conserva 90 días como artefacto de GitHub.
+
+**El repo es público, así que cualquiera con cuenta en GitHub puede descargar esos archivos.** Por eso van cifrados con [age](https://github.com/FiloSottile/age): GitHub solo tiene la clave pública, y descifrar requiere la privada, que está fuera de GitHub y del repo. **Si se pierde la clave privada, las copias no se pueden abrir.** Los registros solo muestran recuentos.
+
+Preparación, una vez:
+
+1. `sudo apt install age` y `age-keygen -o clave-copias.txt`, fuera del repo. Guarda ese archivo en un gestor de contraseñas. Lo que empieza por `age1…` es la clave pública.
+2. En `.env.prod`: `SUPABASE_DB_URL=postgresql://postgres.qdjgqywjqwulzblafnof:CONTRASEÑA@aws-0-eu-west-1.pooler.supabase.com:5432/postgres`. La contraseña está en Supabase → Project Settings → Database. Si hay que cambiarla, mejor solo con letras y números. No va en el chat.
+3. En GitHub, el entorno `backup`, limitado a la rama `main`, con los secretos `SUPABASE_DB_URL` y `SUPABASE_SERVICE_ROLE_KEY` y las variables `SUPABASE_URL` y `BACKUP_AGE_RECIPIENT`.
+
+Se lanza a mano en Actions → Backup → Run workflow. Si una copia falla, GitHub lo avisa por correo. GitHub puede desactivar las tareas programadas tras 60 días sin actividad en el repo: conviene mirar de vez en cuando que siguen saliendo.
+
+Para restaurar, descarga el artefacto de Actions y:
+
+```sh
+mkdir copia && age -d -i clave-copias.txt mercado.tar.gz.age | tar -xz -C copia
+node scripts/mercado-restore.mjs copia          # local, para comprobar la copia
+node scripts/mercado-restore.mjs copia --prod   # producción: pide confirmación
+```
+
+`mercado-restore.mjs` se niega si el destino tiene cuentas o datos. Trae las cuentas, los perfiles, la asistencia, las invitaciones, los admins y las fotos. Las tablas y las reglas salen de `schema.sql`, que hay que aplicar antes en un proyecto nuevo. La carpeta `copia` lleva datos personales sin cifrar: bórrala al acabar.
+
 ## Qué ve cada uno
 
 - **Solo existen cuentas de correos que están en la lista de asistentes** (o de admins). Lo impide un disparador en la base de datos: ni con un enlace, ni con la API, ni con la clave secreta se crea una cuenta de otro correo. Por eso el script guarda la asistencia antes de invitar.
