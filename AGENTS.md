@@ -61,7 +61,7 @@ Tenemos un vocabulario propio, sacado del astillero y de Málaga, para no sonar 
 - **"Comunidad de builders".** Se queda solo en los títulos y descripciones SEO (`src/data/pages.ts`), porque es como nos busca el público. La etiqueta del hero se quitó el 31 de octubre de 2026 para simplificar la portada: el hero empieza directamente con el título. En el resto de textos, mejor "gente que construye".
 - **"¿Quieres enseñar algo?"** y "demo". Se entienden perfectamente; no hace falta un término propio.
 - **El nombre "Atarazana Founder House" se mantiene** (decidido el 3 de octubre de 2026), aunque se parezca a "Barraca Founders House". La diferencia la marcan el texto y la identidad, no el nombre.
-- **En inglés**, el botón sigue siendo "Request an invite": "Pide paso" no tiene traducción natural. La despedida sí se traduce: "Until the next tide". "Marea" se queda en castellano como nombre propio y con mayúscula ("Marea 001", "First Marea"), explicado una vez: "We call each meetup a marea, Spanish for tide".
+- **En inglés**, el botón sigue siendo "Request an invite": "Pide paso" no tiene traducción natural. La despedida es "Until the next marea". **En inglés se dice siempre "marea", nunca "tide"** (decidido el 1 de noviembre de 2026). Se queda en castellano, con mayúscula en el nombre de cada encuentro ("Marea 001", "First Marea"). La única excepción es la aclaración que explica la palabra: "We call each meetup a marea, Spanish for tide".
 
 **Convenciones de estilo:**
 

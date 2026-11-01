@@ -37,8 +37,8 @@ export const mercadoCopy = {
     notMember: 'Tu correo no aparece todavía en ninguna marea. Si viniste y no te sale, escríbenos a atarazanafh@gmail.com.',
     gateTitle: 'Para ver a los demás, deja que te vean',
     gateLead: (n: number) => n === 1
-      ? 'En tus mareas hay 1 persona más. Rellena tu perfil y la verás.'
-      : `En tus mareas hay ${n} personas más. Rellena tu perfil y las verás.`,
+      ? 'Has coincidido con otra persona. Rellena tu perfil y la verás.'
+      : `Has coincidido con otras ${n} personas. Rellena tu perfil y las verás.`,
     gateHidden: 'Tienes el modo incógnito activado. Mientras siga así, tampoco ves a los demás.',
     fillIt: 'Rellenar mi perfil',
     myProfile: 'Tu perfil',
@@ -114,8 +114,8 @@ export const mercadoCopy = {
     notMember: 'Your email is not on any marea yet. If you came and it does not show, write to atarazanafh@gmail.com.',
     gateTitle: 'To see others, let them see you',
     gateLead: (n: number) => n === 1
-      ? 'There is 1 more person from your mareas. Fill in your profile to see them.'
-      : `There are ${n} more people from your mareas. Fill in your profile to see them.`,
+      ? 'You met 1 other person at a marea. Fill in your profile to see them.'
+      : `You met ${n} other people at a marea. Fill in your profile to see them.`,
     gateHidden: 'You have incognito mode on. While it stays on, you cannot see others either.',
     fillIt: 'Fill in my profile',
     myProfile: 'Your profile',
