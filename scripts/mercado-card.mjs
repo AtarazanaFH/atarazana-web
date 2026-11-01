@@ -1,4 +1,4 @@
-// Tarjeta de invitación de El Mercado: la misma de la portada, como PNG, con el correo de cada persona.
+// Tarjeta de invitación de El Mercado: la misma de la portada, como JPEG, con el correo de cada persona.
 // La pinta Chromium con los estilos de la web. Hace falta una vez: npx playwright install chromium-headless-shell
 import { readFileSync } from 'node:fs';
 import { chromium } from 'playwright';
@@ -49,7 +49,7 @@ export async function renderCard(email) {
     while (el.scrollWidth > el.clientWidth && size > 9) { size -= 0.5; el.style.fontSize = `${size}px`; }
   }, email);
   await tab.evaluate(() => document.fonts.ready);
-  return tab.screenshot({ type: 'png', clip: { x: 0, y: 0, width: 560, height: 540 } });
+  return tab.screenshot({ type: 'jpeg', quality: 85, clip: { x: 0, y: 0, width: 560, height: 540 } });
 }
 
 export async function closeCard() { await browser?.close(); }
