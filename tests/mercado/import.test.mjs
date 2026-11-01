@@ -53,3 +53,33 @@ test('importar respeta el check-in, recupera fallos de BD y SMTP y no duplica en
   await execute({}, 0);
   assert.equal(state.attempts, 2, 'Haber entrado sin dejar tokens no convierte la cuenta en pendiente');
 });
+
+test('--no-invite carga sin mandar nada y una errata en la opción no escribe ni envía', { timeout: 60000 }, async (t) => {
+  const f = await fixture(t);
+  const address = f.email('attendee');
+  const { run, state } = await importer(t, f.mareas[0], `email,name,approval_status,checked_in_at\n${address},Asistente,approved,2026-11-01\n`);
+  state.reject = false;
+  const attendance = async () => ok(await db.from('mercado_attendance').select('email').eq('marea', f.mareas[0])).map((r) => r.email);
+  const account = async () => (await users()).find((u) => u.email === address);
+
+  const typo = await run({ flags: ['--no-invites'] });
+  assert.equal(typo.code, 1, typo.output);
+  assert.deepEqual(await attendance(), [], 'Una opción desconocida no escribe');
+  assert.equal(await account(), undefined);
+  assert.equal(state.attempts, 0, 'Una opción desconocida no envía');
+
+  const loaded = await run({ flags: ['--no-invite'] });
+  assert.equal(loaded.code, 0, loaded.output);
+  assert.deepEqual(await attendance(), [address]);
+  assert.equal(await account(), undefined, '--no-invite no crea cuentas');
+  assert.deepEqual(ok(await db.from('mercado_invites').select('*').eq('email', address)), []);
+  assert.equal(state.attempts, 0, '--no-invite no envía');
+
+  const invited = await run();
+  assert.equal(invited.code, 0, invited.output);
+  assert.equal(state.delivered, 1, 'Repetir sin la opción manda la invitación pendiente');
+  assert.ok((await account())?.id);
+  const [invite] = ok(await db.from('mercado_invites').select('*').eq('email', address));
+  assert.ok(invite?.sent_at);
+  assert.deepEqual(await attendance(), [address], 'Repetir no duplica la asistencia');
+});

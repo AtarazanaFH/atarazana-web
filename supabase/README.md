@@ -38,6 +38,7 @@ el login (enlace mágico), los datos y las fotos van en [Supabase](https://supab
 2. `node scripts/mercado.mjs import 002 ruta/al.csv --dry-run` para ver a quién va a cargar.
 3. `node scripts/mercado.mjs import 002 ruta/al.csv --prod` → guarda la asistencia e invita a quien aún no tiene cuenta. A quien ya tenía cuenta solo se le suma la marea.
 
+Con `--no-invite` guarda la asistencia y no manda nada. Para invitar después, repite el comando sin esa opción.
 Por defecto solo carga a quien hizo **check-in**. Con `--all`, a todos los aprobados.
 Si un correo falla, el comando termina con error y la invitación queda pendiente: repite el mismo comando y solo se reintentan esas. Borrar una cuenta borra también su invitación.
 `node scripts/mercado.mjs list 002 --prod` enseña quién consta en una marea.

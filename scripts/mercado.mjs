@@ -8,6 +8,7 @@
 //   node scripts/mercado.mjs import 001 asistentes.csv                local
 //   node scripts/mercado.mjs import 001 asistentes.csv --prod         producción (pide confirmación)
 //   node scripts/mercado.mjs import 001 asistentes.csv --all          todos los aprobados, no solo check-in
+//   node scripts/mercado.mjs import 001 asistentes.csv --no-invite    guarda la asistencia y no manda ningún correo
 //   node scripts/mercado.mjs admin atarazanafh@gmail.com [--prod]
 //   node scripts/mercado.mjs list 001 [--prod]
 import { createHash, randomBytes } from 'node:crypto';
@@ -42,6 +43,9 @@ function fail(message) { console.error(`✗ ${message}`); process.exit(1); }
 const db = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false } });
 const [command, ...args] = process.argv.slice(2);
 const flags = new Set(args.filter((a) => a.startsWith('--')));
+// Una errata en --no-invite no puede acabar mandando correos.
+const unknownFlags = [...flags].filter((f) => !['--prod', '--dry-run', '--all', '--no-invite'].includes(f));
+if (unknownFlags.length) fail(`No conozco ${unknownFlags.join(', ')}`);
 const [first, second] = args.filter((a) => !a.startsWith('--'));
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const FROM = 'atarazanafh@gmail.com';
@@ -164,7 +168,7 @@ async function sendInvites(targets) {
 
 if (command === 'import') {
   const marea = first;
-  if (!/^\d{3}$/.test(marea ?? '') || !second) fail('Uso: import 001 asistentes.csv [--all] [--dry-run]');
+  if (!/^\d{3}$/.test(marea ?? '') || !second) fail('Uso: import 001 asistentes.csv [--all] [--dry-run] [--no-invite]');
   const rows = parseCsv(readFileSync(second, 'utf8'));
   const hasCheckIn = rows.length > 0 && 'checked_in_at' in rows[0];
   const people = new Map();
@@ -184,6 +188,10 @@ if (command === 'import') {
     .upsert([...people.keys()].map((email) => ({ email, marea })), { ignoreDuplicates: true });
   if (error) fail(error.message);
   console.log(`✓ Asistencia de la Marea ${marea} guardada.`);
+  if (flags.has('--no-invite')) {
+    console.log('Sin invitaciones. Para mandarlas, repite el comando sin --no-invite.');
+    process.exit(0);
+  }
 
   const known = await existingUsers();
   const sent = await sentInvites();

@@ -1,6 +1,6 @@
 # Tests de El Mercado
 
-Seis pruebas de comportamiento con el runner de Node, Supabase local y Chromium. Sin dependencias nuevas.
+Siete pruebas de comportamiento con el runner de Node, Supabase local y Chromium. Sin dependencias nuevas.
 
 ```sh
 npm test        # Mercado: unos 15 segundos con los servicios arrancados
@@ -26,7 +26,7 @@ Vercel sigue desplegando desde GitHub según la configuración existente del pro
 | --- | --- |
 | `access.test.mjs` | Alta solo para asistentes; perfil y contacto obligatorios; privacidad por marea e incógnito; acceso directo a tablas, fotos, exportación y moderación. |
 | `invitations.test.mjs` | El canje autentica al destinatario una sola vez, incluso con dos peticiones simultáneas. Caducidad y revocación al completar el perfil o borrar la cuenta. |
-| `import.test.mjs` | CSV con duplicados y check-in, dry-run sin escrituras, fallos de BD y SMTP, recuperación al repetir el comando y ausencia de reenvíos a quien ya recibió la invitación o entró. |
+| `import.test.mjs` | CSV con duplicados y check-in, dry-run sin escrituras, fallos de BD y SMTP, recuperación al repetir el comando y ausencia de reenvíos a quien ya recibió la invitación o entró. `--no-invite` no crea cuentas ni envía, y una opción desconocida no escribe ni envía. |
 | `migration.test.mjs` | Las invitaciones antiguas siguen constando como enviadas. Reaplicar el esquema conserva los pendientes nuevos. |
 | `card.test.mjs` | El correo cabe en la primera tarjeta, con su tipografía real. Sin snapshots de píxeles. |
 | `browser.test.mjs` | Entrar desde la invitación, completar el perfil, abrir el directorio y una ficha, y cerrar sesión; castellano e inglés, texto de BD como texto y ancho de 360 px. |
