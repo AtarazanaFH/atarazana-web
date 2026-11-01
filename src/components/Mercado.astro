@@ -61,6 +61,15 @@ const t = mercadoCopy[lang];
             <div data-photo-preview></div>
             <label class="cta-ghost m-upload"><span data-photo-label>{t.photoAdd}</span><input type="file" accept="image/*" data-photo-input class="sr-only" /></label>
             <button class="m-link" type="button" data-photo-remove hidden>{t.photoRemove}</button>
+            <div class="m-photo-editor" data-photo-editor hidden>
+              <canvas tabindex="0" aria-label={t.photoHint}></canvas>
+              <p class="m-photo-hint">{t.photoHint}</p>
+              <label class="m-field"><span>{t.photoZoom}</span><input type="range" min="1" max="4" step="0.01" value="1" data-photo-zoom /></label>
+              <button class="m-link" type="button" data-photo-rotate>{t.photoRotate}</button>
+              <button class="cta" type="button" data-photo-use>{t.photoUse}</button>
+              <button class="m-link" type="button" data-photo-cancel>{t.photoCancel}</button>
+            </div>
+            <p class="m-status" data-photo-status aria-live="polite"></p>
           </div>
           <div class="m-fields">
             <label class="m-field"><span>{t.name} *</span><input name="name" required maxlength="80" autocomplete="name" /></label>

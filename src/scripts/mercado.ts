@@ -4,6 +4,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { supabase, PHOTO_BUCKET } from '../lib/supabase';
 import { mercadoCopy, mercadoUrl, type MercadoCopy } from '../data/mercado';
 import { mareas } from '../data/mareas';
+import { editPhoto } from './mercado-photo';
 import type { Locale } from '../data/pages';
 
 type Person = {
@@ -196,17 +197,6 @@ async function exportCsv(sb: SupabaseClient) {
 
 // ---------- tu perfil ----------
 
-// Recorta al centro en 4:5 y reduce a 480×600: fotos ligeras y todas iguales.
-async function resizePhoto(file: File) {
-  const img = await createImageBitmap(file);
-  const W = 480, H = 600, ratio = W / H;
-  let sw = img.width, sh = img.height;
-  if (sw / sh > ratio) sw = sh * ratio; else sh = sw / ratio;
-  const canvas = Object.assign(document.createElement('canvas'), { width: W, height: H });
-  canvas.getContext('2d')!.drawImage(img, (img.width - sw) / 2, (img.height - sh) / 2, sw, sh, 0, 0, W, H);
-  return new Promise<Blob>((resolve, reject) => canvas.toBlob((b) => (b ? resolve(b) : reject()), 'image/jpeg', 0.85));
-}
-
 // Acepta "linkedin.com/in/tu", "@tu" o "tu" y lo deja como https://…
 function normaliseLink(field: string, raw: string) {
   const v = raw.trim();
@@ -230,6 +220,8 @@ async function profileView({ root, lang, t, sb }: Ctx) {
   const photoInput = $<HTMLInputElement>(form, '[data-photo-input]');
   const photoLabel = $(form, '[data-photo-label]');
   const photoRemove = $<HTMLButtonElement>(form, '[data-photo-remove]');
+  const photoEditor = $(form, '[data-photo-editor]');
+  const photoStatus = $(form, '[data-photo-status]');
   const field = (name: string) => form.elements.namedItem(name) as HTMLInputElement;
 
   const { data: profile } = await sb.from('mercado_profiles').select('*').maybeSingle();
@@ -268,20 +260,44 @@ async function profileView({ root, lang, t, sb }: Ctx) {
   };
   await paintPhoto();
 
+  // Guardar el perfil y cambiar la foto se excluyen: el perfil tiene que guardar la foto que se ve.
+  let photoBusy = false, saving = false;
+  const syncControls = () => {
+    save.disabled = saving || photoBusy;
+    photoInput.disabled = saving;
+    photoRemove.disabled = saving;
+    photoLabel.closest('label')!.hidden = photoBusy;
+    photoRemove.hidden = photoBusy || !photo;
+  };
+
   photoInput.addEventListener('change', async () => {
     const file = photoInput.files?.[0];
-    if (!file) return;
-    status.textContent = t.saving;
-    try {
-      const path = `${s.user.id}/${crypto.randomUUID()}.jpg`;
-      const { error } = await sb.storage.from(PHOTO_BUCKET).upload(path, await resizePhoto(file), { contentType: 'image/jpeg' });
-      if (error) throw error;
-      if (photo && photo !== savedPhoto) await sb.storage.from(PHOTO_BUCKET).remove([photo]);
-      photo = path;
-      status.textContent = '';
-      await paintPhoto();
-    } catch { status.textContent = t.saveError; }
     photoInput.value = '';
+    if (!file) return;
+    photoStatus.textContent = '';
+    photoBusy = true;
+    syncControls();
+    photoEditor.hidden = false;
+    preview.hidden = true;
+    let blob: Blob | null = null, unreadable = false;
+    try { blob = await editPhoto(photoEditor, file); } catch { unreadable = true; }
+    photoEditor.hidden = true;
+    preview.hidden = false;
+    if (unreadable) photoStatus.textContent = t.photoBad;
+    if (blob) {
+      photoStatus.textContent = t.saving;
+      try {
+        const path = `${s.user.id}/${crypto.randomUUID()}.jpg`;
+        const { error } = await sb.storage.from(PHOTO_BUCKET).upload(path, blob, { contentType: 'image/jpeg' });
+        if (error) throw error;
+        if (photo && photo !== savedPhoto) await sb.storage.from(PHOTO_BUCKET).remove([photo]);
+        photo = path;
+        await paintPhoto();
+        photoStatus.textContent = '';
+      } catch { photoStatus.textContent = t.saveError; }
+    }
+    photoBusy = false;
+    syncControls();
   });
   photoRemove.addEventListener('click', async () => {
     if (photo && photo !== savedPhoto) await sb.storage.from(PHOTO_BUCKET).remove([photo]);
@@ -302,9 +318,9 @@ async function profileView({ root, lang, t, sb }: Ctx) {
     const bad = (['website', 'linkedin', 'x', 'github'] as const).find((k) => row[k] === undefined);
     if (bad) { status.textContent = t.badLink; return field(bad).focus(); }
     if (!row.website && !row.linkedin && !row.x && !row.github) { status.textContent = t.needLink; return field('website').focus(); }
-    save.disabled = true; status.textContent = t.saving;
+    saving = true; syncControls(); status.textContent = t.saving;
     const { error } = await sb.from('mercado_profiles').upsert(row);
-    save.disabled = false;
+    saving = false; syncControls();
     if (error) { status.textContent = t.saveError; return; }
     if (savedPhoto && savedPhoto !== photo) await sb.storage.from(PHOTO_BUCKET).remove([savedPhoto]);
     savedPhoto = photo;
