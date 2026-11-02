@@ -154,6 +154,10 @@ test('la invitación lleva al perfil, al directorio y al cierre de sesión, tamb
   await peerLink.waitFor();
   assert.equal(await peerLink.locator('.m-name').textContent(), name);
   assert.equal(await peerLink.locator('em').count(), 0, 'El texto de la BD nunca se interpreta como HTML');
+  const selfCard = page.locator('[data-grid] li').first();
+  assert.equal(await selfCard.locator('.m-name').textContent(), 'Persona de prueba', 'Tu perfil sale el primero del directorio');
+  assert.equal(await selfCard.locator('.m-self').textContent(), 'Tú');
+  assert.equal(await peerLink.locator('.m-self').count(), 0);
   await peerLink.click();
   await page.locator('[data-state="person"]:visible').waitFor();
   assert.equal(await page.locator('[data-name]').textContent(), name);

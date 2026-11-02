@@ -72,7 +72,7 @@ node scripts/mercado-restore.mjs copia --prod   # producción: pide confirmació
 - **Solo existen cuentas de correos que están en la lista de asistentes** (o de admins). Lo impide un disparador en la base de datos: ni con un enlace, ni con la API, ni con la clave secreta se crea una cuenta de otro correo. Por eso el script guarda la asistencia antes de invitar.
 - **El perfil necesita nombre y al menos un enlace** (web, LinkedIn, X o GitHub), para que te puedan escribir. Lo comprueba también la base de datos.
 - **Para ver a los demás hay que tener el perfil relleno y sin modo incógnito.** Sin él, solo se ve cuántas personas hay en tus mareas y el botón para rellenarlo. Si ocultas tu perfil, dejas de ver a los demás. Los admins ven todo sin perfil propio.
-- Cada persona ve los perfiles visibles de quien coincidió con ella en alguna marea, y puede filtrar por sus mareas.
+- Cada persona ve los perfiles visibles de quien coincidió con ella en alguna marea, y puede filtrar por sus mareas. Su propio perfil sale el primero, marcado con «Tú». No cuenta en «Has coincidido con otras N personas».
 - Quien no ha rellenado su perfil (o lo ha ocultado) sale **de incógnita**: solo se ve a qué marea fue, ni nombre ni correo.
 - Los **admins** pueden **borrar el perfil** de cualquiera desde su ficha (por ejemplo, si no cuenta nada). Se borran el perfil y sus fotos, no la cuenta: la persona puede volver a entrar, pero tiene que rellenarlo otra vez para ver a nadie.
 - Los **admins** ven todas las mareas, el correo en cada ficha y pueden descargar un CSV con todos los perfiles rellenados (también los ocultos, marcados con `visible = false`).

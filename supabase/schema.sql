@@ -87,7 +87,7 @@ language sql stable security definer set search_path = '' as $$
       or exists (select 1 from public.mercado_profiles where id = auth.uid() and visible)
 $$;
 
--- Mis mareas, si soy admin y el directorio: perfiles visibles e incógnitas de mis mareas.
+-- Mis mareas, si soy admin y el directorio: perfiles visibles e incógnitas de mis mareas. Mi perfil va el primero.
 -- Sin perfil visible, solo cuántas personas hay (`total`), sin nadie dentro.
 create or replace function public.mercado_directory() returns json
 language sql stable security definer set search_path = '' as $$
@@ -98,15 +98,15 @@ language sql stable security definer set search_path = '' as $$
     select distinct a.marea from public.mercado_attendance a, me
     where a.email = me.email or me.admin
   ),
-  -- todas las personas que coincidieron conmigo, con las mareas que compartimos
+  -- todas las personas de mis mareas, yo incluido, con las mareas que compartimos
   others as (
-    select a.email, array_agg(a.marea order by a.marea desc) as mareas
+    select a.email, array_agg(a.marea order by a.marea desc) as mareas, a.email = me.email as self
     from public.mercado_attendance a, me
-    where a.marea in (select marea from mine) and a.email <> me.email
-    group by a.email
+    where a.marea in (select marea from mine)
+    group by a.email, me.email
   ),
   people as (
-    select o.mareas, p.*
+    select o.mareas, o.self, p.*
     from others o
     left join auth.users u on lower(u.email) = o.email
     left join public.mercado_profiles p on p.id = u.id and p.visible
@@ -115,18 +115,18 @@ language sql stable security definer set search_path = '' as $$
   select json_build_object(
     'admin', (select admin from me),
     'canSee', (select can_see from me),
-    'total', (select count(*) from others),
+    'total', (select count(*) from others where not self),
     'member', exists (select 1 from public.mercado_attendance a, me where a.email = me.email),
     'mareas', (select coalesce(json_agg(marea order by marea desc), '[]'::json) from mine),
     'people', (
       select coalesce(json_agg(json_build_object(
         'id', id, 'name', name, 'role', role, 'company', company,
-        'building', building, 'photo', photo, 'mareas', mareas
-      ) order by name), '[]'::json)
+        'building', building, 'photo', photo, 'mareas', mareas, 'self', self
+      ) order by self desc, name), '[]'::json)
       from people where id is not null
     ),
     -- de incógnita: solo sus mareas, ni nombre ni correo
-    'hidden', (select coalesce(json_agg(mareas), '[]'::json) from people where id is null)
+    'hidden', (select coalesce(json_agg(mareas), '[]'::json) from people where id is null and not self)
   )
   where auth.uid() is not null
 $$;

@@ -1014,6 +1014,7 @@ a.m-card:hover { background:var(--anthracite); }
 a.m-card:hover .m-name { color:var(--signal); }
 .m-card-body { display:flex; flex-direction:column; gap:8px; padding:18px 18px 22px; flex:1; }
 .m-name { font:400 26px/1.05 var(--font-display); text-transform:uppercase; }
+.m-self { align-self:flex-start; padding:4px 6px; background:var(--signal); color:var(--black); font:700 11px/1 var(--font-mono); text-transform:uppercase; letter-spacing:0.08em; }
 .m-role { font:500 11px/1.5 var(--font-mono); text-transform:uppercase; letter-spacing:0.06em; color:var(--cement); }
 .m-building { font-size:14px; line-height:1.55; color:var(--white); display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
 .m-mareas { margin-top:auto; padding-top:8px; font:700 11px/1.4 var(--font-mono); text-transform:uppercase; letter-spacing:0.06em; color:var(--signal); }
