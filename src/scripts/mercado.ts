@@ -9,7 +9,7 @@ import type { Locale } from '../data/pages';
 
 type Person = {
   id: string; name: string; role?: string | null; company?: string | null; building?: string | null;
-  photo?: string | null; mareas: string[];
+  photo?: string | null; mareas: string[]; self?: boolean;
   website?: string | null; linkedin?: string | null; x?: string | null; github?: string | null; email?: string | null;
 };
 type Directory = { admin: boolean; canSee: boolean; total: number; member: boolean; mareas: string[]; people: Person[]; hidden: string[][] };
@@ -126,6 +126,7 @@ async function indexView({ root, lang, t, sb }: Ctx) {
       ...people.map((p) => h('li', {}, h('a', { class: 'm-card', href: `${mercadoUrl(lang, 'persona')}?id=${encodeURIComponent(p.id)}` },
         photoBox(p.name, p.photo ? photos.get(p.photo) : undefined),
         h('span', { class: 'm-card-body' },
+          p.self && h('span', { class: 'm-self' }, t.you),
           h('b', { class: 'm-name' }, p.name),
           (p.role || p.company) && h('span', { class: 'm-role' }, [p.role, p.company].filter(Boolean).join(' · ')),
           p.building && h('span', { class: 'm-building' }, p.building),

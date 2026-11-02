@@ -24,7 +24,8 @@ test('la privacidad se aplica en BD, RPC y fotos, incluso llamando a la API dire
   assert.ok((await client.from('mercado_profiles').insert({ id: me.id, name: 'Sin contacto' })).error, 'El contacto obligatorio se exige en BD');
   ok(await client.from('mercado_profiles').insert({ id: me.id, name: me.name, website: 'https://example.org' }));
   const dir = await directory();
-  assert.deepEqual(dir.people.map((p) => p.id), [shared.id]);
+  assert.deepEqual(dir.people.map((p) => [p.id, p.self]), [[me.id, true], [shared.id, false]], 'Tu perfil sale el primero y marcado');
+  assert.equal(dir.total, 2, 'El total cuenta a los demás, no a ti');
   assert.deepEqual(dir.hidden, [[f.mareas[0]]], 'Incógnito no filtra ni ID, ni nombre, ni correo');
   assert.equal((await person(shared)).email, null, 'Los correos solo los ve el admin');
   assert.equal(await person(other), null, 'Saber un UUID no permite ver otra marea');
