@@ -918,7 +918,7 @@ main { counter-reset:chapter; }
 .hero-pass { border-color:color-mix(in srgb, var(--signal) calc(var(--bass, 0) * 100%), var(--structure)); }
 .sound-toggle.is-live .sound-bars i { animation:none; transition:height .06s linear; }
 
-/* ---------- El Mercado: directorio de la gente de tus mareas ---------- */
+/* ---------- La Tripulación: directorio de la gente de tus mareas ---------- */
 .mercado .wrap { padding-top:72px; padding-bottom:96px; min-height:60vh; }
 .mercado h1 { font-size:clamp(56px, 10vw, 140px); line-height:1.02; margin:0 0 28px; }
 .mercado .lead { font:700 clamp(18px, 2vw, 24px)/1.35 var(--font-body); letter-spacing:-0.02em; max-width:40ch; color:var(--white); }

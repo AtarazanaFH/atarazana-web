@@ -1,4 +1,6 @@
-# El Mercado · puesta en marcha
+# La Tripulación · puesta en marcha
+
+En el código, las tablas y los scripts se llama «mercado», su nombre anterior.
 
 Directorio privado de la gente que ha venido a las mareas. La web sigue siendo estática;
 el login (enlace mágico), los datos y las fotos van en [Supabase](https://supabase.com) (plan gratis).
@@ -10,15 +12,15 @@ el login (enlace mágico), los datos y las fotos van en [Supabase](https://supab
 3. **Authentication → Sign In / Providers**
    - Email: activado. **"Allow new users to sign up": desactivado** (solo entra quien invitamos).
 4. **Authentication → URL Configuration**
-   - Site URL: `https://atarazana.house/mercado`
-   - Redirect URLs: `https://atarazana.house/mercado`, `https://atarazana.house/en/mercado`
+   - Site URL: `https://atarazana.house/tripulacion`
+   - Redirect URLs: `https://atarazana.house/tripulacion`, `https://atarazana.house/en/tripulacion` (y las antiguas `/mercado` y `/en/mercado`, que redirigen ahí)
 5. **Correo con Gmail (obligatorio).** El correo de serie de Supabase solo manda a miembros del equipo y unos pocos por hora. Usamos la cuenta `atarazanafh@gmail.com` como servidor de correo (unos 500 correos al día, gratis).
    - En la cuenta de Google: activa la **verificación en dos pasos** (Seguridad) y crea una **contraseña de aplicación** en [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords) con el nombre "Supabase". Son 16 letras: guárdalas, solo se ven una vez.
    - Supabase → **Authentication → Emails → SMTP Settings** → activar *Enable custom SMTP*:
      host `smtp.gmail.com`, puerto `465`, usuario `atarazanafh@gmail.com`, contraseña = la contraseña de aplicación (sin espacios), remitente `atarazanafh@gmail.com`, nombre `Atarazana Founder House`.
    - Supabase → **Authentication → Rate Limits**: deja "emails per hour" en 100. Cuenta los enlaces que pide la gente para entrar; las invitaciones las manda el script directamente con Gmail. No lo subas mucho más: Gmail corta hacia los 500 al día, y ese tope incluye las dos cosas.
    - Si algún día se quiere remitente `@atarazana.house`, se cambian estos campos por los de [Resend](https://resend.com) (host `smtp.resend.com`, usuario `resend`, contraseña = API key, tras verificar el dominio en DNS). No hay que tocar código.
-6. **Plantillas**: Authentication → Emails → Templates. Copia `emails/magic-link.html` en *Magic Link* (el asunto va en el comentario del archivo). `emails/invite.html` no se pega en Supabase: la manda `scripts/mercado.mjs` con Gmail, usando `GMAIL_APP_PASSWORD` de `.env.prod`. Así la cuenta nace confirmada y la invitación dura 30 días y sirve una vez: su botón lleva a `/mercado`, que la canjea en la función `mercado-invite` y deja a la persona dentro de un clic. Deja de valer al usarla o al rellenar el perfil. Si ya no vale, se pide un enlace en `/mercado`, y ese dura una hora (Authentication → Email OTP Expiration: 3600). Para publicar la función: `SUPABASE_ACCESS_TOKEN=… npx supabase functions deploy mercado-invite --project-ref qdjgqywjqwulzblafnof --no-verify-jwt --use-api`. Las imágenes de los correos están en `public/assets/email/`, así que tienen que estar publicadas antes de enviarlos. La tarjeta de la invitación se pinta para cada persona, con su correo (`scripts/mercado-card.mjs`). Necesita Chromium: `npx playwright install chromium-headless-shell`, una vez. Si cambia el nombre "El Mercado", hay que cambiarlo en esa tarjeta y regenerar `titulo-invitacion.png`.
+6. **Plantillas**: Authentication → Emails → Templates. Copia `emails/magic-link.html` en *Magic Link* (el asunto va en el comentario del archivo). `emails/invite.html` no se pega en Supabase: la manda `scripts/mercado.mjs` con Gmail, usando `GMAIL_APP_PASSWORD` de `.env.prod`. Así la cuenta nace confirmada y la invitación dura 30 días y sirve una vez: su botón lleva a `/tripulacion`, que la canjea en la función `mercado-invite` y deja a la persona dentro de un clic. Deja de valer al usarla o al rellenar el perfil. Si ya no vale, se pide un enlace en `/tripulacion`, y ese dura una hora (Authentication → Email OTP Expiration: 3600). Para publicar la función: `SUPABASE_ACCESS_TOKEN=… npx supabase functions deploy mercado-invite --project-ref qdjgqywjqwulzblafnof --no-verify-jwt --use-api`. Las imágenes de los correos están en `public/assets/email/`, así que tienen que estar publicadas antes de enviarlos. La tarjeta de la invitación se pinta para cada persona, con su correo (`scripts/mercado-card.mjs`). Necesita Chromium: `npx playwright install chromium-headless-shell`, una vez. Si cambia el nombre "La Tripulación", hay que cambiarlo en esa tarjeta y regenerar `titulo-invitacion.png` (hoy dice "Sube a bordo").
 7. **Claves** (Project Settings → API):
    - En **Vercel → Settings → Environment Variables**: `PUBLIC_SUPABASE_URL` y `PUBLIC_SUPABASE_ANON_KEY`. Redeploy.
    - En tu ordenador, copia `.env.prod.example` a `.env.prod` y rellénalo, incluida la `SUPABASE_SERVICE_ROLE_KEY`. **Esa clave salta todas las reglas: nunca en Vercel, nunca en el repo.**
@@ -27,7 +29,7 @@ el login (enlace mágico), los datos y las fotos van en [Supabase](https://supab
 
 ## Producción se cuida
 
-- `npm run dev` solo habla con el Supabase local (`.env.development.local`). Si ahí apareciera la URL de producción, El Mercado no se conecta y avisa en la consola. Y la web publicada nunca se conecta al local.
+- `npm run dev` solo habla con el Supabase local (`.env.development.local`). Si ahí apareciera la URL de producción, la Tripulación no se conecta y avisa en la consola. Y la web publicada nunca se conecta al local.
 - `scripts/mercado.mjs` trabaja en local por defecto. Producción solo con `--prod`, que lee `.env.prod` y pide escribir el nombre del proyecto antes de escribir nada. `--dry-run` no toca ninguna base de datos.
 - `scripts/mercado-demo.mjs` se niega a funcionar si no es contra localhost.
 - El esquema de producción se aplica a mano en el SQL Editor o, con `SUPABASE_ACCESS_TOKEN` en `.env.prod`, por la API de gestión (ver "Acceso de agentes" en `AGENTS.md`). No uses `supabase link` ni `supabase db push`.
@@ -45,7 +47,7 @@ Si un correo falla, el comando termina con error y la invitación queda pendient
 
 ## Copias de seguridad
 
-El plan gratuito de Supabase no hace copias. Las hace `.github/workflows/backup.yml`: cada lunes guarda las cuentas, las tablas de El Mercado y las fotos, y las conserva 90 días como artefacto de GitHub.
+El plan gratuito de Supabase no hace copias. Las hace `.github/workflows/backup.yml`: cada lunes guarda las cuentas, las tablas de la Tripulación y las fotos, y las conserva 90 días como artefacto de GitHub.
 
 **El repo es público, así que cualquiera con cuenta en GitHub puede descargar esos archivos.** Por eso van cifrados con [age](https://github.com/FiloSottile/age): GitHub solo tiene la clave pública, y descifrar requiere la privada, que está fuera de GitHub y del repo. **Si se pierde la clave privada, las copias no se pueden abrir.** Los registros solo muestran recuentos.
 

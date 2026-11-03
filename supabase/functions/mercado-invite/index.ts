@@ -1,6 +1,6 @@
-// Canjea el botón de la invitación de El Mercado. Supabase solo tiene una caducidad para todos sus enlaces (1 hora), así que
+// Canjea el botón de la invitación de la Tripulación. Supabase solo tiene una caducidad para todos sus enlaces (1 hora), así que
 // la invitación guarda su propio token (30 días, un solo uso) y el enlace de entrar se crea al canjearlo.
-// Lo llama la página /mercado con un POST desde el navegador: así un filtro de correo que solo abre el enlace no lo gasta.
+// Lo llama la página /tripulacion con un POST desde el navegador: así un filtro de correo que solo abre el enlace no lo gasta.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
 const site = Deno.env.get('MERCADO_SITE_URL') ?? 'https://atarazana.house';
@@ -29,6 +29,6 @@ Deno.serve(async (req) => {
   if (!invite) return reply({ url: null, email: null });
   if (new Date(invite.expires_at) < new Date()) return reply({ url: null, email: invite.email });
 
-  const { data, error } = await db.auth.admin.generateLink({ type: 'magiclink', email: invite.email, options: { redirectTo: `${site}/mercado` } });
+  const { data, error } = await db.auth.admin.generateLink({ type: 'magiclink', email: invite.email, options: { redirectTo: `${site}/tripulacion` } });
   return error ? reply({ url: null, email: invite.email }) : reply({ url: data.properties.action_link, email: invite.email });
 });

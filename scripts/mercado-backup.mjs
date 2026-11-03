@@ -1,4 +1,4 @@
-// Copia de seguridad de El Mercado: datos (cuentas y tablas) y fotos, en un solo archivo cifrado con age.
+// Copia de seguridad de la Tripulación: datos (cuentas y tablas) y fotos, en un solo archivo cifrado con age.
 // Solo lee de la base de datos. La tarea .github/workflows/backup.yml la lanza cada semana.
 // El repo es público: nunca se escribe en los registros nada más que recuentos.
 //

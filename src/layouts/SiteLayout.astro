@@ -14,7 +14,7 @@ import '@fontsource/permanent-marker/400.css';
 import '../styles/global.css';
 type Meta = { title: string; description: string; socialDescription: string; type: string };
 // Las páginas generadas (cada marea) pasan sus propios metadatos y rutas.
-// `private` (El Mercado): sin indexar y sin el CTA final.
+// `private` (La Tripulación): sin indexar y sin el CTA final.
 interface Props { lang: Locale; page: Page; meta?: Meta; paths?: Record<Locale, string>; private?: boolean; }
 const { lang, page, meta: metaOverride, paths, private: isPrivate = false } = Astro.props;
 const meta: Meta = metaOverride ?? pages[lang][page];

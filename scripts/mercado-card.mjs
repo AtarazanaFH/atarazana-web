@@ -1,4 +1,4 @@
-// Tarjeta de invitación de El Mercado: la misma de la portada, como JPEG, con el correo de cada persona.
+// Tarjeta de invitación de la Tripulación: la misma de la portada, como JPEG, con el correo de cada persona.
 // La pinta Chromium con los estilos de la web. Hace falta una vez: npx playwright install chromium-headless-shell
 import { readFileSync } from 'node:fs';
 import { chromium } from 'playwright';
@@ -23,7 +23,7 @@ html,body{margin:0;background:#0a1d22}
 </style>
 <figure class="hero-pass"><div class="pass"><div class="pass-slot"></div><div class="pass-top"><span>Invitación</span><span>Personal</span></div>
 <div class="pass-body">${logo}<p class="pass-title">Atarazana<br>Founder House</p>
-<dl class="pass-data"><div><dt>Lugar</dt><dd>El Mercado</dd></div><div><dt>Ciudad</dt><dd>Málaga</dd></div><div><dt>Acceso</dt><dd>Privado</dd></div><div><dt>Plaza</dt><dd>La tuya</dd></div></dl>
+<dl class="pass-data"><div><dt>Lugar</dt><dd>La Tripulación</dd></div><div><dt>Ciudad</dt><dd>Málaga</dd></div><div><dt>Acceso</dt><dd>Privado</dd></div><div><dt>Plaza</dt><dd>La tuya</dd></div></dl>
 <p class="pass-name"><span>Para</span><b data-to></b></p></div><div class="pass-foot">${code}</div></div></figure>`;
 
 let browser;
