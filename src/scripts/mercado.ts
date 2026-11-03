@@ -262,22 +262,19 @@ async function profileView({ root, lang, t, sb }: Ctx) {
   await paintPhoto();
 
   // Guardar el perfil y cambiar la foto se excluyen: el perfil tiene que guardar la foto que se ve.
-  let photoBusy = false, saving = false;
+  // «Guardar» no se desactiva mientras se encuadra o se sube la foto: espera a que acabe.
+  let photoTask: Promise<boolean> | null = null, saving = false;
   const syncControls = () => {
-    save.disabled = saving || photoBusy;
-    photoInput.disabled = saving;
+    save.disabled = saving;
+    photoInput.disabled = saving || !!photoTask;
     photoRemove.disabled = saving;
-    photoLabel.closest('label')!.hidden = photoBusy;
-    photoRemove.hidden = photoBusy || !photo;
+    photoLabel.closest('label')!.hidden = !!photoTask;
+    photoRemove.hidden = !!photoTask || !photo;
   };
 
-  photoInput.addEventListener('change', async () => {
-    const file = photoInput.files?.[0];
-    photoInput.value = '';
-    if (!file) return;
+  // Devuelve false si la foto elegida no se ha podido subir.
+  const changePhoto = async (file: File) => {
     photoStatus.textContent = '';
-    photoBusy = true;
-    syncControls();
     photoEditor.hidden = false;
     preview.hidden = true;
     let blob: Blob | null = null, unreadable = false;
@@ -285,19 +282,31 @@ async function profileView({ root, lang, t, sb }: Ctx) {
     photoEditor.hidden = true;
     preview.hidden = false;
     if (unreadable) photoStatus.textContent = t.photoBad;
-    if (blob) {
-      photoStatus.textContent = t.saving;
-      try {
-        const path = `${s.user.id}/${crypto.randomUUID()}.jpg`;
-        const { error } = await sb.storage.from(PHOTO_BUCKET).upload(path, blob, { contentType: 'image/jpeg' });
-        if (error) throw error;
-        if (photo && photo !== savedPhoto) await sb.storage.from(PHOTO_BUCKET).remove([photo]);
-        photo = path;
-        await paintPhoto();
-        photoStatus.textContent = '';
-      } catch { photoStatus.textContent = t.saveError; }
+    if (!blob) return true;
+    photoStatus.textContent = t.saving;
+    try {
+      const path = `${s.user.id}/${crypto.randomUUID()}.jpg`;
+      const { error } = await sb.storage.from(PHOTO_BUCKET).upload(path, blob, { contentType: 'image/jpeg' });
+      if (error) throw error;
+      if (photo && photo !== savedPhoto) await sb.storage.from(PHOTO_BUCKET).remove([photo]);
+      photo = path;
+      await paintPhoto();
+      photoStatus.textContent = '';
+      return true;
+    } catch {
+      photoStatus.textContent = t.saveError;
+      return false;
     }
-    photoBusy = false;
+  };
+
+  photoInput.addEventListener('change', async () => {
+    const file = photoInput.files?.[0];
+    photoInput.value = '';
+    if (!file) return;
+    photoTask = changePhoto(file);
+    syncControls();
+    await photoTask;
+    photoTask = null;
     syncControls();
   });
   photoRemove.addEventListener('click', async () => {
@@ -320,6 +329,12 @@ async function profileView({ root, lang, t, sb }: Ctx) {
     if (bad) { status.textContent = t.badLink; return field(bad).focus(); }
     if (!row.website && !row.linkedin && !row.x && !row.github) { status.textContent = t.needLink; return field('website').focus(); }
     saving = true; syncControls(); status.textContent = t.saving;
+    // Con el editor abierto, «Guardar» usa la foto tal como está encuadrada.
+    if (photoTask) {
+      if (!photoEditor.hidden) $<HTMLButtonElement>(photoEditor, '[data-photo-use]').click();
+      if (!(await photoTask)) { saving = false; syncControls(); status.textContent = t.saveError; return; }
+      row.photo = photo;
+    }
     const { error } = await sb.from('mercado_profiles').upsert(row);
     saving = false; syncControls();
     if (error) { status.textContent = t.saveError; return; }

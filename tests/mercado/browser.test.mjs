@@ -88,7 +88,6 @@ test('la invitación lleva al perfil, al directorio y al cierre de sesión, tamb
   assert.equal(await page.locator('[data-photo-editor]').isVisible(), false, 'Un archivo que no es una imagen no abre el editor');
 
   await edit(halves);
-  assert.equal(await page.locator('[data-save]').isDisabled(), true, 'No se guarda el perfil a medias de editar la foto');
   // Espera a que acabe la transición de página: mientras dura, el ratón no llega al lienzo.
   await page.locator('[data-photo-editor] canvas').click({ trial: true });
   const box = await page.locator('[data-photo-editor] canvas').boundingBox();
@@ -115,13 +114,13 @@ test('la invitación lleva al perfil, al directorio y al cierre de sesión, tamb
   await edit(halves);
   await page.locator('[data-photo-cancel]').click();
   assert.equal((await stored()).name, zoomed.name, 'Cancelar no cambia la foto');
-  assert.equal(await page.locator('[data-save]').isDisabled(), false);
 
   await edit(await image(480, 600, 'noise'));
   const heavy = await use(zoomed.name);
   assert.ok(heavy.metadata.size <= 200 * 1024, `Foto de ${heavy.metadata.size} bytes`);
 
-  // Con la subida en curso no se puede guardar, o el perfil se quedaría sin la foto nueva.
+  // Guardar con la subida en curso espera a que acabe, o el perfil se quedaría sin la foto nueva.
+  const savedRow = async () => (await db.from('mercado_profiles').select('name, photo').eq('id', me.id).maybeSingle()).data;
   let release;
   const held = new Promise((resolve) => { release = resolve; });
   let uploading;
@@ -130,25 +129,31 @@ test('la invitación lleva al perfil, al directorio y al cierre de sesión, tamb
     if (route.request().method() === 'POST') { uploading(); await held; }
     await route.fallback();
   });
+  await page.locator('[name="name"]').fill('Persona de prueba');
+  await page.locator('[name="website"]').fill('example.org');
   await edit(halves);
   await page.locator('[data-photo-use]').click();
   await started;
-  assert.equal(await page.locator('[data-save]').isDisabled(), true, 'No se guarda con la subida en curso');
   assert.equal(await page.locator('[data-photo-label]').isVisible(), false, 'No se elige otra foto con la subida en curso');
   assert.equal(await page.locator('[data-photo-remove]').isVisible(), false, 'No se quita la foto con la subida en curso');
+  await page.locator('[data-save]').click();
+  await page.locator('[data-status]', { hasText: /Guardando/ }).waitFor();
+  assert.equal(await savedRow(), null, 'No se guarda el perfil antes de acabar la subida');
   release();
-  await page.locator('[data-save]:not([disabled])').waitFor();
+  await page.waitForFunction(() => document.querySelector('[name="website"]')?.value === 'https://example.org/');
   await page.unroute('**/storage/v1/object/mercado-fotos/**');
   const uploaded = await stored();
   assert.notEqual(uploaded.name, heavy.name);
+  assert.deepEqual(await savedRow(), { name: 'Persona de prueba', photo: `${me.id}/${uploaded.name}` }, 'El perfil guarda la foto recién subida');
 
-  await page.locator('[name="name"]').fill('Persona de prueba');
-  await page.locator('[name="website"]').fill('example.org');
+  // Pasó en un iPhone: eligió foto, no pulsó «Usar foto» y «Guardar» no hacía nada. Ahora usa la foto como está.
+  await edit(halves);
   await page.locator('[data-save]').click();
-  await page.waitForFunction(() => document.querySelector('[name="website"]')?.value === 'https://example.org/');
-  const savedProfile = ok(await db.from('mercado_profiles').select('name, photo').eq('id', me.id).single());
-  assert.equal(savedProfile.name, 'Persona de prueba');
-  assert.equal(savedProfile.photo, `${me.id}/${uploaded.name}`, 'El perfil guarda la foto recién subida');
+  await page.locator('[data-status]', { hasText: /Guardado/ }).waitFor();
+  assert.equal(await page.locator('[data-photo-editor]').isVisible(), false, 'Guardar cierra el editor');
+  const framed = await stored();
+  assert.notEqual(framed.name, uploaded.name);
+  assert.equal((await savedRow()).photo, `${me.id}/${framed.name}`, 'Guardar con el editor abierto guarda la foto encuadrada');
   await page.locator('.m-return').click();
   const peerLink = page.locator(`[data-grid] a[href$="id=${peer.id}"]`);
   await peerLink.waitFor();
