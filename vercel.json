@@ -35,6 +35,26 @@
       "source": "/en/partners.html",
       "destination": "/en/partners",
       "statusCode": 301
+    },
+    {
+      "source": "/mercado",
+      "destination": "/tripulacion",
+      "statusCode": 301
+    },
+    {
+      "source": "/mercado/:path*",
+      "destination": "/tripulacion/:path*",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/mercado",
+      "destination": "/en/tripulacion",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/mercado/:path*",
+      "destination": "/en/tripulacion/:path*",
+      "statusCode": 301
     }
   ]
 }

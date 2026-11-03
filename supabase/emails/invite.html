@@ -1,4 +1,4 @@
-<!-- La manda scripts/mercado.mjs con Gmail, no Supabase. Asunto: "Te invitamos a pasar al Mercado de Atarazana" -->
+<!-- La manda scripts/mercado.mjs con Gmail, no Supabase. Asunto: "Te invitamos a la Tripulación de Atarazana" -->
 <!doctype html>
 <html lang="es">
 <head>
@@ -6,32 +6,38 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="supported-color-schemes" content="dark">
-<title>Pasa al Mercado</title>
+<title>Sube a bordo</title>
 </head>
 <body style="margin:0;padding:0;background:#061418" bgcolor="#061418">
-<div style="display:none;max-height:0;overflow:hidden;color:#061418">Te invitamos a pasar. Rellena tu perfil y verás a la gente con la que coincidiste.</div>
+<div style="display:none;max-height:0;overflow:hidden;color:#061418">Para seguir en contacto con la gente de tus mareas. Entrar es opcional.</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#061418" style="background:#061418">
 <tr><td align="center" style="padding:24px 12px">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#061418" style="max-width:560px;background:#061418;border:1px solid #1e3a40">
     <tr><td bgcolor="#0a1d22" style="background:#0a1d22;border-bottom:1px solid #1e3a40;font-size:0;line-height:0">
-      <img src="cid:invitacion" width="560" alt="Invitación a El Mercado de Atarazana Founder House para {{ .Email }}. Acceso privado, en Málaga." style="display:block;border:0;width:100%;height:auto;color:#e8f3f1;font-family:Inter,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.5">
+      <img src="cid:invitacion" width="560" alt="Invitación a La Tripulación de Atarazana Founder House para {{ .Email }}. Acceso privado, en Málaga." style="display:block;border:0;width:100%;height:auto;color:#e8f3f1;font-family:Inter,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.5">
     </td></tr>
     <tr><td style="padding:36px 28px 0">
-      <img src="https://atarazana.house/assets/email/titulo-invitacion.png" width="400" alt="Pasa al Mercado" style="display:block;border:0;width:100%;max-width:400px;height:auto;color:#e8f3f1;font-family:Impact,'Arial Narrow',Arial,sans-serif;font-size:44px;line-height:1.05;text-transform:uppercase">
+      <img src="https://atarazana.house/assets/email/titulo-invitacion.png" width="400" alt="Sube a bordo" style="display:block;border:0;width:100%;max-width:400px;height:auto;color:#e8f3f1;font-family:Impact,'Arial Narrow',Arial,sans-serif;font-size:44px;line-height:1.05;text-transform:uppercase">
     </td></tr>
     <tr><td style="padding:24px 28px 0;color:#e8f3f1;font-family:Inter,Helvetica,Arial,sans-serif;font-size:17px;line-height:1.55">
-      Viniste a una marea, así que te invitamos a pasar. Rellena tu perfil y verás a la gente con la que coincidiste.
+      Viniste a una marea, así que te invitamos a la Tripulación: la parte privada de la web de Atarazana donde ves quién coincidió contigo en la misma marea. Sirve para seguir en contacto después de cada encuentro.
+    </td></tr>
+    <tr><td style="padding:16px 28px 0;color:#e8f3f1;font-family:Inter,Helvetica,Arial,sans-serif;font-size:17px;line-height:1.55">
+      Solo verás a quien coincidió contigo en alguna marea y también ha querido entrar. Y esa gente te verá a ti. Es opcional: si quieres entrar, rellena tu perfil.
+    </td></tr>
+    <tr><td style="padding:16px 28px 0;color:#e8f3f1;font-family:Inter,Helvetica,Arial,sans-serif;font-size:17px;line-height:1.55">
+      Queremos que lo que empieza en una marea siga entre una y otra. Así, durante la marea no tienes que estar pendiente de pedirle el contacto a todo el mundo y puedes centrarte en la conversación. Si conectaste con alguien, no se te escapa.
     </td></tr>
     <tr><td style="padding:28px 28px 20px">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
-        <td bgcolor="#34e0c2" style="background:#34e0c2"><a href="{{ .ConfirmationURL }}" style="display:block;padding:18px 20px;color:#061418;font-family:'IBM Plex Mono',Menlo,Consolas,monospace;font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-decoration:none">Pasar al Mercado &rarr;</a></td>
+        <td bgcolor="#34e0c2" style="background:#34e0c2"><a href="{{ .ConfirmationURL }}" style="display:block;padding:18px 20px;color:#061418;font-family:'IBM Plex Mono',Menlo,Consolas,monospace;font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-decoration:none">Entrar en la Tripulación &rarr;</a></td>
       </tr></table>
     </td></tr>
     <tr><td style="padding:0 28px 32px;color:#e8f3f1;font-family:Inter,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55">
-      Este botón es personal y solo sirve una vez. Si ya lo usaste o han pasado 30 días, pide otro enlace en <a href="https://atarazana.house/mercado" style="color:#34e0c2">atarazana.house/mercado</a>.
+      Este botón es personal y solo sirve una vez. Si ya lo usaste o han pasado 30 días, pide otro enlace en <a href="https://atarazana.house/tripulacion" style="color:#34e0c2">atarazana.house/tripulacion</a>.
     </td></tr>
     <tr><td style="padding:20px 28px;border-top:1px solid #1e3a40;color:#8aa6aa;font-family:Inter,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.55">
-      You came to a marea, so come on in. Fill in your profile to see the people you met there. This button is personal and works once. If you already used it or 30 days have passed, ask for a new link at <a href="https://atarazana.house/mercado" style="color:#34e0c2">atarazana.house/mercado</a>.
+      You came to a marea, so we are inviting you to La Tripulación: the private part of the Atarazana website where you see who was at the same marea as you. It is there to keep in touch after each meetup. You will only see people who were at a marea with you and have also chosen to join, and they will see you. It is optional: if you want in, fill in your profile. We want what starts at a marea to carry on between meetups. So during a marea you do not have to worry about getting everyone's details and can focus on the conversation. If you hit it off with someone, you will not lose track of them. This button is personal and works once. If you already used it or 30 days have passed, ask for a new link at <a href="https://atarazana.house/tripulacion" style="color:#34e0c2">atarazana.house/tripulacion</a>.
     </td></tr>
     <tr><td style="padding:20px 28px;border-top:1px solid #1e3a40;color:#8aa6aa;font-family:'IBM Plex Mono',Menlo,Consolas,monospace;font-size:12px;line-height:1.7">
       Hasta la próxima marea · Until the next marea

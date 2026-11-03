@@ -1,17 +1,18 @@
 import type { Locale } from './pages';
 
-// El Mercado: la zona para volver a encontrar a la gente de tus mareas.
-// El nombre vive aquí. La ruta (/mercado) es el nombre de la carpeta en src/pages.
-export const mercadoName = 'El Mercado';
+// La Tripulación: la zona para volver a encontrar a la gente de tus mareas.
+// El nombre vive aquí. La ruta (/tripulacion) es el nombre de la carpeta en src/pages.
+// En el código, las tablas y los scripts se sigue llamando «mercado».
+export const mercadoName = 'La Tripulación';
 
 export function mercadoUrl(lang: Locale, view: 'index' | 'perfil' | 'persona' = 'index') {
-  const base = lang === 'en' ? '/en/mercado' : '/mercado';
+  const base = lang === 'en' ? '/en/tripulacion' : '/tripulacion';
   return view === 'index' ? base : `${base}/${view}`;
 }
 
 export const mercadoCopy = {
   es: {
-    off: `${mercadoName} todavía no está activo. Vuelve pronto.`,
+    off: `${mercadoName} todavía no está activa. Vuelve pronto.`,
     loading: 'Cargando…',
     // entrar
     loginKicker: 'Solo para quien ha venido a una marea',
@@ -59,7 +60,7 @@ export const mercadoCopy = {
     needName: 'Falta tu nombre.',
     needLink: 'Añade al menos un enlace para que te puedan contactar.',
     badLink: 'Este enlace no parece una dirección web.',
-    backToMercado: 'Volver al Mercado',
+    backToMercado: 'Volver a la Tripulación',
     photo: 'Foto',
     photoAdd: 'Subir foto',
     photoChange: 'Cambiar foto',
@@ -136,7 +137,7 @@ export const mercadoCopy = {
     needName: 'Your name is missing.',
     needLink: 'Add at least one link so people can reach you.',
     badLink: 'This link does not look like a web address.',
-    backToMercado: 'Back to El Mercado',
+    backToMercado: 'Back to La Tripulación',
     photo: 'Photo',
     photoAdd: 'Upload photo',
     photoChange: 'Change photo',

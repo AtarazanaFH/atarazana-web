@@ -1,4 +1,4 @@
-// El Mercado en el navegador: entrar con enlace mágico, el directorio, tu perfil y la ficha de cada persona.
+// La Tripulación en el navegador: entrar con enlace mágico, el directorio, tu perfil y la ficha de cada persona.
 // Todo el texto que viene de la base de datos se pinta con textContent: nunca como HTML.
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { supabase, PHOTO_BUCKET } from '../lib/supabase';

@@ -1,9 +1,9 @@
-# Tests de El Mercado
+# Tests de la Tripulación
 
 Siete pruebas de comportamiento con el runner de Node, Supabase local y Chromium. Sin dependencias nuevas.
 
 ```sh
-npm test        # Mercado: unos 15 segundos con los servicios arrancados
+npm test        # Tripulación: unos 15 segundos con los servicios arrancados
 npm run verify # tipos de Astro y Deno, tests y build
 ```
 

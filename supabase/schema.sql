@@ -1,4 +1,4 @@
--- El Mercado: perfiles de la gente que ha venido a las mareas.
+-- La Tripulación (en el código, «mercado»): perfiles de la gente que ha venido a las mareas.
 -- Se ejecuta entero en Supabase → SQL Editor. Se puede volver a ejecutar sin romper nada.
 --
 -- Reglas:

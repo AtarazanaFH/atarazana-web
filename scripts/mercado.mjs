@@ -1,4 +1,4 @@
-// El Mercado: carga asistentes desde el CSV de Luma, manda invitaciones y gestiona admins.
+// La Tripulación (antes El Mercado): carga asistentes desde el CSV de Luma, manda invitaciones y gestiona admins.
 //
 // Por defecto trabaja contra el Supabase LOCAL (.env.development.local). Producción solo con --prod:
 // lee .env.prod (no se sube al repo, Astro no lo carga nunca) y, antes de escribir nada,
@@ -134,13 +134,13 @@ async function invite(email, name, userId) {
   // Solo una vez guardada la nueva, para que ningún enlace anterior siga valiendo.
   const { error: deleteError } = await db.from('mercado_invites').delete().eq('user_id', userId).neq('token_hash', tokenHash);
   if (deleteError) { console.error(`  ✗ ${email}: no se pudo anular la invitación anterior: ${deleteError.message}`); return false; }
-  const link = `${SITE_URL}/mercado#invitacion=${token}`;
+  const link = `${SITE_URL}/tripulacion#invitacion=${token}`;
   try {
     await getMailer().sendMail({
       from: `"Atarazana Founder House" <${FROM}>`, to: email, subject,
       html: html.replaceAll('{{ .ConfirmationURL }}', link).replaceAll('{{ .Email }}', escapeHtml(email)),
       attachments: [{ filename: 'invitacion.jpg', content: await renderCard(email), cid: 'invitacion', contentDisposition: 'inline' }],
-      text: `Viniste a una marea, así que te invitamos a pasar. Rellena tu perfil y verás a la gente con la que coincidiste.\n\nPasar al Mercado: ${link}\n\nEste enlace es personal y solo sirve una vez. Si ya lo usaste o han pasado 30 días, pide otro en ${SITE_URL}/mercado\n\nYou came to a marea, so come on in. Fill in your profile to see the people you met there. This link is personal and works once. If you already used it or 30 days have passed, ask for a new one at ${SITE_URL}/mercado\n\nHasta la próxima marea`,
+      text: `Viniste a una marea, así que te invitamos a la Tripulación: la parte privada de la web de Atarazana donde ves quién coincidió contigo en la misma marea. Sirve para seguir en contacto después de cada encuentro.\n\nSolo verás a quien coincidió contigo en alguna marea y también ha querido entrar. Y esa gente te verá a ti. Es opcional: si quieres entrar, rellena tu perfil.\n\nQueremos que lo que empieza en una marea siga entre una y otra. Así, durante la marea no tienes que estar pendiente de pedirle el contacto a todo el mundo y puedes centrarte en la conversación. Si conectaste con alguien, no se te escapa.\n\nEntrar en la Tripulación: ${link}\n\nEste enlace es personal y solo sirve una vez. Si ya lo usaste o han pasado 30 días, pide otro en ${SITE_URL}/tripulacion\n\nYou came to a marea, so we are inviting you to La Tripulación: the private part of the Atarazana website where you see who was at the same marea as you. It is there to keep in touch after each meetup. You will only see people who were at a marea with you and have also chosen to join, and they will see you. It is optional: if you want in, fill in your profile. We want what starts at a marea to carry on between meetups. So during a marea you do not have to worry about getting everyone's details and can focus on the conversation. If you hit it off with someone, you will not lose track of them. This link is personal and works once. If you already used it or 30 days have passed, ask for a new one at ${SITE_URL}/tripulacion\n\nHasta la próxima marea`,
     });
   } catch (e) {
     console.error(`  ✗ ${email}: correo no enviado, queda pendiente: ${e.message}`);

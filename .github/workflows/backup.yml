@@ -1,6 +1,6 @@
 name: Backup
 
-# Copia semanal de El Mercado, cifrada: GitHub solo tiene la clave pública. Guía en supabase/README.md.
+# Copia semanal de la Tripulación, cifrada: GitHub solo tiene la clave pública. Guía en supabase/README.md.
 on:
   schedule:
     - cron: '17 3 * * 1'

@@ -1,4 +1,4 @@
-// Datos de prueba para El Mercado en el Supabase LOCAL (npx supabase start). Nunca en producción.
+// Datos de prueba para la Tripulación en el Supabase LOCAL (npx supabase start). Nunca en producción.
 //
 //   node scripts/mercado-demo.mjs          crea la gente de prueba y enseña los enlaces para entrar
 //   node scripts/mercado-demo.mjs --reset  borra todo lo de prueba (correos @atarazana.test)
@@ -63,7 +63,7 @@ async function reset() {
 }
 
 async function link(address) {
-  const { data, error } = await db.auth.admin.generateLink({ type: 'magiclink', email: address, options: { redirectTo: `${SITE}/mercado` } });
+  const { data, error } = await db.auth.admin.generateLink({ type: 'magiclink', email: address, options: { redirectTo: `${SITE}/tripulacion` } });
   if (error) throw error;
   return data.properties.action_link;
 }
@@ -98,5 +98,5 @@ for (const [name, , profile] of people) {
 console.log(`✓ ${people.length} personas de prueba en las mareas 001, 002 y 003.\n`);
 console.log(`Entrar como "Tú" (fuiste a la 001 y la 002):\n${await link(YOU)}\n`);
 console.log(`Entrar como admin:\n${await link(ADMIN)}\n`);
-console.log('Los enlaces sirven una vez. Vuelve a ejecutar el script para tener otros, o pide uno desde /mercado con');
+console.log('Los enlaces sirven una vez. Vuelve a ejecutar el script para tener otros, o pide uno desde /tripulacion con');
 console.log(`${YOU} y ábrelo en el buzón de prueba: http://127.0.0.1:54334`);

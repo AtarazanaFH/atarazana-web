@@ -30,10 +30,10 @@ test('la invitación lleva al perfil, al directorio y al cierre de sesión, tamb
     const response = await route.fetch({ maxRedirects: 0 });
     assert.equal(response.status(), 303);
     const target = localUrl(response.headers().location);
-    assert.equal(target.pathname, '/mercado');
+    assert.equal(target.pathname, '/tripulacion');
     await route.fulfill({ response, headers: { ...response.headers(), location: origin + target.pathname + target.search + target.hash } });
   });
-  await page.goto(`${origin}/mercado#invitacion=${token}`);
+  await page.goto(`${origin}/tripulacion#invitacion=${token}`);
   await page.locator('[data-gate]:visible').waitFor();
   assert.equal(await page.locator('[data-browse]').isVisible(), false);
   await page.locator('[data-gate] a').click();
@@ -166,7 +166,7 @@ test('la invitación lleva al perfil, al directorio y al cierre de sesión, tamb
   await peerLink.click();
   await page.locator('[data-state="person"]:visible').waitFor();
   assert.equal(await page.locator('[data-name]').textContent(), name);
-  await page.goto(`${origin}/en/mercado`);
+  await page.goto(`${origin}/en/tripulacion`);
   await page.locator('[data-browse]:visible').waitFor();
   assert.equal(await page.locator('html').getAttribute('lang'), 'en');
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Sin scroll horizontal a 360 px');

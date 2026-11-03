@@ -9,8 +9,8 @@ const isLocal = /^http:\/\/(127\.0\.0\.1|localhost)(:|\/|$)/.test(url ?? '');
 const allowed = import.meta.env.DEV === isLocal;
 if (url && !allowed) {
   console.warn(import.meta.env.DEV
-    ? `El Mercado: en local solo se usa el Supabase local, no ${url}. Revisa .env.development.local.`
-    : 'El Mercado: esta build apunta al Supabase local; no se conecta.');
+    ? `La Tripulación: en local solo se usa el Supabase local, no ${url}. Revisa .env.development.local.`
+    : 'La Tripulación: esta build apunta al Supabase local; no se conecta.');
 }
 
 let client: SupabaseClient | null = null;
