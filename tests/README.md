@@ -22,7 +22,7 @@ El workflow `.github/workflows/verify.yml` ejecuta la misma verificación en cad
 
 Vercel sigue desplegando desde GitHub según la configuración existente del proyecto. Este workflow aporta la comprobación `Verify`; para exigirla antes de fusionar, añádela como comprobación obligatoria en las reglas de la rama de GitHub.
 
-| Archivo en `mercado/` | Qué protege |
+| Archivo en `tripulacion/` | Qué protege |
 | --- | --- |
 | `access.test.mjs` | Alta solo para asistentes; perfil y contacto obligatorios; privacidad por marea e incógnito; acceso directo a tablas, fotos, exportación y moderación. |
 | `invitations.test.mjs` | El canje autentica al destinatario una sola vez, incluso con dos peticiones simultáneas. Caducidad y revocación al completar el perfil o borrar la cuenta. |
@@ -61,7 +61,7 @@ Ejecuta la suite en serie, como hace `npm test`; no lances dos copias a la vez. 
 Para trabajar en un caso concreto:
 
 ```sh
-node --test tests/mercado/import.test.mjs
+node --test tests/tripulacion/import.test.mjs
 ```
 
 Los helpers solo crean datos, arrancan recursos y provocan fallos. Las reglas de acceso se prueban con clientes autenticados normales, no con la service key. El importador se ejecuta como CLI y la función se llama por HTTP. El único fallo de BD simulado intercepta una inserción en el subproceso; no modifica el código de producción.

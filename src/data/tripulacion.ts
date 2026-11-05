@@ -2,17 +2,17 @@ import type { Locale } from './pages';
 
 // La Tripulación: la zona para volver a encontrar a la gente de tus mareas.
 // El nombre vive aquí. La ruta (/tripulacion) es el nombre de la carpeta en src/pages.
-// En el código, las tablas y los scripts se sigue llamando «mercado».
-export const mercadoName = 'La Tripulación';
+// En la base de datos y en la función de la invitación se sigue llamando «mercado»: ver AGENTS.md.
+export const tripulacionName = 'La Tripulación';
 
-export function mercadoUrl(lang: Locale, view: 'index' | 'perfil' | 'persona' = 'index') {
+export function tripulacionUrl(lang: Locale, view: 'index' | 'perfil' | 'persona' = 'index') {
   const base = lang === 'en' ? '/en/tripulacion' : '/tripulacion';
   return view === 'index' ? base : `${base}/${view}`;
 }
 
-export const mercadoCopy = {
+export const tripulacionCopy = {
   es: {
-    off: `${mercadoName} todavía no está activa. Vuelve pronto.`,
+    off: `${tripulacionName} todavía no está activa. Vuelve pronto.`,
     loading: 'Cargando…',
     // entrar
     loginKicker: 'Solo para quien ha venido a una marea',
@@ -60,7 +60,7 @@ export const mercadoCopy = {
     needName: 'Falta tu nombre.',
     needLink: 'Añade al menos un enlace para que te puedan contactar.',
     badLink: 'Este enlace no parece una dirección web.',
-    backToMercado: 'Volver a la Tripulación',
+    backToTripulacion: 'Volver a la Tripulación',
     photo: 'Foto',
     photoAdd: 'Subir foto',
     photoChange: 'Cambiar foto',
@@ -92,7 +92,7 @@ export const mercadoCopy = {
     adminDeleteConfirm: (name: string) => `¿Borrar el perfil de ${name}? Podrá volver a entrar y rellenarlo de nuevo.`,
   },
   en: {
-    off: `${mercadoName} is not open yet. Come back soon.`,
+    off: `${tripulacionName} is not open yet. Come back soon.`,
     loading: 'Loading…',
     loginKicker: 'Only for people who have been to a marea',
     loginLead: 'Find the people you met at a marea again: what they do, what they are building and how to reach them.',
@@ -137,7 +137,7 @@ export const mercadoCopy = {
     needName: 'Your name is missing.',
     needLink: 'Add at least one link so people can reach you.',
     badLink: 'This link does not look like a web address.',
-    backToMercado: 'Back to La Tripulación',
+    backToTripulacion: 'Back to La Tripulación',
     photo: 'Photo',
     photoAdd: 'Upload photo',
     photoChange: 'Change photo',
@@ -169,4 +169,4 @@ export const mercadoCopy = {
   },
 } satisfies Record<Locale, Record<string, unknown>>;
 
-export type MercadoCopy = (typeof mercadoCopy)['es'];
+export type TripulacionCopy = (typeof tripulacionCopy)['es'];

@@ -43,11 +43,11 @@ jobs:
 
       - name: Preparar las variables locales de los tests
         run: |
-          supabase status -o json > "$RUNNER_TEMP/mercado-status.json"
+          supabase status -o json > "$RUNNER_TEMP/tripulacion-status.json"
           node --input-type=module <<'NODE'
           import assert from 'node:assert/strict';
           import { readFileSync, writeFileSync } from 'node:fs';
-          const status = JSON.parse(readFileSync(`${process.env.RUNNER_TEMP}/mercado-status.json`, 'utf8'));
+          const status = JSON.parse(readFileSync(`${process.env.RUNNER_TEMP}/tripulacion-status.json`, 'utf8'));
           const url = new URL(status.API_URL);
           assert.ok(url.protocol === 'http:' && ['127.0.0.1', 'localhost'].includes(url.hostname));
           assert.ok(status.ANON_KEY && status.SERVICE_ROLE_KEY, 'Faltan las claves del Supabase local');
@@ -63,8 +63,8 @@ jobs:
 
       - name: Servir la función de invitaciones
         run: |
-          supabase functions serve mercado-invite --no-verify-jwt > "$RUNNER_TEMP/mercado-functions.log" 2>&1 &
-          echo "$!" > "$RUNNER_TEMP/mercado-functions.pid"
+          supabase functions serve mercado-invite --no-verify-jwt > "$RUNNER_TEMP/tripulacion-functions.log" 2>&1 &
+          echo "$!" > "$RUNNER_TEMP/tripulacion-functions.pid"
           curl --fail --silent --show-error --retry 30 --retry-delay 1 --retry-all-errors --max-time 2 \
             -H 'Content-Type: application/json' -d '{"t":""}' \
             http://127.0.0.1:54321/functions/v1/mercado-invite
@@ -76,14 +76,14 @@ jobs:
         if: failure()
         run: |
           docker ps -a --filter name=supabase_
-          if [ -f "$RUNNER_TEMP/mercado-functions.log" ]; then
-            tail -n 80 "$RUNNER_TEMP/mercado-functions.log"
+          if [ -f "$RUNNER_TEMP/tripulacion-functions.log" ]; then
+            tail -n 80 "$RUNNER_TEMP/tripulacion-functions.log"
           fi
 
       - name: Parar Supabase
         if: always()
         run: |
-          if [ -f "$RUNNER_TEMP/mercado-functions.pid" ]; then
-            kill "$(cat "$RUNNER_TEMP/mercado-functions.pid")" 2>/dev/null || true
+          if [ -f "$RUNNER_TEMP/tripulacion-functions.pid" ]; then
+            kill "$(cat "$RUNNER_TEMP/tripulacion-functions.pid")" 2>/dev/null || true
           fi
           supabase stop --no-backup

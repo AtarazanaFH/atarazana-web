@@ -4,19 +4,19 @@
 // lee .env.prod (no se sube al repo, Astro no lo carga nunca) y, antes de escribir nada,
 // pide escribir el nombre del proyecto para confirmar.
 //
-//   node scripts/mercado.mjs import 001 asistentes.csv --dry-run      enseña qué haría (no toca la base de datos)
-//   node scripts/mercado.mjs import 001 asistentes.csv                local
-//   node scripts/mercado.mjs import 001 asistentes.csv --prod         producción (pide confirmación)
-//   node scripts/mercado.mjs import 001 asistentes.csv --all          todos los aprobados, no solo check-in
-//   node scripts/mercado.mjs import 001 asistentes.csv --no-invite    guarda la asistencia y no manda ningún correo
-//   node scripts/mercado.mjs admin atarazanafh@gmail.com [--prod]
-//   node scripts/mercado.mjs list 001 [--prod]
+//   node scripts/tripulacion.mjs import 001 asistentes.csv --dry-run      enseña qué haría (no toca la base de datos)
+//   node scripts/tripulacion.mjs import 001 asistentes.csv                local
+//   node scripts/tripulacion.mjs import 001 asistentes.csv --prod         producción (pide confirmación)
+//   node scripts/tripulacion.mjs import 001 asistentes.csv --all          todos los aprobados, no solo check-in
+//   node scripts/tripulacion.mjs import 001 asistentes.csv --no-invite    guarda la asistencia y no manda ningún correo
+//   node scripts/tripulacion.mjs admin atarazanafh@gmail.com [--prod]
+//   node scripts/tripulacion.mjs list 001 [--prod]
 import { createHash, randomBytes } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { createInterface } from 'node:readline/promises';
 import { createClient } from '@supabase/supabase-js';
 import nodemailer from 'nodemailer';
-import { closeCard, openCard, renderCard } from './mercado-card.mjs';
+import { closeCard, openCard, renderCard } from './tripulacion-card.mjs';
 
 const prod = process.argv.includes('--prod');
 const envFile = prod ? '.env.prod' : '.env.development.local';

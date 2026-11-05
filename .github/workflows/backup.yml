@@ -35,11 +35,11 @@ jobs:
           SUPABASE_URL: ${{ vars.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           BACKUP_AGE_RECIPIENT: ${{ vars.BACKUP_AGE_RECIPIENT }}
-        run: node scripts/mercado-backup.mjs mercado.tar.gz.age
+        run: node scripts/tripulacion-backup.mjs tripulacion.tar.gz.age
       - uses: actions/upload-artifact@v7
         with:
-          name: mercado-${{ github.run_number }}
-          path: mercado.tar.gz.age
+          name: tripulacion-${{ github.run_number }}
+          path: tripulacion.tar.gz.age
           if-no-files-found: error
           compression-level: 0
           retention-days: 90

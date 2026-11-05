@@ -218,7 +218,7 @@ begin
     exists (select 1 from public.mercado_attendance where email = lower(new.email))
     or exists (select 1 from public.mercado_admins where email = lower(new.email))
   ) then
-    raise exception 'El Mercado: % no está en la lista de asistentes', coalesce(new.email, '(sin correo)');
+    raise exception 'La Tripulación: % no está en la lista de asistentes', coalesce(new.email, '(sin correo)');
   end if;
   return new;
 end

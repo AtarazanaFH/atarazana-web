@@ -2,5 +2,5 @@
 set -eu
 
 cd "$(git rev-parse --show-toplevel)"
-printf '%s\n' 'Pre-commit: comprobando tipos, tests de El Mercado y build. Supabase local debe estar arrancado (tests/README.md).'
+printf '%s\n' 'Pre-commit: comprobando tipos, tests de la Tripulación y build. Supabase local debe estar arrancado (tests/README.md).'
 exec npm run verify

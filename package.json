@@ -14,7 +14,7 @@
     "preview": "astro preview",
     "check": "astro check",
     "check:functions": "npx --yes deno check supabase/functions/mercado-invite/index.ts",
-    "test": "node --test --test-concurrency=1 tests/mercado/*.test.mjs",
+    "test": "node --test --test-concurrency=1 tests/tripulacion/*.test.mjs",
     "verify": "npm run check && npm run check:functions && npm test && npm run build"
   },
   "dependencies": {

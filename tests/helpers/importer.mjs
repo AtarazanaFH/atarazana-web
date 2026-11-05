@@ -20,7 +20,7 @@ export function command(executable, args, options = {}, input) {
 
 // SMTP mínimo: acepta o rechaza MAIL FROM y descarta el cuerpo. Nunca entrega correo.
 export async function importer(t, marea, csv) {
-  const dir = await mkdtemp(join(tmpdir(), 'mercado-test-'));
+  const dir = await mkdtemp(join(tmpdir(), 'tripulacion-test-'));
   t.after(() => rm(dir, { recursive: true, force: true }));
   await writeFile(join(dir, 'attendees.csv'), csv);
   const state = { reject: true, attempts: 0, delivered: 0 };
@@ -50,7 +50,7 @@ export async function importer(t, marea, csv) {
   await new Promise((resolve, reject) => { smtp.once('error', reject); smtp.listen(0, '127.0.0.1', resolve); });
   const run = ({ dryRun = false, failInsert = false, flags = [] } = {}) => command(process.execPath, [
     ...(failInsert ? ['--import', './tests/helpers/fail-invite-insert.mjs'] : []),
-    'scripts/mercado.mjs', 'import', marea, join(dir, 'attendees.csv'), ...(dryRun ? ['--dry-run'] : []), ...flags,
+    'scripts/tripulacion.mjs', 'import', marea, join(dir, 'attendees.csv'), ...(dryRun ? ['--dry-run'] : []), ...flags,
   ], { env: { ...process.env, ...env, SITE_URL: 'http://localhost:4321', GMAIL_APP_PASSWORD: '', LOCAL_SMTP_PORT: String(smtp.address().port) } });
   return { state, run };
 }

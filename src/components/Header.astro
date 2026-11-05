@@ -1,6 +1,6 @@
 ---
 import Logo from "./Logo.astro";
-import { mercadoUrl } from "../data/mercado";
+import { tripulacionUrl } from "../data/tripulacion";
 import type { Locale, Page } from '../data/pages';
 import { pageUrl } from '../data/pages';
 import { archiveLive, mareaUrl, nextMarea } from '../data/mareas';
@@ -40,7 +40,7 @@ const t = copy[lang];
       <a href={pageUrl(lang, "manifesto")} aria-current={page === "manifesto" ? "page" : undefined}>{t.manifesto}</a>
       <a href={pageUrl(lang, "partners")} aria-current={page === "partners" ? "page" : undefined}>Partners</a>
       <a href={pageUrl(lang, "faq")} aria-current={page === "faq" ? "page" : undefined}>{t.faq}</a>
-      <a href={mercadoUrl(lang)} aria-current={page === "mercado" ? "page" : undefined}>Tripulación</a>
+      <a href={tripulacionUrl(lang)} aria-current={page === "tripulacion" ? "page" : undefined}>Tripulación</a>
       <a href="https://luma.com/user/atarazana" target="_blank" rel="noopener">Luma</a>
       <a href={alternate ?? pageUrl(otherLang, page)} class="nav-lang" hreflang={t.otherLang} lang={t.otherLang} aria-label={t.languageLabel}>{t.otherLang.toUpperCase()}</a>
       <a class="nav-cta" href={nextMarea.luma} target="_blank" rel="noopener">{t.invite}</a>

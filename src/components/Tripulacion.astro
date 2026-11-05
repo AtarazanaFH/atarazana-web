@@ -1,19 +1,19 @@
 ---
 import type { Locale } from '../data/pages';
-import { mercadoCopy, mercadoName, mercadoUrl } from '../data/mercado';
+import { tripulacionCopy, tripulacionName, tripulacionUrl } from '../data/tripulacion';
 interface Props { lang: Locale; view: 'index' | 'perfil' | 'persona'; }
 const { lang, view } = Astro.props;
-const t = mercadoCopy[lang];
+const t = tripulacionCopy[lang];
 ---
-<section class="hero mercado reveal" data-mercado={view} data-lang={lang}>
+<section class="hero tripulacion reveal" data-tripulacion={view} data-lang={lang}>
   <div class="wrap">
-    <p class="mercado-msg" data-state="loading">{t.loading}</p>
-    <p class="mercado-msg" data-state="off" hidden>{t.off}</p>
+    <p class="tripulacion-msg" data-state="loading">{t.loading}</p>
+    <p class="tripulacion-msg" data-state="off" hidden>{t.off}</p>
 
     {view === 'index' && <>
       <div data-state="login" hidden>
         <p class="kicker">{t.loginKicker}</p>
-        <h1>{mercadoName}</h1>
+        <h1>{tripulacionName}</h1>
         <p class="lead">{t.loginLead}</p>
         <form class="m-form m-login" data-login>
           <label class="m-field"><span>{t.email}</span><input type="email" name="email" required autocomplete="email" inputmode="email" /><small>{t.emailHint}</small></label>
@@ -25,11 +25,11 @@ const t = mercadoCopy[lang];
       <div data-state="dir" hidden>
         <div class="m-head">
           <div>
-            <h1>{mercadoName}</h1>
+            <h1>{tripulacionName}</h1>
             <p class="lead" data-lead>{t.dirLead}</p>
           </div>
           <div class="m-actions">
-            <a class="cta-ghost" href={mercadoUrl(lang, 'perfil')}>{t.myProfile}</a>
+            <a class="cta-ghost" href={tripulacionUrl(lang, 'perfil')}>{t.myProfile}</a>
             <button class="cta-ghost" type="button" data-export hidden>{t.exportCsv}</button>
             <button class="m-link" type="button" data-signout>{t.signOut}</button>
           </div>
@@ -38,7 +38,7 @@ const t = mercadoCopy[lang];
         <div class="m-gate" data-gate hidden>
           <p class="m-gate-title">{t.gateTitle}</p>
           <p data-gate-lead></p>
-          <a class="cta" href={mercadoUrl(lang, 'perfil')}>{t.fillIt}</a>
+          <a class="cta" href={tripulacionUrl(lang, 'perfil')}>{t.fillIt}</a>
         </div>
         <div data-browse hidden>
           <div class="m-bar">
@@ -91,7 +91,7 @@ const t = mercadoCopy[lang];
             <p class="m-status" data-status role="status" aria-live="polite"></p>
             <div class="m-submit">
               <button class="cta" type="submit" data-save>{t.save}</button>
-              <a class="cta-ghost m-return" href={mercadoUrl(lang)}>← {t.backToMercado}</a>
+              <a class="cta-ghost m-return" href={tripulacionUrl(lang)}>← {t.backToTripulacion}</a>
               <button class="cta-ghost m-delete" type="button" data-remove hidden>{t.remove}</button>
             </div>
           </div>
@@ -101,7 +101,7 @@ const t = mercadoCopy[lang];
 
     {view === 'persona' && <>
       <div data-state="person" hidden>
-        <a class="cta m-back" href={mercadoUrl(lang)}>← {t.backToMercado}</a>
+        <a class="cta m-back" href={tripulacionUrl(lang)}>← {t.backToTripulacion}</a>
         <div class="m-person">
           <div class="m-person-photo" data-photo></div>
           <div>
@@ -120,13 +120,13 @@ const t = mercadoCopy[lang];
         </div>
       </div>
       <div data-state="missing" hidden>
-        <a class="cta m-back" href={mercadoUrl(lang)}>← {t.backToMercado}</a>
-        <p class="mercado-msg">{t.notFound}</p>
+        <a class="cta m-back" href={tripulacionUrl(lang)}>← {t.backToTripulacion}</a>
+        <p class="tripulacion-msg">{t.notFound}</p>
       </div>
     </>}
   </div>
 </section>
 
 <script>
-  import '../scripts/mercado.ts';
+  import '../scripts/tripulacion.ts';
 </script>

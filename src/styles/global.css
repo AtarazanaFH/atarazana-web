@@ -919,10 +919,10 @@ main { counter-reset:chapter; }
 .sound-toggle.is-live .sound-bars i { animation:none; transition:height .06s linear; }
 
 /* ---------- La Tripulación: directorio de la gente de tus mareas ---------- */
-.mercado .wrap { padding-top:72px; padding-bottom:96px; min-height:60vh; }
-.mercado h1 { font-size:clamp(56px, 10vw, 140px); line-height:1.02; margin:0 0 28px; }
-.mercado .lead { font:700 clamp(18px, 2vw, 24px)/1.35 var(--font-body); letter-spacing:-0.02em; max-width:40ch; color:var(--white); }
-.mercado-msg { font:500 13px/1.6 var(--font-mono); text-transform:uppercase; letter-spacing:0.08em; color:var(--cement); }
+.tripulacion .wrap { padding-top:72px; padding-bottom:96px; min-height:60vh; }
+.tripulacion h1 { font-size:clamp(56px, 10vw, 140px); line-height:1.02; margin:0 0 28px; }
+.tripulacion .lead { font:700 clamp(18px, 2vw, 24px)/1.35 var(--font-body); letter-spacing:-0.02em; max-width:40ch; color:var(--white); }
+.tripulacion-msg { font:500 13px/1.6 var(--font-mono); text-transform:uppercase; letter-spacing:0.08em; color:var(--cement); }
 .m-head { display:flex; justify-content:space-between; align-items:flex-end; gap:32px; flex-wrap:wrap; }
 .m-actions { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
 .m-link {
@@ -1036,7 +1036,7 @@ a.m-card:hover .m-name { color:var(--signal); }
 .m-person-mareas a { color:var(--white); font-weight:700; text-decoration-color:var(--signal); text-underline-offset:4px; }
 
 @media (max-width:760px) {
-  .mercado .wrap { padding-top:48px; padding-bottom:72px; }
+  .tripulacion .wrap { padding-top:48px; padding-bottom:72px; }
   .m-profile, .m-person { grid-template-columns:1fr; gap:40px; }
   .m-links { grid-template-columns:1fr; }
   .m-person-photo { max-width:280px; }

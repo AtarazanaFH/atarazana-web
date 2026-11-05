@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { chromium } from 'playwright';
-import { openCard, renderCard, closeCard } from '../../scripts/mercado-card.mjs';
+import { openCard, renderCard, closeCard } from '../../scripts/tripulacion-card.mjs';
 
 test('el correo cabe desde la primera tarjeta, con la fuente real cargada', { timeout: 15000 }, async (t) => {
   const launch = chromium.launch.bind(chromium);
