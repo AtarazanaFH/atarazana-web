@@ -1048,3 +1048,17 @@ a.m-card:hover .m-name { color:var(--signal); }
   a.m-card, .m-filter, .m-toggle { transition:background 0.15s var(--ease), color 0.15s var(--ease), border-color 0.15s var(--ease); }
   .m-toggle-switch::after { transition:transform 0.15s var(--ease); }
 }
+
+/* Navegación compacta: los enlaces se despliegan en una columna. */
+.nav-toggle { display:none; }
+@media (max-width:1200px) {
+  .header-inner { height:auto; min-height:68px; flex-wrap:wrap; gap:0 16px; padding-top:12px; padding-bottom:12px; }
+  .nav-enhanced .nav-toggle { display:block; min-height:44px; padding:10px 14px; border:1px solid var(--structure); background:transparent; color:var(--white); font-family:var(--font-mono); cursor:pointer; }
+  .nav-enhanced .nav { display:none; }
+  .nav-enhanced.nav-open .nav, .nav { width:100%; display:flex; flex-direction:column; align-items:stretch; gap:0; margin-top:12px; border-top:1px solid var(--structure); }
+  .nav a { padding:14px 0; border-bottom:1px solid var(--structure); }
+  .nav a::after { display:none; }
+  .nav-lang { border-left:0; }
+  .nav .nav-cta { margin:12px 0 0; padding:14px; text-align:center; }
+  .site-header { position:relative; }
+}
