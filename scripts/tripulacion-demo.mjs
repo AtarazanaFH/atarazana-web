@@ -1,7 +1,7 @@
 // Datos de prueba para la Tripulación en el Supabase LOCAL (npx supabase start). Nunca en producción.
 //
-//   node scripts/mercado-demo.mjs          crea la gente de prueba y enseña los enlaces para entrar
-//   node scripts/mercado-demo.mjs --reset  borra todo lo de prueba (correos @atarazana.test)
+//   node scripts/tripulacion-demo.mjs          crea la gente de prueba y enseña los enlaces para entrar
+//   node scripts/tripulacion-demo.mjs --reset  borra todo lo de prueba (correos @atarazana.test)
 //
 // Lee SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY de .env.development.local.
 import { createClient } from '@supabase/supabase-js';

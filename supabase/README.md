@@ -1,6 +1,6 @@
 # La Tripulación · puesta en marcha
 
-En el código, las tablas y los scripts se llama «mercado», su nombre anterior.
+En la base de datos (tablas, funciones, fotos) y en la función `mercado-invite` se sigue llamando «mercado», su nombre anterior. No se renombra: ver «Nombres antiguos» en AGENTS.md.
 
 Directorio privado de la gente que ha venido a las mareas. La web sigue siendo estática;
 el login (enlace mágico), los datos y las fotos van en [Supabase](https://supabase.com) (plan gratis).
@@ -20,30 +20,30 @@ el login (enlace mágico), los datos y las fotos van en [Supabase](https://supab
      host `smtp.gmail.com`, puerto `465`, usuario `atarazanafh@gmail.com`, contraseña = la contraseña de aplicación (sin espacios), remitente `atarazanafh@gmail.com`, nombre `Atarazana Founder House`.
    - Supabase → **Authentication → Rate Limits**: deja "emails per hour" en 100. Cuenta los enlaces que pide la gente para entrar; las invitaciones las manda el script directamente con Gmail. No lo subas mucho más: Gmail corta hacia los 500 al día, y ese tope incluye las dos cosas.
    - Si algún día se quiere remitente `@atarazana.house`, se cambian estos campos por los de [Resend](https://resend.com) (host `smtp.resend.com`, usuario `resend`, contraseña = API key, tras verificar el dominio en DNS). No hay que tocar código.
-6. **Plantillas**: Authentication → Emails → Templates. Copia `emails/magic-link.html` en *Magic Link* (el asunto va en el comentario del archivo). `emails/invite.html` no se pega en Supabase: la manda `scripts/mercado.mjs` con Gmail, usando `GMAIL_APP_PASSWORD` de `.env.prod`. Así la cuenta nace confirmada y la invitación dura 30 días y sirve una vez: su botón lleva a `/tripulacion`, que la canjea en la función `mercado-invite` y deja a la persona dentro de un clic. Deja de valer al usarla o al rellenar el perfil. Si ya no vale, se pide un enlace en `/tripulacion`, y ese dura una hora (Authentication → Email OTP Expiration: 3600). Para publicar la función: `SUPABASE_ACCESS_TOKEN=… npx supabase functions deploy mercado-invite --project-ref qdjgqywjqwulzblafnof --no-verify-jwt --use-api --yes`. El `--yes` hace falta desde la versión 3 de la CLI cuando la lanza un agente: es la confirmación de publicar en producción, así que solo se añade con la aprobación de la persona. Las imágenes de los correos están en `public/assets/email/`, así que tienen que estar publicadas antes de enviarlos. La tarjeta de la invitación se pinta para cada persona, con su correo (`scripts/mercado-card.mjs`). Necesita Chromium: `npx playwright install chromium-headless-shell`, una vez. Si cambia el nombre "La Tripulación", hay que cambiarlo en esa tarjeta y regenerar `titulo-invitacion.png` (hoy dice "Sube a bordo").
+6. **Plantillas**: Authentication → Emails → Templates. Copia `emails/magic-link.html` en *Magic Link* (el asunto va en el comentario del archivo). `emails/invite.html` no se pega en Supabase: la manda `scripts/tripulacion.mjs` con Gmail, usando `GMAIL_APP_PASSWORD` de `.env.prod`. Así la cuenta nace confirmada y la invitación dura 30 días y sirve una vez: su botón lleva a `/tripulacion`, que la canjea en la función `mercado-invite` y deja a la persona dentro de un clic. Deja de valer al usarla o al rellenar el perfil. Si ya no vale, se pide un enlace en `/tripulacion`, y ese dura una hora (Authentication → Email OTP Expiration: 3600). Para publicar la función: `SUPABASE_ACCESS_TOKEN=… npx supabase functions deploy mercado-invite --project-ref qdjgqywjqwulzblafnof --no-verify-jwt --use-api --yes`. El `--yes` hace falta desde la versión 3 de la CLI cuando la lanza un agente: es la confirmación de publicar en producción, así que solo se añade con la aprobación de la persona. Las imágenes de los correos están en `public/assets/email/`, así que tienen que estar publicadas antes de enviarlos. La tarjeta de la invitación se pinta para cada persona, con su correo (`scripts/tripulacion-card.mjs`). Necesita Chromium: `npx playwright install chromium-headless-shell`, una vez. Si cambia el nombre "La Tripulación", hay que cambiarlo en esa tarjeta y regenerar `titulo-invitacion.png` (hoy dice "Sube a bordo").
 7. **Claves** (Project Settings → API):
    - En **Vercel → Settings → Environment Variables**: `PUBLIC_SUPABASE_URL` y `PUBLIC_SUPABASE_ANON_KEY`. Redeploy.
    - En tu ordenador, copia `.env.prod.example` a `.env.prod` y rellénalo, incluida la `SUPABASE_SERVICE_ROLE_KEY`. **Esa clave salta todas las reglas: nunca en Vercel, nunca en el repo.**
 8. **Función de la invitación**: publica `mercado-invite` con el comando del paso 6.
-9. **Admin**: `atarazanafh@gmail.com` es admin siempre (lo pone `schema.sql`). `node scripts/mercado.mjs admin atarazanafh@gmail.com --prod` le manda la invitación.
+9. **Admin**: `atarazanafh@gmail.com` es admin siempre (lo pone `schema.sql`). `node scripts/tripulacion.mjs admin atarazanafh@gmail.com --prod` le manda la invitación.
 
 ## Producción se cuida
 
 - `npm run dev` solo habla con el Supabase local (`.env.development.local`). Si ahí apareciera la URL de producción, la Tripulación no se conecta y avisa en la consola. Y la web publicada nunca se conecta al local.
-- `scripts/mercado.mjs` trabaja en local por defecto. Producción solo con `--prod`, que lee `.env.prod` y pide escribir el nombre del proyecto antes de escribir nada. `--dry-run` no toca ninguna base de datos.
-- `scripts/mercado-demo.mjs` se niega a funcionar si no es contra localhost.
+- `scripts/tripulacion.mjs` trabaja en local por defecto. Producción solo con `--prod`, que lee `.env.prod` y pide escribir el nombre del proyecto antes de escribir nada. `--dry-run` no toca ninguna base de datos.
+- `scripts/tripulacion-demo.mjs` se niega a funcionar si no es contra localhost.
 - El esquema de producción se aplica a mano en el SQL Editor o, con `SUPABASE_ACCESS_TOKEN` en `.env.prod`, por la API de gestión (ver "Acceso de agentes" en `AGENTS.md`). No uses `supabase link` ni `supabase db push`.
 
 ## Después de cada marea
 
 1. Luma → evento → Guests → **Export** (CSV).
-2. `node scripts/mercado.mjs import 002 ruta/al.csv --dry-run` para ver a quién va a cargar.
-3. `node scripts/mercado.mjs import 002 ruta/al.csv --prod` → guarda la asistencia e invita a quien aún no tiene cuenta. A quien ya tenía cuenta solo se le suma la marea.
+2. `node scripts/tripulacion.mjs import 002 ruta/al.csv --dry-run` para ver a quién va a cargar.
+3. `node scripts/tripulacion.mjs import 002 ruta/al.csv --prod` → guarda la asistencia e invita a quien aún no tiene cuenta. A quien ya tenía cuenta solo se le suma la marea.
 
 Con `--no-invite` guarda la asistencia y no manda nada. Para invitar después, repite el comando sin esa opción.
 Por defecto solo carga a quien hizo **check-in**. Con `--all`, a todos los aprobados.
 Si un correo falla, el comando termina con error y la invitación queda pendiente: repite el mismo comando y solo se reintentan esas. Borrar una cuenta borra también su invitación.
-`node scripts/mercado.mjs list 002 --prod` enseña quién consta en una marea.
+`node scripts/tripulacion.mjs list 002 --prod` enseña quién consta en una marea.
 
 ## Copias de seguridad
 
@@ -62,12 +62,12 @@ Se lanza a mano en Actions → Backup → Run workflow. Si una copia falla, GitH
 Para restaurar, descarga el artefacto de Actions y:
 
 ```sh
-mkdir copia && age -d -i clave-copias.txt mercado.tar.gz.age | tar -xz -C copia
-node scripts/mercado-restore.mjs copia          # local, para comprobar la copia
-node scripts/mercado-restore.mjs copia --prod   # producción: pide confirmación
+mkdir copia && age -d -i clave-copias.txt tripulacion.tar.gz.age | tar -xz -C copia
+node scripts/tripulacion-restore.mjs copia          # local, para comprobar la copia
+node scripts/tripulacion-restore.mjs copia --prod   # producción: pide confirmación
 ```
 
-`mercado-restore.mjs` se niega si el destino tiene cuentas o datos. Trae las cuentas, los perfiles, la asistencia, las invitaciones, los admins y las fotos. Las tablas y las reglas salen de `schema.sql`, que hay que aplicar antes en un proyecto nuevo. La carpeta `copia` lleva datos personales sin cifrar: bórrala al acabar.
+`tripulacion-restore.mjs` se niega si el destino tiene cuentas o datos. Trae las cuentas, los perfiles, la asistencia, las invitaciones, los admins y las fotos. Las tablas y las reglas salen de `schema.sql`, que hay que aplicar antes en un proyecto nuevo. La carpeta `copia` lleva datos personales sin cifrar: bórrala al acabar.
 
 ## Qué ve cada uno
 
@@ -85,7 +85,7 @@ node scripts/mercado-restore.mjs copia --prod   # producción: pide confirmació
 
 Con Docker: `npx supabase start -x vector,logflare,realtime,imgproxy,supavisor`, aplica `schema.sql`
 (`docker cp supabase/schema.sql supabase_db_atarazana-web:/tmp/s.sql && docker exec supabase_db_atarazana-web psql -U postgres -f /tmp/s.sql`)
-y `node scripts/mercado-demo.mjs` crea 21 personas de prueba en las mareas 001–003 y enseña enlaces para entrar.
+y `node scripts/tripulacion-demo.mjs` crea 21 personas de prueba en las mareas 001–003 y enseña enlaces para entrar.
 Las claves locales van en `.env.development.local` (no se sube). Buzón de prueba: http://127.0.0.1:54334.
 
 Tests de los recorridos y permisos críticos: `npm test`. Preparación y alcance en [`tests/README.md`](../tests/README.md). `npm run verify` añade la comprobación de tipos de Astro y Deno y el build.

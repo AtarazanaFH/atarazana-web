@@ -2,9 +2,9 @@
 // Todo el texto que viene de la base de datos se pinta con textContent: nunca como HTML.
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { supabase, PHOTO_BUCKET } from '../lib/supabase';
-import { mercadoCopy, mercadoUrl, type MercadoCopy } from '../data/mercado';
+import { tripulacionCopy, tripulacionUrl, type TripulacionCopy } from '../data/tripulacion';
 import { mareas } from '../data/mareas';
-import { editPhoto } from './mercado-photo';
+import { editPhoto } from './tripulacion-photo';
 import type { Locale } from '../data/pages';
 
 type Person = {
@@ -13,7 +13,7 @@ type Person = {
   website?: string | null; linkedin?: string | null; x?: string | null; github?: string | null; email?: string | null;
 };
 type Directory = { admin: boolean; canSee: boolean; total: number; member: boolean; mareas: string[]; people: Person[]; hidden: string[][] };
-type Ctx = { root: HTMLElement; lang: Locale; t: MercadoCopy; sb: SupabaseClient };
+type Ctx = { root: HTMLElement; lang: Locale; t: TripulacionCopy; sb: SupabaseClient };
 
 // ---------- utilidades ----------
 
@@ -123,7 +123,7 @@ async function indexView({ root, lang, t, sb }: Ctx) {
     const hidden = dir.hidden.filter((m) => matches(m, marea));
     count.textContent = t.count(people.length, hidden.length);
     grid.replaceChildren(
-      ...people.map((p) => h('li', {}, h('a', { class: 'm-card', href: `${mercadoUrl(lang, 'persona')}?id=${encodeURIComponent(p.id)}` },
+      ...people.map((p) => h('li', {}, h('a', { class: 'm-card', href: `${tripulacionUrl(lang, 'persona')}?id=${encodeURIComponent(p.id)}` },
         photoBox(p.name, p.photo ? photos.get(p.photo) : undefined),
         h('span', { class: 'm-card-body' },
           p.self && h('span', { class: 'm-self' }, t.you),
@@ -172,7 +172,7 @@ function loginView({ root, lang, t, sb }: Ctx, expired: boolean, invited = '') {
     if (!email) return;
     button.disabled = true; button.textContent = t.sending;
     const { error } = await sb.auth.signInWithOtp({
-      email, options: { shouldCreateUser: false, emailRedirectTo: location.origin + mercadoUrl(lang) },
+      email, options: { shouldCreateUser: false, emailRedirectTo: location.origin + tripulacionUrl(lang) },
     });
     button.disabled = false; button.textContent = t.send;
     status.textContent = error ? t.sendError : t.sent(email);
@@ -191,7 +191,7 @@ async function exportCsv(sb: SupabaseClient) {
     return `"${s.replaceAll('"', '""')}"`;
   };
   const csv = [cols.join(','), ...rows.map((r) => cols.map((c) => cell(r[c])).join(','))].join('\n');
-  const a = h('a', { href: URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' })), download: 'mercado.csv' });
+  const a = h('a', { href: URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' })), download: 'tripulacion.csv' });
   a.click();
   URL.revokeObjectURL(a.href);
 }
@@ -211,7 +211,7 @@ function normaliseLink(field: string, raw: string) {
 
 async function profileView({ root, lang, t, sb }: Ctx) {
   const s = await session(sb);
-  if (!s) return location.assign(mercadoUrl(lang));
+  if (!s) return location.assign(tripulacionUrl(lang));
   show(root, 'edit');
 
   const form = $<HTMLFormElement>(root, '[data-profile]');
@@ -351,7 +351,7 @@ async function profileView({ root, lang, t, sb }: Ctx) {
     await sb.from('mercado_profiles').delete().eq('id', s.user.id);
     const { data: files } = await sb.storage.from(PHOTO_BUCKET).list(s.user.id);
     if (files?.length) await sb.storage.from(PHOTO_BUCKET).remove(files.map((f) => `${s.user.id}/${f.name}`));
-    location.assign(mercadoUrl(lang));
+    location.assign(tripulacionUrl(lang));
   });
 }
 
@@ -359,7 +359,7 @@ async function profileView({ root, lang, t, sb }: Ctx) {
 
 async function personView({ root, lang, t, sb }: Ctx) {
   const s = await session(sb);
-  if (!s) return location.assign(mercadoUrl(lang));
+  if (!s) return location.assign(tripulacionUrl(lang));
   const id = new URLSearchParams(location.search).get('id') ?? '';
   const { data } = /^[0-9a-f-]{36}$/.test(id) ? await sb.rpc('mercado_person', { target: id }) : { data: null };
   const admin = (await sb.rpc('mercado_is_admin')).data === true;
@@ -389,19 +389,19 @@ async function personView({ root, lang, t, sb }: Ctx) {
     if (files?.length) await sb.storage.from(PHOTO_BUCKET).remove(files.map((f) => `${p.id}/${f.name}`));
     const { error } = await sb.rpc('mercado_admin_delete_profile', { target: p.id });
     if (error) return alert(t.saveError);
-    location.assign(mercadoUrl(lang));
+    location.assign(tripulacionUrl(lang));
   });
 }
 
 // ---------- arranque ----------
 
 document.addEventListener('astro:page-load', () => {
-  const root = document.querySelector<HTMLElement>('[data-mercado]');
+  const root = document.querySelector<HTMLElement>('[data-tripulacion]');
   if (!root) return;
   const lang = (root.dataset.lang as Locale) ?? 'es';
-  const t = mercadoCopy[lang];
+  const t = tripulacionCopy[lang];
   const sb = supabase();
   if (!sb) return show(root, 'off');
   const ctx = { root, lang, t, sb };
-  ({ index: indexView, perfil: profileView, persona: personView } as const)[root.dataset.mercado as 'index']?.(ctx);
+  ({ index: indexView, perfil: profileView, persona: personView } as const)[root.dataset.tripulacion as 'index']?.(ctx);
 });

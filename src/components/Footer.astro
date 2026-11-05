@@ -2,7 +2,7 @@
 import Logo from "./Logo.astro";
 import { pageUrl, type Locale } from '../data/pages';
 import { archiveLive, mareaUrl, nextMarea } from '../data/mareas';
-import { mercadoName, mercadoUrl } from '../data/mercado';
+import { tripulacionName, tripulacionUrl } from '../data/tripulacion';
 interface Props { lang: Locale; }
 const { lang } = Astro.props;
 const copy = {
@@ -43,7 +43,7 @@ const t = copy[lang];
       <a href={pageUrl(lang, "manifesto")}>{t.manifesto}</a>
       <a href={pageUrl(lang, "partners")}>Partners</a>
       <a href={pageUrl(lang, "faq")}>{t.faq}</a>
-      <a href={mercadoUrl(lang)}>{mercadoName}</a>
+      <a href={tripulacionUrl(lang)}>{tripulacionName}</a>
     </nav>
     <p class="footer-meta"><span>{t.copyright}</span><span class="footer-signoff">{t.signoff}</span><span>36.7202° N / 4.4214° W · Málaga / ES · s. XIV</span></p>
   </div>

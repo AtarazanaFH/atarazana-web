@@ -30,7 +30,7 @@ export const pages = {
       "socialDescription": "Dónde es, cuánto cuesta, por qué hay invitación y en qué idioma se habla en Atarazana Founder House.",
       "type": "website"
     },
-    "mercado": {
+    "tripulacion": {
       "title": "La Tripulación · Atarazana Founder House",
       "description": "Vuelve a encontrar a la gente con la que coincidiste en una marea de Atarazana Founder House.",
       "socialDescription": "Vuelve a encontrar a la gente con la que coincidiste en una marea.",
@@ -68,7 +68,7 @@ export const pages = {
       "socialDescription": "Where it is, what it costs, why there are invites and what language is spoken at Atarazana Founder House.",
       "type": "website"
     },
-    "mercado": {
+    "tripulacion": {
       "title": "La Tripulación · Atarazana Founder House",
       "description": "Find the people you met at an Atarazana Founder House marea again.",
       "socialDescription": "Find the people you met at a marea again.",
@@ -81,8 +81,8 @@ export type Page = keyof typeof pages.es;
 
 // Rutas que cambian de nombre según el idioma; el resto usa la clave de la página.
 const slugs: Record<Locale, Partial<Record<Page, string>>> = {
-  es: { faq: 'preguntas', mercado: 'tripulacion' },
-  en: { mercado: 'tripulacion' },
+  es: { faq: 'preguntas' },
+  en: {},
 };
 
 export function pageUrl(lang: Locale, page: Page) {

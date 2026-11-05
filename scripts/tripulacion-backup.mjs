@@ -2,7 +2,7 @@
 // Solo lee de la base de datos. La tarea .github/workflows/backup.yml la lanza cada semana.
 // El repo es público: nunca se escribe en los registros nada más que recuentos.
 //
-//   node scripts/mercado-backup.mjs salida.tar.gz.age
+//   node scripts/tripulacion-backup.mjs salida.tar.gz.age
 //
 // Necesita SUPABASE_DB_URL, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY y BACKUP_AGE_RECIPIENT, además de Docker y age.
 import { execFileSync } from 'node:child_process';
@@ -20,7 +20,7 @@ if (!out || !SUPABASE_DB_URL || !SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY || !
 }
 
 const db = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false } });
-const work = mkdtempSync(join(tmpdir(), 'mercado-backup-'));
+const work = mkdtempSync(join(tmpdir(), 'tripulacion-backup-'));
 
 async function listAll(prefix) {
   const items = [];

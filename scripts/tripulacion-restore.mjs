@@ -1,8 +1,8 @@
-// Restaura una copia ya descifrada de scripts/mercado-backup.mjs. Se niega si el destino tiene cuentas o datos.
+// Restaura una copia ya descifrada de scripts/tripulacion-backup.mjs. Se niega si el destino tiene cuentas o datos.
 //
 //   age -d -i clave.txt copia.tar.gz.age | tar -xz -C carpeta
-//   node scripts/mercado-restore.mjs carpeta           Supabase local
-//   node scripts/mercado-restore.mjs carpeta --prod    producción (.env.prod con SUPABASE_DB_URL; pide confirmación)
+//   node scripts/tripulacion-restore.mjs carpeta           Supabase local
+//   node scripts/tripulacion-restore.mjs carpeta --prod    producción (.env.prod con SUPABASE_DB_URL; pide confirmación)
 import { execFileSync } from 'node:child_process';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
@@ -12,7 +12,7 @@ import { createClient } from '@supabase/supabase-js';
 const fail = (message) => { console.error(`✗ ${message}`); process.exit(1); };
 const prod = process.argv.includes('--prod');
 const dir = process.argv.slice(2).find((a) => !a.startsWith('--'));
-if (!dir || !existsSync(join(dir, 'datos.sql'))) fail('Uso: mercado-restore.mjs carpeta-descifrada [--prod]');
+if (!dir || !existsSync(join(dir, 'datos.sql'))) fail('Uso: tripulacion-restore.mjs carpeta-descifrada [--prod]');
 process.loadEnvFile(prod ? '.env.prod' : '.env.development.local');
 const { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } = process.env;
 const isLocal = /^http:\/\/(127\.0\.0\.1|localhost):/.test(SUPABASE_URL ?? '');
