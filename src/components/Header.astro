@@ -1,5 +1,6 @@
 ---
 import Logo from "./Logo.astro";
+import { mercadoUrl } from "../data/mercado";
 import type { Locale, Page } from '../data/pages';
 import { pageUrl } from '../data/pages';
 import { archiveLive, mareaUrl, nextMarea } from '../data/mareas';
@@ -10,6 +11,7 @@ const copy = {
   "es": {
     "homeLabel": "Atarazana Founder House, inicio",
     "navLabel": "Principal",
+    "menu": "Menú",
     "manifesto": "Manifiesto",
     "faq": "Preguntas",
     "otherLang": "en",
@@ -19,6 +21,7 @@ const copy = {
   "en": {
     "homeLabel": "Atarazana Founder House, home",
     "navLabel": "Primary",
+    "menu": "Menu",
     "manifesto": "Manifesto",
     "faq": "FAQ",
     "otherLang": "es",
@@ -31,14 +34,33 @@ const t = copy[lang];
 <header class="site-header">
   <div class="wrap header-inner">
     <a class="logo" href={pageUrl(lang, "index")} aria-label={t.homeLabel}><Logo class="logo-mark" /><span class="logo-word">Atarazana<br>Founder House</span></a>
-    <nav class="nav" aria-label={t.navLabel}>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">{t.menu}<span aria-hidden="true"> +</span></button>
+    <nav id="primary-nav" class="nav" aria-label={t.navLabel}>
       {archiveLive && <a href={mareaUrl(lang)} aria-current={page === "mareas" ? "page" : undefined}>Mareas</a>}
       <a href={pageUrl(lang, "manifesto")} aria-current={page === "manifesto" ? "page" : undefined}>{t.manifesto}</a>
       <a href={pageUrl(lang, "partners")} aria-current={page === "partners" ? "page" : undefined}>Partners</a>
       <a href={pageUrl(lang, "faq")} aria-current={page === "faq" ? "page" : undefined}>{t.faq}</a>
+      <a href={mercadoUrl(lang)} aria-current={page === "mercado" ? "page" : undefined}>Tripulación</a>
       <a href="https://luma.com/user/atarazana" target="_blank" rel="noopener">Luma</a>
       <a href={alternate ?? pageUrl(otherLang, page)} class="nav-lang" hreflang={t.otherLang} lang={t.otherLang} aria-label={t.languageLabel}>{t.otherLang.toUpperCase()}</a>
       <a class="nav-cta" href={nextMarea.luma} target="_blank" rel="noopener">{t.invite}</a>
     </nav>
   </div>
 </header>
+
+<script>
+  const header = document.querySelector('.site-header');
+  const toggle = header?.querySelector<HTMLButtonElement>('.nav-toggle');
+  if (header && toggle) {
+    header.classList.add('nav-enhanced');
+    const close = () => { header.classList.remove('nav-open'); toggle.setAttribute('aria-expanded', 'false'); };
+    toggle.addEventListener('click', () => {
+      const open = header.classList.toggle('nav-open');
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+    header.addEventListener('keydown', (event) => {
+      if ((event as KeyboardEvent).key === 'Escape') { close(); toggle.focus(); }
+    });
+    window.matchMedia('(max-width: 1200px)').addEventListener('change', close);
+  }
+</script>
