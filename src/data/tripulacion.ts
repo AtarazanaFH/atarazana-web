@@ -21,8 +21,9 @@ export const tripulacionCopy = {
     emailHint: 'El mismo con el que te apuntaste en Luma.',
     send: 'Envíame el enlace',
     sending: 'Enviando…',
-    sent: (email: string) => `Te hemos mandado un enlace a ${email}. Ábrelo en este navegador para entrar.`,
-    sendError: 'No hemos podido mandarte el enlace. Comprueba que es el correo con el que te apuntaste en Luma.',
+    // No dice si el correo tiene cuenta: así nadie puede comprobar quién ha venido a una marea.
+    sent: (email: string) => `Si ${email} está en la lista de asistentes, te llegará un enlace en unos minutos. Ábrelo en este navegador. Si no llega, mira en spam o prueba con el correo con el que te apuntaste en Luma.`,
+    sendError: 'No hemos podido conectar. Prueba otra vez en un momento.',
     expired: 'El enlace ha caducado o ya se usó. Pide uno nuevo aquí abajo.',
     // directorio
     dirLead: 'La gente con la que has coincidido en alguna marea. Quien aún no ha rellenado su perfil sale de incógnita.',
@@ -100,8 +101,8 @@ export const tripulacionCopy = {
     emailHint: 'The one you used to sign up on Luma.',
     send: 'Send me the link',
     sending: 'Sending…',
-    sent: (email: string) => `We have sent a link to ${email}. Open it in this browser to get in.`,
-    sendError: 'We could not send you the link. Check it is the email you used on Luma.',
+    sent: (email: string) => `If ${email} is on the attendee list, a link will reach you in a few minutes. Open it in this browser. If it does not arrive, check spam or try the email you used on Luma.`,
+    sendError: 'We could not connect. Try again in a moment.',
     expired: 'The link has expired or was already used. Ask for a new one below.',
     dirLead: 'The people you have met at a marea. Anyone who has not filled in their profile yet shows up incognito.',
     adminLead: 'Every visible profile from every marea. Anyone who has not filled in their profile yet shows up incognito.',

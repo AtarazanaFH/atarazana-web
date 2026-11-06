@@ -172,5 +172,15 @@ test('la invitación lleva al perfil, al directorio y al cierre de sesión, tamb
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Sin scroll horizontal a 360 px');
   await page.locator('[data-signout]').click();
   await page.locator('[data-state="login"]:visible').waitFor();
+  // Pedir el enlace no revela si el correo tiene cuenta: un asistente y un desconocido ven lo mismo.
+  const ask = async (address) => {
+    await page.locator('[data-status]').evaluate((el) => { el.textContent = ''; });
+    await page.locator('[data-login] [name="email"]').fill(address);
+    await page.locator('[data-login] button').click();
+    const status = page.locator('[data-status]', { hasText: /\S/ });
+    await status.waitFor();
+    return (await status.textContent()).replace(address, '…');
+  };
+  assert.equal(await ask(`nadie-${Date.now()}@atarazana.test`), await ask(me.email), 'El login no dice qué correos tienen cuenta');
   assert.deepEqual(errors, [], 'Sin excepciones de JavaScript durante el recorrido');
 });
