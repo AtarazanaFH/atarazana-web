@@ -175,8 +175,11 @@ function loginView({ root, lang, t, sb }: Ctx, expired: boolean, invited = '') {
       email, options: { shouldCreateUser: false, emailRedirectTo: location.origin + tripulacionUrl(lang) },
     });
     button.disabled = false; button.textContent = t.send;
-    status.textContent = error ? t.sendError : t.sent(email);
-    if (!error) form.reset();
+    // Supabase responde distinto si el correo no tiene cuenta. La web contesta igual en los dos casos para no
+    // revelar quién ha venido a una marea; solo avisa si no ha podido conectar.
+    const offline = error?.name === 'AuthRetryableFetchError';
+    status.textContent = offline ? t.sendError : t.sent(email);
+    if (!offline) form.reset();
   });
 }
 
