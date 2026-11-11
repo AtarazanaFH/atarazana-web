@@ -49,8 +49,7 @@ export const mareas: Marea[] = [
       { speaker: '', title: { es: 'Charla', en: 'Talk' }, line: { es: '', en: '' } },
       { speaker: '', title: { es: 'Charla', en: 'Talk' }, line: { es: '', en: '' } },
     ],
-    partners: [],
-    partnerWanted: true,
+    partners: ['spacenodes'],
     luma: 'https://luma.com/dox9nwj4',
   },
   {
