@@ -15,6 +15,12 @@ export const partners = {
     logo: { src: '/assets/partners/segurosia.png', width: 585, height: 387 },
     line: { es: 'Agentes de IA para seguros', en: 'AI agents for insurance' },
   },
+  spacenodes: {
+    name: 'SpaceNodes',
+    url: 'https://spacenodes.systems/',
+    logo: { src: '/assets/partners/spacenodes.svg', width: 1390, height: 277 },
+    line: { es: 'Computación en órbita para satélites', en: 'In-orbit compute for satellites' },
+  },
 } satisfies Record<string, Partner>;
 
 export type PartnerId = keyof typeof partners;

@@ -509,7 +509,7 @@ main { counter-reset:chapter; }
   min-height:200px; height:100%; padding:28px 24px; text-align:center; color:var(--white); text-decoration:none;
 }
 .partner:hover, .partner:focus-visible { background:var(--anthracite); }
-.partner img { display:block; height:84px; width:auto; opacity:0.85; }
+.partner img { display:block; height:84px; width:auto; max-width:100%; object-fit:contain; opacity:0.85; }
 .partner span { font:500 11px/1.4 var(--font-mono); text-transform:uppercase; letter-spacing:0.08em; color:var(--cement); }
 .partner::after { content:"↗"; position:absolute; top:12px; right:14px; font:500 14px/1 var(--font-mono); color:var(--signal); opacity:0; }
 .partner:hover img, .partner:focus-visible img, .partner:hover::after, .partner:focus-visible::after { opacity:1; }
