@@ -1,5 +1,5 @@
 // Revisión de inscripciones de una marea: invitados de Luma + asistentes de la Tripulación → panel HTML.
-// Lo usa la skill `revisar-marea` (.claude/skills/revisar-marea/SKILL.md), que explica el flujo completo.
+// Lo usa la skill `revisar-marea` (skills/revisar-marea/SKILL.md), que explica el flujo completo.
 //
 // Todo lo que lleva datos de personas vive FUERA del repo, en ~/.atarazana/revision/ (o $ATARAZANA_REVISION):
 //   NNN/luma*.json          salida de list_guests del MCP de Luma (una por página)
