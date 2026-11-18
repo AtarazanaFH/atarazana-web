@@ -42,11 +42,15 @@ export const mareas: Marea[] = [
     format: { es: 'Charlas', en: 'Talks' },
     title: { es: 'Segunda marea', en: 'Second Marea' },
     summary: {
-      es: 'Charlas y tiempo para hablar en Málaga. Ponentes por anunciar.',
-      en: 'Talks and time to chat in Málaga. Speakers to be announced.',
+      es: 'Charlas y tiempo para hablar en Málaga. Más ponentes por anunciar.',
+      en: 'Talks and time to chat in Málaga. More speakers to be announced.',
     },
     talks: [
-      { speaker: '', title: { es: 'Charla', en: 'Talk' }, line: { es: '', en: '' } },
+      {
+        speaker: 'Alejandro Mahillo', poster: 'alejandro-mahillo',
+        title: { es: 'De las fábricas de Vietnam a la IA en producción', en: 'From factories in Vietnam to AI in production' },
+        line: { es: 'Automatizó fábricas con visión artificial en Tupl; hoy despliega automatizaciones con IA', en: 'Automated factories with computer vision at Tupl; now ships AI automations' },
+      },
       { speaker: '', title: { es: 'Charla', en: 'Talk' }, line: { es: '', en: '' } },
     ],
     partners: ['spacenodes'],
