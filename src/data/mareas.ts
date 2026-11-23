@@ -54,7 +54,7 @@ export const mareas: Marea[] = [
       {
         speaker: 'Roberto Medina', poster: 'roberto-medina',
         title: { es: 'Del dispositivo médico a los chips', en: 'From a medical device to chips' },
-        line: { es: 'Dirigió el hardware de Tidal, en EE. UU.; hoy está al frente de Nucleø, el polo de semiconductores de Málaga', en: 'Led hardware at Tidal in the US; now runs Nucleø, Málaga’s semiconductor hub' },
+        line: { es: 'Lidera el hardware de dispositivos médicos en Tidal (EE. UU.) y coordina Nucleø, el polo de semiconductores de Málaga', en: 'Leads medical device hardware at Tidal in the US and coordinates Nucleø, Málaga’s semiconductor hub' },
       },
     ],
     partners: ['spacenodes'],
