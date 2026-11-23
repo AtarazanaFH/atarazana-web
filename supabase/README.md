@@ -57,6 +57,8 @@ Preparación, una vez:
 2. En `.env.prod`: `SUPABASE_DB_URL=postgresql://postgres.qdjgqywjqwulzblafnof:CONTRASEÑA@aws-0-eu-west-1.pooler.supabase.com:5432/postgres`. La contraseña está en Supabase → Project Settings → Database. Si hay que cambiarla, mejor solo con letras y números. No va en el chat.
 3. En GitHub, el entorno `backup`, limitado a la rama `main`, con los secretos `SUPABASE_DB_URL` y `SUPABASE_SERVICE_ROLE_KEY` y las variables `SUPABASE_URL` y `BACKUP_AGE_RECIPIENT`.
 
+**Que no se pause:** el plan gratuito pausa el proyecto tras 7 días sin actividad. `.github/workflows/keepalive.yml` hace cada 2 días una consulta mínima por la API (solo el recuento de admins, con el mismo entorno `backup`). Si llega el correo de Supabase avisando de la pausa, mira que ese workflow siga saliendo; se lanza a mano en Actions → Keepalive → Run workflow.
+
 Se lanza a mano en Actions → Backup → Run workflow. Si una copia falla, GitHub lo avisa por correo. GitHub puede desactivar las tareas programadas tras 60 días sin actividad en el repo: conviene mirar de vez en cuando que siguen saliendo.
 
 Para restaurar, descarga el artefacto de Actions y:
