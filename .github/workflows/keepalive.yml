@@ -1,0 +1,29 @@
+name: Keepalive
+
+# Supabase (plan gratuito) pausa el proyecto tras 7 días sin actividad. Cada 2 días se hace
+# una consulta mínima por la API: solo pide el recuento de admins, no descarga ningún dato.
+on:
+  schedule:
+    - cron: '41 6 */2 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Mismo entorno que la copia de seguridad: solo main llega a estos secretos.
+    environment: backup
+    steps:
+      - name: Consultar Supabase
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          code=$(curl -sS -o /dev/null -w '%{http_code}' --retry 3 --retry-delay 10 -I \
+            -H "apikey: $SUPABASE_SERVICE_ROLE_KEY" -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
+            -H 'Prefer: count=exact' "$SUPABASE_URL/rest/v1/mercado_admins?select=email&limit=1")
+          echo "Respuesta: $code"
+          test "$code" -lt 300
