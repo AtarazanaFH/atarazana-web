@@ -57,7 +57,7 @@ export const mareas: Marea[] = [
         line: { es: 'Lidera el hardware de dispositivos médicos en Tidal (EE. UU.) y coordina Nucleø, el polo de semiconductores de Málaga', en: 'Leads medical device hardware at Tidal in the US and coordinates Nucleø, Málaga’s semiconductor hub' },
       },
     ],
-    partners: ['spacenodes'],
+    partners: ['segurosia'],
     luma: 'https://luma.com/dox9nwj4',
   },
   {
